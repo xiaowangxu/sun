@@ -261,6 +261,8 @@ export class Color {
 				return Color.RGB8(255, 255, 255, 100)
 			case 'red':
 				return Color.RGB8(255, 0, 0, 100)
+			case 'blue':
+				return Color.RGB8(0, 0, 255, 100)
 		}
 	}
 
@@ -1776,12 +1778,6 @@ class Renderer {
 	}
 
 	draw_Line(start, end, color) {
-		// this.canvas_context.beginPath()
-		// this.canvas_context.moveTo(start.x, start.y)
-		// this.canvas_context.lineTo(end.x, end.y)
-		// this.canvas_context.lineWidth = width
-		// this.canvas_context.strokeStyle = color.get_Color()
-		// this.canvas_context.stroke()
 		start = new Vector2(Math.round(start.x), Math.round(start.y))
 		end = new Vector2(Math.round(end.x), Math.round(end.y))
 
@@ -1844,34 +1840,285 @@ class Renderer {
 		}
 	}
 
-	draw_Line_MidPoint(start, end, color) {
-		if (start.x >= end.x) {
-			let tempx = start.x
-			let tempy = start.y
-			start.x = end.x
-			end.x = tempx
-			start.y = end.y
-			end.y = tempy
-		}
-		let a = start.y - end.y
-		let b = end.x - start.x
-		let d = a + a + b
-		let delta1 = a + a
-		let delta2 = a + a + b + b
-		let x = start.x
-		let y = start.y
-		this.draw_Pixel(x, y, color)
-		while (x <= end.x) {
-			if (d < 0) {
-				x++
-				y++
-				d += delta2
+	draw_Line_DDA(x1, y1, x2, y2, color) {
+		let x, y, dx, dy, k
+		dx = x2 - x1
+		dy = y2 - y1
+		if (dx === 0) {
+			if (y2 >= y1) {
+				for (let i = y1; i <= y2; i++) {
+					this.draw_Pixel(x1, i, color)
+				}
 			}
 			else {
-				x++
-				d += delta1
+				for (let i = y2; i >= y1; i--) {
+					this.draw_Pixel(x1, i, color)
+				}
 			}
-			this.draw_Pixel(x, y, color)
+		}
+		{
+			k = dy / dx
+			if (Math.abs(k) <= 1) {
+				y = y1
+				if (x2 < x1)
+					for (x = x1; x >= x2; x--) {
+						this.draw_Pixel(x, parseInt(y + 0.5), color)
+						y = y - k
+					}
+
+				for (x = x1; x <= x2; x++) {
+					this.draw_Pixel(x, parseInt(y + 0.5), color)
+					y = y + k
+				}
+			}
+			else {
+				x = x1
+				if (y2 < y1) {
+					for (y = y1; y >= y2; y--) {
+						this.draw_Pixel(parseInt(x + 0.5), y, color)
+						x = x - 1 / k
+
+					}
+				}
+				else {
+					for (y = y1; y <= y2; y++) {
+						this.draw_Pixel(parseInt(x + 0.5), y, color)
+						x = x + 1 / k
+					}
+				}
+			}
+		}
+	}
+
+	draw_Line_MID(start, end, color) {
+		let k = Math.abs((end.y - start.y) / (end.x - start.x))
+		if ((end.y - start.y) >= 0 && (end.x - start.x) >= 0 || (end.y - start.y) <= 0 && (end.x - start.x) <= 0) {
+			if (k <= 1) {
+				if (start.x >= end.x) {
+					let tempx = start.x
+					let tempy = start.y
+					start.x = end.x
+					end.x = tempx
+					start.y = end.y
+					end.y = tempy
+				}
+				let a = start.y - end.y
+				let b = end.x - start.x
+				let d = a + a + b
+				let delta1 = a + a
+				let delta2 = a + a + b + b
+				let x = start.x
+				let y = start.y
+				this.draw_Pixel(x, y, color)
+				while (x < end.x) {
+					if (d < 0) {
+						x++
+						y++
+						d += delta2
+					}
+					else {
+						x++
+						d += delta1
+					}
+					this.draw_Pixel(x, y, color)
+				}
+			}
+			else {
+				if (start.y >= end.y) {
+					let tempx = start.x
+					let tempy = start.y
+					start.x = end.x
+					end.x = tempx
+					start.y = end.y
+					end.y = tempy
+				}
+				let a = start.x - end.x
+				let b = end.y - start.y
+				let d = a + a + b
+				let delta1 = a + a
+				let delta2 = a + a + b + b
+				let x = start.x
+				let y = start.y
+				this.draw_Pixel(x, y, color)
+				while (y < end.y) {
+					if (d < 0) {
+						x++
+						y++
+						d += delta2
+					}
+					else {
+						y++
+						d += delta1
+					}
+					this.draw_Pixel(x, y, color)
+				}
+			}
+		}
+		else {
+			if (k <= 1) {
+				if (start.x <= end.x) {
+					let tempx = start.x
+					let tempy = start.y
+					start.x = end.x
+					end.x = tempx
+					start.y = end.y
+					end.y = tempy
+				}
+				let a = start.y - end.y
+				let b = start.x - end.x
+				let d = a + a + b
+				let delta1 = a + a
+				let delta2 = a + a + b + b
+				let x = start.x
+				let y = start.y
+				this.draw_Pixel(x, y, color)
+				while (x > end.x) {
+					if (d < 0) {
+						x--
+						y++
+						d += delta2
+					}
+					else {
+						x--
+						d += delta1
+					}
+					this.draw_Pixel(x, y, color)
+				}
+			}
+			else {
+				if (start.y <= end.y) {
+					let tempx = start.x
+					let tempy = start.y
+					start.x = end.x
+					end.x = tempx
+					start.y = end.y
+					end.y = tempy
+				}
+				let a = start.x - end.x
+				let b = start.y - end.y
+				let d = a + a + b
+				let delta1 = a + a
+				let delta2 = a + a + b + b
+				let x = start.x
+				let y = start.y
+				this.draw_Pixel(x, y, color)
+				while (y > end.y) {
+					if (d < 0) {
+						x++
+						y--
+						d += delta2
+					}
+					else {
+						y--
+						d += delta1
+					}
+					this.draw_Pixel(x, y, color)
+				}
+			}
+		}
+	}
+
+	draw_Line_BYE(start, end, color) {
+		let k = Math.abs((end.y - start.y) / (end.x - start.x))
+		if ((end.y - start.y) >= 0 && (end.x - start.x) >= 0 || (end.y - start.y) <= 0 && (end.x - start.x) <= 0) {
+			if (k <= 1) {
+				if (start.x >= end.x) {
+					let tempx = start.x
+					let tempy = start.y
+					start.x = end.x
+					end.x = tempx
+					start.y = end.y
+					end.y = tempy
+				}
+				let x = start.x
+				let y = start.y
+				let dx = end.x - start.x
+				let dy = end.y - start.y
+				let e = -dx
+				for (let i = 0; i <= dx; i++) {
+					this.draw_Pixel(x, y, color)
+					x++
+					e += dy + dy
+					if (e >= 0) {
+						y++
+						e -= dx + dx
+					}
+				}
+			}
+			else {
+				if (start.y >= end.y) {
+					let tempx = start.x
+					let tempy = start.y
+					start.x = end.x
+					end.x = tempx
+					start.y = end.y
+					end.y = tempy
+				}
+				let x = start.x
+				let y = start.y
+				let dx = end.x - start.x
+				let dy = end.y - start.y
+				let e = -dy
+				for (let i = 0; i <= dy; i++) {
+					this.draw_Pixel(x, y, color)
+					y++
+					e += dx + dx
+					if (e >= 0) {
+						x++
+						e -= dy + dy
+					}
+				}
+			}
+		}
+		else {
+			if (k <= 1) {
+				if (start.x <= end.x) {
+					let tempx = start.x
+					let tempy = start.y
+					start.x = end.x
+					end.x = tempx
+					start.y = end.y
+					end.y = tempy
+				}
+				let x = start.x
+				let y = start.y
+				let dx = start.x - end.x
+				let dy = end.y - start.y
+				let e = -dx
+				for (let i = 0; i <= dx; i++) {
+					this.draw_Pixel(x, y, color)
+					x--
+					e += dy + dy
+					if (e >= 0) {
+						y++
+						e -= dx + dx
+					}
+				}
+			}
+			else {
+				if (start.y <= end.y) {
+					let tempx = start.x
+					let tempy = start.y
+					start.x = end.x
+					end.x = tempx
+					start.y = end.y
+					end.y = tempy
+				}
+				let x = start.x
+				let y = start.y
+				let dx = end.x - start.x
+				let dy = start.y - end.y
+				let e = -dx
+				for (let i = 0; i <= dy; i++) {
+					this.draw_Pixel(x, y, color)
+					y--
+					e -= dx + dx
+					if (e <= 0) {
+						x++
+						e += dy + dy
+					}
+				}
+			}
 		}
 	}
 

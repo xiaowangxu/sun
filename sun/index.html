@@ -48,23 +48,24 @@
 	class Console {
 		constructor() {
 			this.str = ''
-			this.list = [['◻◻ '], [], ['◻◻ GAMEBOY SUN JS'], ['   0.0.1', { color: SUN.Color.RGB8(255, 255, 255, 50) }], [],
-			['◻◻ by studio UNNAMED', { color: SUN.Color.RGB8(255, 255, 255, 50) }], [], ['◻◻ '], []]
+			this.list = [['◻◻ '], [], ['◻◻ SHU COMPUTER GRAPHIC'], ['   ex 1', { color: SUN.Color.RGB8(255, 255, 255, 50) }], [],
+			['◻◻ by wx lzh', { color: SUN.Color.RGB8(255, 255, 255, 50) }], [], ['◻◻ '], []]
 			const font = SUN.Font.DEFAULT()
 			this.time = 0
 			this.ins = []
 			this.idx = 0
 			this.backgroundcolor = SUN.Color.RGB8(20, 20, 20)
-			this.draw_buffer
+			this.draw_objects = []
+			this.instructions = []
+			this.index = 0
 		}
 
 		init(width, height) {
-			this.draw_buffer = new SUN.Buffer(width, height, true)
-			// this.draw_buffer.fill(SUN.Color.COLOR())
-			// console.log(this.draw_buffer)
 		}
 
 		exec_Instruction(instruction, sc, delta) {
+			this.instructions.push(instruction)
+			this.index = this.instructions.length
 			if (instruction === '') {
 				this.list.push(['>> ', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
 				this.list.push([])
@@ -115,92 +116,208 @@
 				else {
 					this.list.push(['◻◻ Argument(s) error', { color: SUN.Color.RGB8(220, 20, 30) }])
 					this.list.push([])
-					this.list.push(['◻◻ Instruction ', {}])
-					this.list.push(['Color int, int int int', { color: SUN.Color.PICO(12) }])
+					this.list.push(['◻◻ Color ', { color: SUN.Color.PICO(12) }])
+					this.list.push(['r g b', {}])
 					this.list.push([])
-				}
-			}
-
-			else if (ins === 'CHAR') {
-				if (arg.length === 0) {
-					this.list.push(['◻◻ ABCDEFGHIJKLMNOPQRSTUVWXYZ', { font: font }])
-					this.list.push([])
-					this.list.push(['◻◻ ', { font: font }])
-					this.list.push(['abcdefghijklmnopqrstuvwxyz', { font: font }])
-					this.list.push([])
-					this.list.push(['◻◻ ', { font: font }])
-					this.list.push(['0123456789', { font: font }])
-					this.list.push([])
-					this.list.push(['◻◻ ', { font: font }])
-					this.list.push(['+-*/<=>.,()[]{}~\'\"?:;_!@#$%^&', { font: font }])
-					this.list.push([])
-				}
-				else if (arg.length === 1) {
-					this.list.push(['◻◻ ', { font: font }], [arg[0], { font: font }])
+					this.list.push(['◻◻ Color ', { color: SUN.Color.PICO(12) }])
+					this.list.push(['colorId(0-15)', {}])
 					this.list.push([])
 				}
 			}
 			else if (ins === 'HELP') {
-				this.list.push(['◻◻ Instruction\t\t', { font: font, color: SUN.Color.PICO(12) }])
+				this.list.push(['◻◻ Console Instruction\t\t', { font: font, color: SUN.Color.PICO(12) }])
 				// this.list.push(['', { font: font, color: SUN.Color.PICO(12) }])
 				this.list.push([])
 				this.list.push(['◻◻ HELP\t\t\t\t\t', { font: font }])
 				this.list.push(['show this info', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
 				this.list.push([])
-				this.list.push(['◻◻ REBOOT\t\t\t\t', { font: font }])
-				this.list.push(['reboot the console', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
-				this.list.push([])
 				this.list.push(['◻◻ CLS\t\t\t\t\t\t', { font: font }])
 				this.list.push(['clear screen', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
 				this.list.push([])
-				this.list.push(['◻◻ CHAR\t\t\t\t\t', { font: font }])
-				this.list.push(['log all useable characters', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
-				this.list.push([])
-				this.list.push(['◻◻ PALETTE\t\t\t', { font: font }])
-				this.list.push(['log pico color palette', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
+				this.list.push(['◻◻ Renderer Instruction\t\t', { font: font, color: SUN.Color.PICO(14) }])
 				this.list.push([])
 				this.list.push(['◻◻ COLOR\t\t\t\t', { font: font }])
 				this.list.push(['log a specific color', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
 				this.list.push([])
-			}
-			else if (ins === 'SUN') {
-				let array = '◻◻ Hello Sun! --- from studio UNNAMED'.split('').map((char, index) => {
-					return [char, { font: font, color: SUN.Color.PICO((index % 15) + 1) }, (time) => {
-						return {
-							lineheight: Math.round(Math.cos(time * 0.005 + index * 0.1) * 10 + 10)
-						}
-					}, null, 28]
-				})
-				this.list.push([array])
+				this.list.push(['◻◻ CIRC\t\t\t\t\t\t', { font: font }])
+				this.list.push(['draw a circle', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
 				this.list.push([])
-				let array2 = '◻◻ Hello Sun! --- from studio UNNAMED'.split('').map((char, index) => {
-					return [char, { font: font, color: SUN.Color.PICO((index % 15) + 1) }, (time) => {
-						return {
-							color: SUN.Color.RGB(1, 1, 1, Math.sin(-time * 0.005 + index * 0.1) + 1)
-							// offest: new SUN.Vector2(Math.round(Math.cos(time * 0.005 + index * 0.1) * 10 + 10), Math.round(Math.cos(time * 0.005 + index * 0.1) * 10 + 10))
-							// lineheight: Math.round(Math.cos(time * 0.005 + index * 0.1) * 10 + 10)
-						}
-					}]
-				})
-				this.list.push([array2])
+				this.list.push(['◻◻ CLEAR\t\t\t\t\t', { font: font }])
+				this.list.push(['clear draw objects', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
 				this.list.push([])
 			}
-			else if (ins === 'LINE') {
-				let x0 = arg[0]
-				let y0 = arg[1]
-				let x1 = arg[2]
-				let y1 = arg[3]
+			else if (ins === 'LINE_DDA') {
+				if (arg.length === 0) {
+					this.draw_objects.push((sc) => {
+						for (let i = 0; i < Math.PI * 2; i += Math.PI / 12) {
+							let x = Math.round(Math.cos(i) * 100)
+							let y = Math.round(Math.sin(i) * 100)
+							sc.Renderer.draw_Line_DDA(156, 156, 156 + x, 156 + y, SUN.Color.COLOR('red'))
+						}
+					})
+				}
+				else if (arg.length === 4) {
+					let x0 = parseInt(arg[0])
+					let y0 = parseInt(arg[1])
+					let x1 = parseInt(arg[2])
+					let y1 = parseInt(arg[3])
+					this.draw_objects.push((sc) => {
+						sc.Renderer.draw_Line_DDA(x0, y0, x1, y1, SUN.Color.COLOR("white"))
+					})
+				}
+				else if (arg.length === 5) {
+					let x0 = parseInt(arg[0])
+					let y0 = parseInt(arg[1])
+					let x1 = parseInt(arg[2])
+					let y1 = parseInt(arg[3])
+					let color = parseInt(arg[5])
+					this.draw_objects.push((sc) => {
+						sc.Renderer.draw_Line_DDA(x0, y0, x1, y1, SUN.Color.PICO(color))
+					})
+				}
+				else {
+					this.list.push(['◻◻ Argument(s) error', { color: SUN.Color.RGB8(220, 20, 30) }])
+					this.list.push([])
+					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
+					this.list.push([])
+					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
+					this.list.push(['x0 y0 x1 y1', {}])
+					this.list.push([])
+					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
+					this.list.push(['x0 y0 x1 y1 colorId', {}])
+					this.list.push([])
+				}
+			}
+			else if (ins === 'LINE_MID') {
+				if (arg.length === 0) {
+					this.draw_objects.push((sc) => {
+						for (let i = 0; i < Math.PI * 2; i += Math.PI / 12) {
+							let x = Math.round(Math.cos(i) * 100)
+							let y = Math.round(Math.sin(i) * 100)
+							sc.Renderer.draw_Line_MID(new SUN.Vector2(156, 156), new SUN.Vector2(156 + x, 156 + y), SUN.Color.COLOR('blue'))
 
+						}
+					})
+				}
+				else if (arg.length === 4) {
+					let x0 = parseInt(arg[0])
+					let y0 = parseInt(arg[1])
+					let x1 = parseInt(arg[2])
+					let y1 = parseInt(arg[3])
+					this.draw_objects.push((sc) => {
+						sc.Renderer.draw_Line_MID(new SUN.Vector2(x0, y0), new SUN.Vector2(x1, y1), SUN.Color.COLOR("white"))
+					})
+				}
+				else if (arg.length === 5) {
+					let x0 = parseInt(arg[0])
+					let y0 = parseInt(arg[1])
+					let x1 = parseInt(arg[2])
+					let y1 = parseInt(arg[3])
+					let color = parseInt(arg[4])
+					this.draw_objects.push((sc) => {
+						sc.Renderer.draw_Line_MID(new SUN.Vector2(x0, y0), new SUN.Vector2(x1, y1), SUN.Color.PICO(color))
+					})
+				}
+				else {
+					this.list.push(['◻◻ Argument(s) error', { color: SUN.Color.RGB8(220, 20, 30) }])
+					this.list.push([])
+					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
+					this.list.push([])
+					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
+					this.list.push(['x0 y0 x1 y1', {}])
+					this.list.push([])
+					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
+					this.list.push(['x0 y0 x1 y1 colorId', {}])
+					this.list.push([])
+				}
 			}
-			else if (ins === 'CLEARBUFFER') {
-				this.draw_buffer.fill(SUN.Color.COLOR('red'))
+			else if (ins === 'LINE_BYE') {
+				if (arg.length === 0) {
+					this.draw_objects.push((sc) => {
+						for (let i = 0; i < Math.PI * 2; i += Math.PI / 12) {
+							let x = Math.round(Math.cos(i) * 100)
+							let y = Math.round(Math.sin(i) * 100)
+							sc.Renderer.draw_Line_BYE(new SUN.Vector2(156, 156), new SUN.Vector2(156 + x, 156 + y), SUN.Color.COLOR('white'))
+
+						}
+					})
+				}
+				else if (arg.length === 4) {
+					let x0 = parseInt(arg[0])
+					let y0 = parseInt(arg[1])
+					let x1 = parseInt(arg[2])
+					let y1 = parseInt(arg[3])
+					this.draw_objects.push((sc) => {
+						sc.Renderer.draw_Line_BYE(new SUN.Vector2(x0, y0), new SUN.Vector2(x1, y1), SUN.Color.COLOR("white"))
+					})
+				}
+				else if (arg.length === 5) {
+					let x0 = parseInt(arg[0])
+					let y0 = parseInt(arg[1])
+					let x1 = parseInt(arg[2])
+					let y1 = parseInt(arg[3])
+					let color = parseInt(arg[4])
+					this.draw_objects.push((sc) => {
+						sc.Renderer.draw_Line_BYE(new SUN.Vector2(x0, y0), new SUN.Vector2(x1, y1), SUN.Color.PICO(color))
+					})
+				}
+				else {
+					this.list.push(['◻◻ Argument(s) error', { color: SUN.Color.RGB8(220, 20, 30) }])
+					this.list.push([])
+					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
+					this.list.push([])
+					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
+					this.list.push(['x0 y0 x1 y1', {}])
+					this.list.push([])
+					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
+					this.list.push(['x0 y0 x1 y1 colorId', {}])
+					this.list.push([])
+				}
 			}
-			else if (ins === 'REBOOT') {
-				this.list = [['◻◻ '], [], ['◻◻ GAMEBOY SUN JS'], ['   0.0.1', { color: SUN.Color.RGB8(255, 255, 255, 50) }], [],
-				['◻◻ by studio UNNAMED', { color: SUN.Color.RGB8(255, 255, 255, 50) }], [], ['◻◻ '], []]
+			else if (ins === 'CLEAR') {
+				this.draw_objects = []
 			}
 			else if (ins === 'CLS') {
 				this.list = []
+			}
+			else if (ins === 'CIRC') {
+				if (arg.length === 0) {
+					this.draw_objects.push((sc) => {
+						let color = 0
+						for (let i = 5; i <= 100; i += 4) {
+							sc.Renderer.draw_Circle(156, 156, i, SUN.Color.PICO(color++ % 16))
+						}
+					})
+				}
+				else if (arg.length === 3) {
+					let x = parseInt(arg[0])
+					let y = parseInt(arg[1])
+					let radius = parseInt(arg[2])
+					this.draw_objects.push((sc) => {
+						sc.Renderer.draw_Circle(x, y, radius, SUN.Color.COLOR("white"))
+					})
+				}
+				else if (arg.length === 4) {
+					let x = parseInt(arg[0])
+					let y = parseInt(arg[1])
+					let radius = parseInt(arg[2])
+					let pico = parseInt(arg[3]) % 16
+					this.draw_objects.push((sc) => {
+						sc.Renderer.draw_Circle(x, y, radius, SUN.Color.PICO(pico))
+					})
+				}
+				else {
+					this.list.push(['◻◻ Argument(s) error', { color: SUN.Color.RGB8(220, 20, 30) }])
+					this.list.push([])
+					this.list.push(['◻◻ Circ ', { color: SUN.Color.PICO(12) }])
+					this.list.push([])
+					this.list.push(['◻◻ Circ ', { color: SUN.Color.PICO(12) }])
+					this.list.push(['x y radius', {}])
+					this.list.push([])
+					this.list.push(['◻◻ Circ ', { color: SUN.Color.PICO(12) }])
+					this.list.push(['x y radius colorId', {}])
+					this.list.push([])
+				}
 			}
 			else if (ins === 'FPS') {
 				this.list.push(['◻◻ ' + String(Math.round(1000 / delta))])
@@ -216,6 +333,7 @@
 
 		update(sc, delta) {
 			for (let key in sc.Keyboard.keymap) {
+				// console.log(SUN.Fn.get_Char(key))
 				if (SUN.Fn.is_ASCII(key)) {
 					if (sc.Keyboard.on_Continue(key)) {
 						// console.log(SUN.Fn.get_Char(key))
@@ -259,12 +377,29 @@
 						this.time = 0
 					}
 				}
+				else if (key === 'ArrowUp') {
+					if (sc.Keyboard.on_Continue(key)) {
+						if (this.instructions.length !== 0) {
+							this.index = SUN.Fn.clamp(this.index - 1, 0, this.instructions.length - 1)
+							this.str = this.instructions[this.index]
+							this.idx = this.str.length
+						}
+					}
+				}
+				else if (key === 'ArrowDown') {
+					if (sc.Keyboard.on_Continue(key)) {
+						if (this.instructions.length !== 0) {
+							this.index = SUN.Fn.clamp(this.index + 1, 0, this.instructions.length - 1)
+							this.str = this.instructions[this.index]
+							this.idx = this.str.length
+						}
+					}
+				}
 			}
 		}
 
 		render(sc, delta) {
 			sc.Renderer.clear(this.backgroundcolor)
-			// sc.Renderer.draw_Mesh(monkey, camera)
 
 			let cursor
 			if (this.time >= 0) {
@@ -277,26 +412,18 @@
 				cursor = '◼'
 				this.time = 0
 			}
-			// let size = font.get_MultiStringRect('>> ' + this.str + cursor, 1, 0, 2).size
-			// sc.Renderer.draw_Rect(size, SUN.Color.PICO(10))
-			// sc.Renderer.draw_MultiString(4, sc.Renderer.size.y - 4 - size.y - 2, '>> ' + this.str + cursor, font, SUN.Color.COLOR('WHITE'), 1, 0, 2, 1, null, SUN.Color.PICO(5))
 			let array = this.list.filter(() => { return true })
 			array.push(['>> ', { font: font }])
 			let input = []
 			let clist = this.str.split('')
 			clist.push('◻')
-			// console.log(clist) 
 			clist.forEach((c, idx) => {
 				input.push([c, idx !== this.idx ? { font: font, border: 1, offest: new SUN.Vector2(-1, -1) } : cursor === '◼' ? { font: font, backgroundcolor: SUN.Color.PICO(8), color: SUN.Color.RGB8(23, 33, 67), border: 1, offest: new SUN.Vector2(-1, -1) } : { font: font, border: 1, offest: new SUN.Vector2(-1, -1) }])
 			})
-			// array.push(['>> ', { font: font }])
-			// array.push([this.str, { font: font }])
 			array.push([input, { split: -1 }])
-
 			let rect = SUN.get_RichTextRect(array, 1, 0, 4)
 			rect.position.x = 5
 			rect.position.y = 6
-			// sc.Renderer.draw_Rect(rect, SUN.Color.PICO(15))
 			if (rect.size.y < sc.Renderer.size.y - 8) {
 				sc.Renderer.draw_Richtext(5, 6, array, 1, 0, 4)
 			}
@@ -304,7 +431,10 @@
 				sc.Renderer.draw_Richtext(5, sc.Renderer.size.y - 4 - rect.size.y, array, 1, 0, 4)
 			}
 			this.time += delta
-			// sc.Renderer.draw_Buffer(0, 0, this.draw_buffer)
+
+			this.draw_objects.forEach((func) => {
+				func(sc)
+			})
 		}
 	}
 
@@ -320,7 +450,6 @@
 
 	gameconsole.render = (sc, delta) => {
 		sunconsole.render(sc, delta)
-		sc.Renderer.draw_Circle(100, 100, 50, SUN.Color.COLOR("Red"))
 	}
 
 	gameconsole.run()
