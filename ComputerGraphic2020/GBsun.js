@@ -2108,7 +2108,7 @@ class Renderer {
 				let y = start.y
 				let dx = end.x - start.x
 				let dy = start.y - end.y
-				let e = -dx
+				let e = dy
 				for (let i = 0; i <= dy; i++) {
 					this.draw_Pixel(x, y, color)
 					y--
