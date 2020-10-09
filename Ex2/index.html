@@ -39,7 +39,7 @@
 </style>
 
 <script type="module">
-	import * as SUN from './GBsun.js'
+	import * as SUN from '../ComputerGraphic2020/GBsun.js'
 
 	let gameconsole = new SUN.sunConsole(256, 256)
 	document.getElementById('container').appendChild(gameconsole.get_ConsoleDOM())
@@ -170,7 +170,7 @@
 					let y0 = parseInt(arg[1])
 					let x1 = parseInt(arg[2])
 					let y1 = parseInt(arg[3])
-					let color = parseInt(arg[4])
+					let color = parseInt(arg[5])
 					this.draw_objects.push((sc) => {
 						sc.Renderer.draw_Line_DDA(x0, y0, x1, y1, SUN.Color.PICO(color))
 					})

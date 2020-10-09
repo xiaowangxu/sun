@@ -272,6 +272,46 @@ export class Color {
 	}
 }
 
+export class EdgeTable {
+	constructor() {
+		this.list = []
+	}
+
+	add_Edge(x1, y1, x2, y2) {
+		if (y2 < y1) { // y2 >= y1
+			let tmp = x1
+			x1 = x2
+			x2 = tmp
+			tmp = y1
+			y1 = y2
+			y2 = tmp
+		}
+		let dx = x2 - x1
+		let dy = y2 - y1
+		if (dy !== 0) {
+			if (dx === 0) {
+				this.add(y1, x1, y2, 0)
+			}
+			else {
+				this.add(y1, x1, y2, dx / dy)
+			}
+		}
+	}
+
+	add(y1, x, y2, m) {
+		for (let i = 0; i < this.list.length; i++) {
+			let line = this.list[i]
+			let line_y = line.y
+			if (y === y1) {// same line
+
+				return
+			}
+			else if (y > y1) {// insert
+				this.list.splice(i, 0, { y: y1 })
+			}
+		}
+	}
+}
 
 //************************************
 //           Render Obj
