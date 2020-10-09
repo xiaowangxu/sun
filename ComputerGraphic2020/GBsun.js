@@ -278,6 +278,7 @@ export class EdgeTable {
 	}
 
 	add_Edge(x1, y1, x2, y2) {
+		console.log("add_line ", x1, y1, x2, y2)
 		if (y2 < y1) { // y2 >= y1
 			let tmp = x1
 			x1 = x2
@@ -290,9 +291,11 @@ export class EdgeTable {
 		let dy = y2 - y1
 		if (dy !== 0) {
 			if (dx === 0) {
+				// console.log(">>>0")
 				this.add(y1, x1, y2, 0)
 			}
 			else {
+				// console.log(">>>1")
 				this.add(y1, x1, y2, dx / dy)
 			}
 		}
@@ -302,14 +305,59 @@ export class EdgeTable {
 		for (let i = 0; i < this.list.length; i++) {
 			let line = this.list[i]
 			let line_y = line.y
-			if (y === y1) {// same line
-
+			if (line_y === y1) {// same line
+				console.log(">>>>0")
+				for (let j = 0; j < line.list.length; j++) {
+					let this_line = line.list[j]
+					if (this_line.x >= line.x) {
+						// console.log(">>>>1")
+						if (this_line.m >= line.m) {
+							// console.log(">>>>2")
+							array.splice(j, 0, { x: x, y: y2, m: m })
+							return
+						}
+					}
+				}
+				line.list.push({ x: x, y: y2, m: m })
 				return
 			}
-			else if (y > y1) {// insert
-				this.list.splice(i, 0, { y: y1 })
+			else if (line_y > y1) {// insert
+				this.list.splice(i, 0, { y: y1, list: [{ x: x, y: y2, m: m }] })
+				return
 			}
 		}
+		this.list.push({ y: y1, list: [{ x: x, y: y2, m: m }] })
+	}
+
+	get_StartY() {
+		if (this.list.length === 0) return 0
+		return this.list[0].y
+	}
+
+	copy(edge) {
+		return { y: edge.y, x: edge.x, m: edge.m }
+	}
+
+	get_Line(line) {
+		if (this.list.length === 0) return []
+		for (let i = 0; i < this.list.length; i++) {
+			let this_line = this.list[i]
+			if (this_line.y < line) return []
+			else if (this_line.y === line) {
+				return this_line.list.map((edge) => { return this.copy(edge) })
+			}
+		}
+		return []
+	}
+
+	print() {
+		this.list.forEach((line) => {
+			let str = '[' + line.y + ']'
+			line.list.forEach((edge) => {
+				str += '->' + '[' + edge.y + ',' + edge.x + ',' + edge.m + ']'
+			})
+			console.log(str)
+		})
 	}
 }
 
@@ -2370,6 +2418,58 @@ class Renderer {
 			}
 		}
 		return Rect.XYWH(x, y, sprite.width * scale, sprite.height * scale)
+	}
+
+	draw_Polygon_ScanLine(poly) {
+		let list = []
+		let line_i = poly.get_StartY()
+		function next(line) {
+			line.x = line.x + line.m
+		}
+		function remove(y) {
+			let i = 0
+			while (i < list.length) {
+				if (list[i].y <= y) {
+					list.splice(i, 1)
+				}
+				else {
+					i++
+				}
+			}
+		}
+		function add(line) {
+			for (let i = 0; i < list.length; i++) {
+				let this_line = list[i]
+				if (this_line.x >= line.x) {
+					// console.log(">>>>1")
+					if (this_line.m >= line.m) {
+						// console.log(">>>>2")
+						list.splice(i, 0, line)
+						return
+					}
+				}
+			}
+			list.push(line)
+		}
+
+		poly.get_Line(line_i).forEach((line) => {
+			add(line)
+		})
+		while (list.length > 0) {
+			let draw = false
+			// let last_x = list[0].x
+			let str = "[" + line_i + "]  "
+			list.forEach((line, index) => {
+				str += /* "[" + last_x + "]->" +  */"[" + line.x + "]  "
+				// last_x = !last_x
+				next(line)
+			})
+			console.log(str)
+			remove(line_i)
+			poly.get_Line(++line_i).forEach((line) => {
+				add(line)
+			})
+		}
 	}
 
 	draw_Char(x, y, char, color) {

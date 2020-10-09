@@ -45,10 +45,12 @@
 	document.getElementById('container').appendChild(gameconsole.get_ConsoleDOM())
 	let font = SUN.Font.DEFAULT()
 
+	let geo = new SUN.EdgeTable()
+
 	class Console {
 		constructor() {
 			this.str = ''
-			this.list = [['◻◻ '], [], ['◻◻ SHU COMPUTER GRAPHIC'], ['   ex 1', { color: SUN.Color.RGB8(255, 255, 255, 50) }], [],
+			this.list = [['◻◻ '], [], ['◻◻ SHU COMPUTER GRAPHIC'], ['   ex 2', { color: SUN.Color.RGB8(255, 255, 255, 50) }], [],
 			['◻◻ by wx lzh', { color: SUN.Color.RGB8(255, 255, 255, 50) }], [], ['◻◻ '], []]
 			const font = SUN.Font.DEFAULT()
 			this.time = 0
@@ -146,132 +148,15 @@
 				this.list.push(['clear draw objects', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
 				this.list.push([])
 			}
-			else if (ins === 'LINE_DDA') {
-				if (arg.length === 0) {
-					this.draw_objects.push((sc) => {
-						for (let i = 0; i < Math.PI * 2; i += Math.PI / 12) {
-							let x = Math.round(Math.cos(i) * 100)
-							let y = Math.round(Math.sin(i) * 100)
-							sc.Renderer.draw_Line_DDA(156, 156, 156 + x, 156 + y, SUN.Color.COLOR('red'))
-						}
-					})
-				}
-				else if (arg.length === 4) {
+			else if (ins === 'LINE') {
+				if (arg.length === 4) {
 					let x0 = parseInt(arg[0])
 					let y0 = parseInt(arg[1])
 					let x1 = parseInt(arg[2])
 					let y1 = parseInt(arg[3])
-					this.draw_objects.push((sc) => {
-						sc.Renderer.draw_Line_DDA(x0, y0, x1, y1, SUN.Color.COLOR("white"))
-					})
-				}
-				else if (arg.length === 5) {
-					let x0 = parseInt(arg[0])
-					let y0 = parseInt(arg[1])
-					let x1 = parseInt(arg[2])
-					let y1 = parseInt(arg[3])
-					let color = parseInt(arg[5])
-					this.draw_objects.push((sc) => {
-						sc.Renderer.draw_Line_DDA(x0, y0, x1, y1, SUN.Color.PICO(color))
-					})
-				}
-				else {
-					this.list.push(['◻◻ Argument(s) error', { color: SUN.Color.RGB8(220, 20, 30) }])
-					this.list.push([])
-					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
-					this.list.push([])
-					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
-					this.list.push(['x0 y0 x1 y1', {}])
-					this.list.push([])
-					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
-					this.list.push(['x0 y0 x1 y1 colorId', {}])
-					this.list.push([])
-				}
-			}
-			else if (ins === 'LINE_MID') {
-				if (arg.length === 0) {
-					this.draw_objects.push((sc) => {
-						for (let i = 0; i < Math.PI * 2; i += Math.PI / 12) {
-							let x = Math.round(Math.cos(i) * 100)
-							let y = Math.round(Math.sin(i) * 100)
-							sc.Renderer.draw_Line_MID(new SUN.Vector2(156, 156), new SUN.Vector2(156 + x, 156 + y), SUN.Color.COLOR('blue'))
-
-						}
-					})
-				}
-				else if (arg.length === 4) {
-					let x0 = parseInt(arg[0])
-					let y0 = parseInt(arg[1])
-					let x1 = parseInt(arg[2])
-					let y1 = parseInt(arg[3])
-					this.draw_objects.push((sc) => {
-						sc.Renderer.draw_Line_MID(new SUN.Vector2(x0, y0), new SUN.Vector2(x1, y1), SUN.Color.COLOR("white"))
-					})
-				}
-				else if (arg.length === 5) {
-					let x0 = parseInt(arg[0])
-					let y0 = parseInt(arg[1])
-					let x1 = parseInt(arg[2])
-					let y1 = parseInt(arg[3])
-					let color = parseInt(arg[4])
-					this.draw_objects.push((sc) => {
-						sc.Renderer.draw_Line_MID(new SUN.Vector2(x0, y0), new SUN.Vector2(x1, y1), SUN.Color.PICO(color))
-					})
-				}
-				else {
-					this.list.push(['◻◻ Argument(s) error', { color: SUN.Color.RGB8(220, 20, 30) }])
-					this.list.push([])
-					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
-					this.list.push([])
-					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
-					this.list.push(['x0 y0 x1 y1', {}])
-					this.list.push([])
-					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
-					this.list.push(['x0 y0 x1 y1 colorId', {}])
-					this.list.push([])
-				}
-			}
-			else if (ins === 'LINE_BYE') {
-				if (arg.length === 0) {
-					this.draw_objects.push((sc) => {
-						for (let i = 0; i < Math.PI * 2; i += Math.PI / 12) {
-							let x = Math.round(Math.cos(i) * 100)
-							let y = Math.round(Math.sin(i) * 100)
-							sc.Renderer.draw_Line_BYE(new SUN.Vector2(156, 156), new SUN.Vector2(156 + x, 156 + y), SUN.Color.COLOR('white'))
-
-						}
-					})
-				}
-				else if (arg.length === 4) {
-					let x0 = parseInt(arg[0])
-					let y0 = parseInt(arg[1])
-					let x1 = parseInt(arg[2])
-					let y1 = parseInt(arg[3])
-					this.draw_objects.push((sc) => {
-						sc.Renderer.draw_Line_BYE(new SUN.Vector2(x0, y0), new SUN.Vector2(x1, y1), SUN.Color.COLOR("white"))
-					})
-				}
-				else if (arg.length === 5) {
-					let x0 = parseInt(arg[0])
-					let y0 = parseInt(arg[1])
-					let x1 = parseInt(arg[2])
-					let y1 = parseInt(arg[3])
-					let color = parseInt(arg[4])
-					this.draw_objects.push((sc) => {
-						sc.Renderer.draw_Line_BYE(new SUN.Vector2(x0, y0), new SUN.Vector2(x1, y1), SUN.Color.PICO(color))
-					})
-				}
-				else {
-					this.list.push(['◻◻ Argument(s) error', { color: SUN.Color.RGB8(220, 20, 30) }])
-					this.list.push([])
-					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
-					this.list.push([])
-					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
-					this.list.push(['x0 y0 x1 y1', {}])
-					this.list.push([])
-					this.list.push(['◻◻ Line ', { color: SUN.Color.PICO(12) }])
-					this.list.push(['x0 y0 x1 y1 colorId', {}])
-					this.list.push([])
+					geo.add_Edge(x0, y0, x1, y1)
+					geo.print()
+					sc.Renderer.draw_Polygon_ScanLine(geo)
 				}
 			}
 			else if (ins === 'CLEAR') {
