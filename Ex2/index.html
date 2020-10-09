@@ -47,279 +47,149 @@
 
 	let geo = new SUN.EdgeTable()
 
+	class Point {
+		constructor(x = 10, y = 10, d = 4) {
+			this.position = new SUN.Vector2(x, y)
+			this.d = d
+			this.rect = SUN.Rect.XYWH(x - d, y - d, d * 2 + 1, d * 2 + 1)
+			this.lastposition = new SUN.Vector2(0, 0)
+			this.dragging = false
+		}
+
+		set_Position(position) {
+			this.rect.position.copy(position.minus(new SUN.Vector2(this.d, this.d)))
+			this.position.copy(position)
+		}
+
+		update(sc, delta, pointlist) {
+			if (sc.Mouse.keymap[2] !== undefined && sc.Mouse.keymap[2].once && this.rect.inside(sc.Mouse.position)) {
+				sunconsole.remove(pointlist, this)
+				return true
+			}
+			if (sc.Mouse.keymap[1] !== undefined && sc.Mouse.keymap[1].once && this.rect.inside(sc.Mouse.position)) {
+				sunconsole.add(pointlist, this)
+				return true
+			}
+			if (sc.Mouse.keymap[0] === undefined) {
+				this.dragging = false
+				return false
+			}
+
+			else {
+				if (this.dragging) {
+					this.set_Position(this.position.add(sc.Mouse.position.minus(this.lastposition)))
+					this.lastposition.copy(sc.Mouse.position)
+					return true
+				}
+				else {
+					if (sc.Mouse.keymap[0].once && this.rect.inside(sc.Mouse.position)) {
+						this.dragging = true
+						this.lastposition.copy(sc.Mouse.position)
+						return true
+					}
+				}
+			}
+			return false
+		}
+
+		render(sc, delta, color = 10) {
+			sc.Renderer.draw_Circle(this.position.x, this.position.y, this.d, SUN.Color.PICO(color))
+			sc.Renderer.draw_Pixel(this.position.x, this.position.y, SUN.Color.PICO(color))
+			// sc.Renderer.draw_Rect(this.rect, SUN.Color.PICO(12))
+		}
+	}
+
 	class Console {
 		constructor() {
-			this.str = ''
-			this.list = [['◻◻ '], [], ['◻◻ SHU COMPUTER GRAPHIC'], ['   ex 2', { color: SUN.Color.RGB8(255, 255, 255, 50) }], [],
-			['◻◻ by wx lzh', { color: SUN.Color.RGB8(255, 255, 255, 50) }], [], ['◻◻ '], []]
-			const font = SUN.Font.DEFAULT()
-			this.time = 0
-			this.ins = []
-			this.idx = 0
-			this.backgroundcolor = SUN.Color.RGB8(0, 0, 0)
-			this.draw_objects = []
-			this.instructions = []
-			this.index = 0
+			this.shapelist = [[new Point(), new Point(100, 10), new Point(100, 100), new Point(10, 100)], [new Point(20, 20), new Point(20, 50), new Point(50, 50), new Point(50, 20)]]
+			this.showpoint = true
 		}
 
 		init(width, height) {
+			// this.draw_objects.push((sc) => {
+			// 	sc.Renderer.draw_Polygon_ScanLine(geo, SUN.Color.PICO(12))
+			// })
 		}
 
-		exec_Instruction(instruction, sc, delta) {
-			this.instructions.push(instruction)
-			this.index = this.instructions.length
-			if (instruction === '') {
-				this.list.push(['>> ', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
-				this.list.push([])
-				this.str = ''
-				return
-			}
-			this.list.push(['>> ', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
-			this.list.push([instruction, { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
-			this.list.push([])
-			let array = instruction.split(' ')
-			let ins = array[0]
-			ins = ins.toUpperCase()
-			let arg = array.splice(1, array.length - 1)
-			this.ins.push(ins)
-			if (ins === 'PALETTE') {
-				this.list.push(['◻◻ ', { font: font }])
-				this.list.push([SUN.Sprite.COLOR_PALETTE_PICO(), { scale: 8 }])
-				this.list.push([])
-			}
-			else if (ins === 'COLOR') {
-				if (arg.length === 1) {
-					let color = parseInt(arg[0])
-					if (color >= 0 && color <= 15) {
-						this.list.push(['◻◻ ', { font: font }])
-						this.list.push([new SUN.Sprite([[SUN.Color.PICO(color)]]), { scale: 7 }])
-						this.list.push([[['◻PICO: ' + color]]])
-						this.list.push([])
-						console.log(this.list)
-					}
-					else {
-						this.list.push(['◻◻ Argument(s) error', { color: SUN.Color.RGB8(220, 20, 30) }])
-						this.list.push([])
-						this.list.push(['◻◻ Instruction ', {}])
-						this.list.push(['Color int(0-15)', { color: SUN.Color.PICO(12) }])
-						this.list.push([])
-					}
-				}
-				else if (arg.length === 3) {
-					let r = parseInt(arg[0])
-					let g = parseInt(arg[1])
-					let b = parseInt(arg[2])
-					this.list.push(['◻◻ ', { font: font }])
-					let color = SUN.Color.RGB8(r, g, b)
-					this.list.push([new SUN.Sprite([[color]]), { scale: 7 }])
-					this.list.push([[['◻R: ' + color.r, { color: SUN.Color.RGB8(255, 0, 0) }], ['◻G: ' + color.g, { color: SUN.Color.RGB8(0, 255, 0) }], ['◻B: ' + color.b, { color: SUN.Color.RGB8(0, 0, 255) }]]])
-					this.list.push([])
-				}
-				else {
-					this.list.push(['◻◻ Argument(s) error', { color: SUN.Color.RGB8(220, 20, 30) }])
-					this.list.push([])
-					this.list.push(['◻◻ Color ', { color: SUN.Color.PICO(12) }])
-					this.list.push(['r g b', {}])
-					this.list.push([])
-					this.list.push(['◻◻ Color ', { color: SUN.Color.PICO(12) }])
-					this.list.push(['colorId(0-15)', {}])
-					this.list.push([])
+		remove(pointlist, point) {
+			if (pointlist.length <= 3) return
+			for (let i = 0; i < pointlist.length; i++) {
+				if (pointlist[i] === point) {
+					pointlist.splice(i, 1)
+					return
 				}
 			}
-			else if (ins === 'HELP') {
-				this.list.push(['◻◻ Console Instruction\t\t', { font: font, color: SUN.Color.PICO(12) }])
-				// this.list.push(['', { font: font, color: SUN.Color.PICO(12) }])
-				this.list.push([])
-				this.list.push(['◻◻ HELP\t\t\t\t\t', { font: font }])
-				this.list.push(['show this info', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
-				this.list.push([])
-				this.list.push(['◻◻ CLS\t\t\t\t\t\t', { font: font }])
-				this.list.push(['clear screen', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
-				this.list.push([])
-				this.list.push(['◻◻ Renderer Instruction\t\t', { font: font, color: SUN.Color.PICO(14) }])
-				this.list.push([])
-				this.list.push(['◻◻ COLOR\t\t\t\t', { font: font }])
-				this.list.push(['log a specific color', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
-				this.list.push([])
-				this.list.push(['◻◻ CIRC\t\t\t\t\t\t', { font: font }])
-				this.list.push(['draw a circle', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
-				this.list.push([])
-				this.list.push(['◻◻ CLEAR\t\t\t\t\t', { font: font }])
-				this.list.push(['clear draw objects', { font: font, color: SUN.Color.RGB8(255, 255, 255, 50) }])
-				this.list.push([])
-			}
-			else if (ins === 'LINE') {
-				if (arg.length === 4) {
-					let x0 = parseInt(arg[0])
-					let y0 = parseInt(arg[1])
-					let x1 = parseInt(arg[2])
-					let y1 = parseInt(arg[3])
-					geo.add_Edge(x0, y0, x1, y1)
-					geo.print()
-					sc.Renderer.draw_Polygon_ScanLine(geo)
+		}
+
+		add(pointlist, point) {
+			for (let i = 0; i < pointlist.length; i++) {
+				if (pointlist[i] === point) {
+					let point
+					if (i < pointlist.length - 1)
+						point = new Point(Math.round((pointlist[i].position.x + pointlist[i + 1].position.x) / 2), Math.round((pointlist[i].position.y + pointlist[i + 1].position.y) / 2))
+					else
+						point = new Point(Math.round((pointlist[i].position.x + pointlist[0].position.x) / 2), Math.round((pointlist[i].position.y + pointlist[0].position.y) / 2))
+					pointlist.splice(i + 1, 0, point)
+					return
 				}
 			}
-			else if (ins === 'CLEAR') {
-				this.draw_objects = []
-			}
-			else if (ins === 'CLS') {
-				this.list = []
-			}
-			else if (ins === 'CIRC') {
-				if (arg.length === 0) {
-					this.draw_objects.push((sc) => {
-						let color = 0
-						for (let i = 5; i <= 100; i += 4) {
-							sc.Renderer.draw_Circle(156, 156, i, SUN.Color.PICO(color++ % 16))
-						}
-					})
-				}
-				else if (arg.length === 3) {
-					let x = parseInt(arg[0])
-					let y = parseInt(arg[1])
-					let radius = parseInt(arg[2])
-					this.draw_objects.push((sc) => {
-						sc.Renderer.draw_Circle(x, y, radius, SUN.Color.COLOR("white"))
-					})
-				}
-				else if (arg.length === 4) {
-					let x = parseInt(arg[0])
-					let y = parseInt(arg[1])
-					let radius = parseInt(arg[2])
-					let pico = parseInt(arg[3]) % 16
-					this.draw_objects.push((sc) => {
-						sc.Renderer.draw_Circle(x, y, radius, SUN.Color.PICO(pico))
-					})
-				}
-				else {
-					this.list.push(['◻◻ Argument(s) error', { color: SUN.Color.RGB8(220, 20, 30) }])
-					this.list.push([])
-					this.list.push(['◻◻ Circ ', { color: SUN.Color.PICO(12) }])
-					this.list.push([])
-					this.list.push(['◻◻ Circ ', { color: SUN.Color.PICO(12) }])
-					this.list.push(['x y radius', {}])
-					this.list.push([])
-					this.list.push(['◻◻ Circ ', { color: SUN.Color.PICO(12) }])
-					this.list.push(['x y radius colorId', {}])
-					this.list.push([])
-				}
-			}
-			else if (ins === 'FPS') {
-				this.list.push(['◻◻ ' + String(Math.round(1000 / delta))])
-				this.list.push([])
-			}
-			else {
-				this.list.push(['◻◻ Unknown Command', { color: SUN.Color.RGB8(220, 20, 30) }])
-				this.list.push([])
-			}
-			this.str = ''
-			this.idx = 0
 		}
 
 		update(sc, delta) {
-			for (let key in sc.Keyboard.keymap) {
-				// console.log(SUN.Fn.get_Char(key))
-				if (SUN.Fn.is_ASCII(key)) {
-					if (sc.Keyboard.on_Continue(key)) {
-						// console.log(SUN.Fn.get_Char(key))
-						if (key === 'Enter') {
-							// console.log("Instruction", this.str)
-							this.exec_Instruction(this.str, sc, delta)
-						}
-						else if (key === 'Tab') {
-							let str = this.str.split('')
-							str.splice(this.idx, 0, '\t')
-							this.str = str.join('')
-							this.idx = SUN.Fn.clamp(this.idx + 1, 0, this.str.length)
-						}
-						else {
-							let str = this.str.split('')
-							str.splice(this.idx, 0, key)
-							this.str = str.join('')
-							this.idx = SUN.Fn.clamp(this.idx + 1, 0, this.str.length)
-						}
-					}
-				}
-				else if (key === 'Backspace' || key === 'Delete') {
-					if (sc.Keyboard.on_Continue(key)) {
-						// console.log(SUN.Fn.get_Char(key))
-						let str = this.str.split('')
-						str.splice(this.idx - 1, 1)
-						this.str = str.join('')
-						this.idx = SUN.Fn.clamp(this.idx - 1, 0, this.str.length)
-						this.time = 0
-					}
-				}
-				else if (key === 'ArrowLeft') {
-					if (sc.Keyboard.on_Continue(key)) {
-						this.idx = SUN.Fn.clamp(this.idx - 1, 0, this.str.length)
-						this.time = 0
-					}
-				}
-				else if (key === 'ArrowRight') {
-					if (sc.Keyboard.on_Continue(key)) {
-						this.idx = SUN.Fn.clamp(this.idx + 1, 0, this.str.length)
-						this.time = 0
-					}
-				}
-				else if (key === 'ArrowUp') {
-					if (sc.Keyboard.on_Continue(key)) {
-						if (this.instructions.length !== 0) {
-							this.index = SUN.Fn.clamp(this.index - 1, 0, this.instructions.length - 1)
-							this.str = this.instructions[this.index]
-							this.idx = this.str.length
-						}
-					}
-				}
-				else if (key === 'ArrowDown') {
-					if (sc.Keyboard.on_Continue(key)) {
-						if (this.instructions.length !== 0) {
-							this.index = SUN.Fn.clamp(this.index + 1, 0, this.instructions.length - 1)
-							this.str = this.instructions[this.index]
-							this.idx = this.str.length
-						}
-					}
-				}
+			let dragged = false
+			this.shapelist.forEach((pointlist, index) => {
+				pointlist.map((point) => { return point }).forEach((point) => {
+					if (!dragged)
+						dragged = dragged || point.update(sc, delta, pointlist)
+				})
+			})
+
+			if (sc.Keyboard.keymap['a'] !== undefined && sc.Keyboard.keymap['a'].once) {
+				this.shapelist.push([new Point(5, 5), new Point(10, 5), new Point(10, 10), new Point(5, 10)])
+			}
+			if (sc.Keyboard.keymap[' '] !== undefined && sc.Keyboard.keymap[' '].once) {
+				this.showpoint = !this.showpoint
 			}
 		}
 
 		render(sc, delta) {
+			// if (!(sc.Keyboard.keymap['r'] !== undefined && sc.Keyboard.keymap['r'].once)) {
+			// 	return
+			// }
 			sc.Renderer.clear(this.backgroundcolor)
+			// console.log(this.pointlist)
 
-			let cursor
-			if (this.time >= 0) {
-				cursor = '◼'
-			}
-			if (this.time >= 500) {
-				cursor = '◻'
-			}
-			if (this.time >= 1000) {
-				cursor = '◼'
-				this.time = 0
-			}
-			let array = this.list.filter(() => { return true })
-			array.push(['>> ', { font: font }])
-			let input = []
-			let clist = this.str.split('')
-			clist.push('◻')
-			clist.forEach((c, idx) => {
-				input.push([c, idx !== this.idx ? { font: font, border: 1, offest: new SUN.Vector2(-1, -1) } : cursor === '◼' ? { font: font, backgroundcolor: SUN.Color.PICO(8), color: SUN.Color.RGB8(23, 33, 67), border: 1, offest: new SUN.Vector2(-1, -1) } : { font: font, border: 1, offest: new SUN.Vector2(-1, -1) }])
-			})
-			array.push([input, { split: -1 }])
-			let rect = SUN.get_RichTextRect(array, 1, 0, 4)
-			rect.position.x = 5
-			rect.position.y = 6
-			if (rect.size.y < sc.Renderer.size.y - 8) {
-				sc.Renderer.draw_Richtext(5, 6, array, 1, 0, 4)
-			}
-			else {
-				sc.Renderer.draw_Richtext(5, sc.Renderer.size.y - 4 - rect.size.y, array, 1, 0, 4)
-			}
-			this.time += delta
+			let poly = new SUN.EdgeTable()
 
-			this.draw_objects.forEach((func) => {
-				func(sc)
+
+			this.shapelist.forEach((pointlist) => {
+				if (pointlist.length >= 2) {
+					for (let i = 1; i < pointlist.length; i++) {
+						let from = pointlist[i]
+						let to = pointlist[i - 1]
+						// sc.Renderer.draw_Line_DDA(from.position.x, from.position.y, to.position.x, to.position.y, SUN.Color.RGB8(255, 0, 0, 100))
+						poly.add_Edge(from.position.x, from.position.y, to.position.x, to.position.y)
+					}
+				}
+
+				if (pointlist.length >= 3) {
+					let from = pointlist[0]
+					let to = pointlist[pointlist.length - 1]
+					// sc.Renderer.draw_Line_DDA(from.position.x, from.position.y, to.position.x, to.position.y, SUN.Color.RGB8(255, 0, 0, 100))
+					poly.add_Edge(from.position.x, from.position.y, to.position.x, to.position.y)
+				}
 			})
+
+
+			// poly.print()
+			sc.Renderer.draw_Polygon_ScanLine(poly, SUN.Color.RGB8(0, 0, 255, 50))
+
+			if (this.showpoint)
+				this.shapelist.forEach((pointlist, index) => {
+					pointlist.forEach((point) => {
+						point.render(sc, delta, index + 10)
+					})
+				})
 		}
 	}
 

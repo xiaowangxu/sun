@@ -49,6 +49,19 @@ export class Vector2 {
 		this.x = x
 		this.y = y
 	}
+
+	minus(vec) {
+		return new Vector2(this.x - vec.x, this.y - vec.y)
+	}
+
+	add(vec) {
+		return new Vector2(this.x + vec.x, this.y + vec.y)
+	}
+
+	copy(vec) {
+		this.x = vec.x
+		this.y = vec.y
+	}
 }
 
 export class Vector3 {
@@ -278,7 +291,7 @@ export class EdgeTable {
 	}
 
 	add_Edge(x1, y1, x2, y2) {
-		console.log("add_line ", x1, y1, x2, y2)
+		// console.log("add_line ", x1, y1, x2, y2)
 		if (y2 < y1) { // y2 >= y1
 			let tmp = x1
 			x1 = x2
@@ -306,16 +319,20 @@ export class EdgeTable {
 			let line = this.list[i]
 			let line_y = line.y
 			if (line_y === y1) {// same line
-				console.log(">>>>0")
+				// console.log(">>>>0")
 				for (let j = 0; j < line.list.length; j++) {
 					let this_line = line.list[j]
-					if (this_line.x >= line.x) {
+					if (this_line.x === line.x) {
 						// console.log(">>>>1")
-						if (this_line.m >= line.m) {
+						if (this_line.m <= line.m) {
 							// console.log(">>>>2")
 							array.splice(j, 0, { x: x, y: y2, m: m })
 							return
 						}
+					}
+					else if (this_line.x > line.x) {
+						array.splice(j, 0, { x: x, y: y2, m: m })
+						return
 					}
 				}
 				line.list.push({ x: x, y: y2, m: m })
@@ -334,6 +351,11 @@ export class EdgeTable {
 		return this.list[0].y
 	}
 
+	get_LastY() {
+		if (this.list.length === 0) return 0
+		return this.list[this.list.length - 1].y
+	}
+
 	copy(edge) {
 		return { y: edge.y, x: edge.x, m: edge.m }
 	}
@@ -342,7 +364,7 @@ export class EdgeTable {
 		if (this.list.length === 0) return []
 		for (let i = 0; i < this.list.length; i++) {
 			let this_line = this.list[i]
-			if (this_line.y < line) return []
+			if (this_line.y > line) return []
 			else if (this_line.y === line) {
 				return this_line.list.map((edge) => { return this.copy(edge) })
 			}
@@ -1865,6 +1887,7 @@ class Renderer {
 		return Rect.XYWH(x, y, 1, 1)
 	}
 
+	// GBsun.js 自带draw line 函数
 	draw_Line(start, end, color) {
 		start = new Vector2(Math.round(start.x), Math.round(start.y))
 		end = new Vector2(Math.round(end.x), Math.round(end.y))
@@ -1928,6 +1951,7 @@ class Renderer {
 		}
 	}
 
+	// CG DDA
 	draw_Line_DDA(x1, y1, x2, y2, color) {
 		let x, y, dx, dy, k
 		dx = x2 - x1
@@ -1978,6 +2002,7 @@ class Renderer {
 		}
 	}
 
+	// CG MID
 	draw_Line_MID(start, end, color) {
 		let k = Math.abs((end.y - start.y) / (end.x - start.x))
 		if ((end.y - start.y) >= 0 && (end.x - start.x) >= 0 || (end.y - start.y) <= 0 && (end.x - start.x) <= 0) {
@@ -2106,6 +2131,7 @@ class Renderer {
 		}
 	}
 
+	// CG BYE
 	draw_Line_BYE(start, end, color) {
 		let k = Math.abs((end.y - start.y) / (end.x - start.x))
 		if ((end.y - start.y) >= 0 && (end.x - start.x) >= 0 || (end.y - start.y) <= 0 && (end.x - start.x) <= 0) {
@@ -2381,6 +2407,7 @@ class Renderer {
 		return rect
 	}
 
+	// CG 八对称画圆
 	draw_Circle(x, y, radius, color) {
 		let that = this
 		function draw_CirclePixel(ox, oy, x, y, color) {
@@ -2420,9 +2447,10 @@ class Renderer {
 		return Rect.XYWH(x, y, sprite.width * scale, sprite.height * scale)
 	}
 
-	draw_Polygon_ScanLine(poly) {
+	draw_Polygon_ScanLine(poly, color) {
 		let list = []
 		let line_i = poly.get_StartY()
+		let last_i = poly.get_LastY()
 		function next(line) {
 			line.x = line.x + line.m
 		}
@@ -2438,15 +2466,20 @@ class Renderer {
 			}
 		}
 		function add(line) {
+			// console.info(line)
 			for (let i = 0; i < list.length; i++) {
 				let this_line = list[i]
-				if (this_line.x >= line.x) {
+				if (this_line.x === line.x) {
 					// console.log(">>>>1")
 					if (this_line.m >= line.m) {
 						// console.log(">>>>2")
 						list.splice(i, 0, line)
 						return
 					}
+				}
+				else if (this_line.x > line.x) {
+					list.splice(i, 0, line)
+					return
 				}
 			}
 			list.push(line)
@@ -2455,20 +2488,33 @@ class Renderer {
 		poly.get_Line(line_i).forEach((line) => {
 			add(line)
 		})
-		while (list.length > 0) {
-			let draw = false
-			// let last_x = list[0].x
-			let str = "[" + line_i + "]  "
+		while (list.length > 0 || line_i < last_i) {
+			// let draw = false
+			let last = false
+			let last_x = 0
+			// let str = "[" + line_i + "]  "
 			list.forEach((line, index) => {
-				str += /* "[" + last_x + "]->" +  */"[" + line.x + "]  "
-				// last_x = !last_x
+				// str += /* "[" + last_x + "]->" +  */"[" + JSON.stringify(line) + "]  "
+				if (!last) {
+					last_x = Math.round(line.x)
+				}
+				else {
+					// console.log("draw_line", last_x)
+					this.draw_Line_DDA(last_x, line_i, Math.round(line.x), line_i, color)
+				}
+				last = !last
 				next(line)
 			})
-			console.log(str)
-			remove(line_i)
-			poly.get_Line(++line_i).forEach((line) => {
+			// console.log(str)
+			line_i++
+			poly.get_Line(line_i).forEach((line) => {
 				add(line)
 			})
+			remove(line_i)
+
+			// console.log(line_i, JSON.stringify(poly.get_Line(line_i)))
+
+			// console.log(JSON.stringify(list, null, 2))
 		}
 	}
 
