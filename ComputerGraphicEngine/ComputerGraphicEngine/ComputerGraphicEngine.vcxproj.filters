@@ -18,6 +18,12 @@
     <ClInclude Include="olcPixelGameEngine.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="sun3D.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="sunMatLib.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">

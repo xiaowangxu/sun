@@ -140,6 +140,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="olcPixelGameEngine.h" />
+    <ClInclude Include="sun3D.h" />
+    <ClInclude Include="sunMatLib.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
