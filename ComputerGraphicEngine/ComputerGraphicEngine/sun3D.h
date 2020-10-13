@@ -1,10 +1,28 @@
 #pragma once
 #include "sunMatLib.h"
 #include <vector>
+#include <fstream>
+#include <string>
+#include <strstream>
 using namespace std;
 
 class TriFace;
 class TriFaceMesh;
+class Camera;
+
+class Camera
+{
+public:
+	Vector3 _position;
+	Vector3 _lookat;
+
+public:
+	Camera()
+	{
+		_position.set(0, 0, 0);
+		_lookat.set(0, 0, -1);
+	}
+};
 
 class TriFace
 {
@@ -24,9 +42,7 @@ public:
 		_p1 = point1;
 		_p2 = point2;
 		_p3 = point3;
-		Vector3 _line1 = point2 - point1;
-		Vector3 _line2 = point3 - point1;
-		_normal = _line1.cross(_line2);
+		_normal = (point2 - point1).crossed(point3 - point1).normalized();
 	}
 	TriFace(const TriFace &copy)
 	{
@@ -35,19 +51,19 @@ public:
 		_p3 = copy._p3;
 		_normal = copy._normal;
 	}
-	Vector3 &get_Normal()
+	Vector3 get_Normal()
 	{
 		return _normal;
 	}
-	Vector3 &get_Point1()
+	Vector3 get_Point1()
 	{
 		return _p1;
 	}
-	Vector3 &get_Point2()
+	Vector3 get_Point2()
 	{
 		return _p2;
 	}
-	Vector3 &get_Point3()
+	Vector3 get_Point3()
 	{
 		return _p3;
 	}
@@ -81,7 +97,7 @@ public:
 		_faces.push_back(face);
 	}
 
-	vector<TriFace> get_Faces() const
+	vector<TriFace> &get_Faces()
 	{
 		return this->_faces;
 	}
@@ -149,5 +165,50 @@ public:
 		face.set(a, b, c);
 		mesh.add_Face(face);
 		return mesh;
+	}
+
+	static TriFaceMesh LOAD_OBJ(const string &path)
+	{
+		TriFaceMesh mesh;
+		ifstream loader(path);
+		if (loader.is_open())
+		{
+
+			// Local cache of verts
+			vector<Vector3> points;
+
+			while (!loader.eof())
+			{
+				string line;
+				getline(loader, line);
+
+				stringstream linestream;
+				linestream << line;
+
+				char type;
+
+				if (line[0] == 'v')
+				{
+					Vector3 point;
+					double x, y, z;
+					linestream >> type >> x >> y >> z;
+					point.set(x, y, z);
+					points.push_back(point);
+				}
+
+				if (line[0] == 'f')
+				{
+					int p1, p2, p3;
+					linestream >> type >> p1 >> p2 >> p3;
+					TriFace face;
+					face.set(points[p1 - 1], points[p2 - 1], points[p3 - 1]);
+					mesh.add_Face(face);
+				}
+			}
+
+			loader.close();
+
+			return mesh;
+		}
 	}
 };
