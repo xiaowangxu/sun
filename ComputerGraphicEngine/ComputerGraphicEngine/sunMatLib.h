@@ -15,8 +15,8 @@ public:
 	double _x, _y, _z, _w;
 
 public:
-	Vector3() : _x(0), _y(0), _z(0), _w(0) {}
-	Vector3(const double &x, const double &y, const double &z) : _x(x), _y(y), _z(z), _w(0) {}
+	Vector3() : _x(0), _y(0), _z(0), _w(1) {}
+	Vector3(const double &x, const double &y, const double &z) : _x(x), _y(y), _z(z), _w(1) {}
 	Vector3(const Vector3 &copy)
 	{
 		this->_x = copy._x;
@@ -77,6 +77,16 @@ public:
 		Vector3 ans(b._x / a, b._y / a, b._z / a);
 		return ans;
 	}
+	friend Vector3 &operator/=(Vector3 &b, const double &a)
+	{
+		if (a == 0)
+			return b;
+		b._x /= a;
+		b._y /= a;
+		b._z /= a;
+		b._w /= a;
+		return b;
+	}
 	double length() const
 	{
 		return sqrt(_x * _x + _y * _y + _z * _z);
@@ -117,7 +127,7 @@ public:
 
 	friend std::ostream &operator<<(std::ostream &out, const Vector3 &a)
 	{
-		out << "(" << a._x << ", " << a._y << ", " << a._z << ")";
+		out << "(" << a._x << ", " << a._y << ", " << a._z << ", " << a._w << ")";
 		return out;
 	}
 
@@ -206,15 +216,17 @@ public:
 	Vector3 operator*(const Vector3 &b)
 	{
 		Vector3 ans;
-		ans._x = b._x * _mat[0][0] + b._y * _mat[1][0] + b._z * _mat[2][0] + _mat[3][0];
-		ans._y = b._x * _mat[0][1] + b._y * _mat[1][1] + b._z * _mat[2][1] + _mat[3][1];
-		ans._z = b._x * _mat[0][2] + b._y * _mat[1][2] + b._z * _mat[2][2] + _mat[3][2];
-		double w = b._x * _mat[0][3] + b._y * _mat[1][3] + b._z * _mat[2][3] + _mat[3][3];
-		if (w != 0)
+		// std::cout << b << " !!!" << std::endl;
+		ans._x = b._x * _mat[0][0] + b._y * _mat[0][1] + b._z * _mat[0][2] + b._w * _mat[0][3];
+		ans._y = b._x * _mat[1][0] + b._y * _mat[1][1] + b._z * _mat[1][2] + b._w * _mat[1][3];
+		ans._z = b._x * _mat[2][0] + b._y * _mat[2][1] + b._z * _mat[2][2] + b._w * _mat[2][3];
+		ans._w = b._x * _mat[3][0] + b._y * _mat[3][1] + b._z * _mat[3][2] + b._w * _mat[3][3];
+		if (ans._w != 0)
 		{
-			ans._x /= w;
-			ans._y /= w;
-			ans._z /= w;
+			ans._x /= ans._w;
+			ans._y /= ans._w;
+			ans._z /= ans._w;
+			ans._w = 1;
 			return ans;
 		}
 		return ans;

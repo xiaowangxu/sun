@@ -51,19 +51,19 @@ public:
 		_p3 = copy._p3;
 		_normal = copy._normal;
 	}
-	Vector3 get_Normal()
+	Vector3 &get_Normal()
 	{
 		return _normal;
 	}
-	Vector3 get_Point1()
+	Vector3 &get_Point1()
 	{
 		return _p1;
 	}
-	Vector3 get_Point2()
+	Vector3 &get_Point2()
 	{
 		return _p2;
 	}
-	Vector3 get_Point3()
+	Vector3 &get_Point3()
 	{
 		return _p3;
 	}
@@ -207,8 +207,7 @@ public:
 			}
 
 			loader.close();
-
-			return mesh;
 		}
+		return mesh;
 	}
 };
