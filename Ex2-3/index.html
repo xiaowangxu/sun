@@ -101,7 +101,9 @@
 
 	class Console {
 		constructor() {
-			this.shapelist = [[new Point(), new Point(100, 10), new Point(100, 100), new Point(10, 100)], [new Point(20, 20), new Point(20, 50), new Point(50, 50), new Point(50, 20)]]
+			this.time = 0
+			this.pointlist = [new Point(), new Point(100, 10), new Point(100, 200), new Point(10, 100)]
+			this.rect = SUN.Rect.XYWH(50, 70, 256 - 100, 256 - 140)
 			this.showpoint = true
 		}
 
@@ -137,16 +139,11 @@
 
 		update(sc, delta) {
 			let dragged = false
-			this.shapelist.forEach((pointlist, index) => {
-				pointlist.map((point) => { return point }).forEach((point) => {
-					if (!dragged)
-						dragged = dragged || point.update(sc, delta, pointlist)
-				})
+			this.pointlist.forEach((point) => {
+				if (!dragged)
+					dragged = dragged || point.update(sc, delta, this.pointlist)
 			})
 
-			if (sc.Keyboard.keymap['a'] !== undefined && sc.Keyboard.keymap['a'].once) {
-				this.shapelist.push([new Point(5, 5), new Point(10, 5), new Point(10, 10), new Point(5, 10)])
-			}
 			if (sc.Keyboard.keymap[' '] !== undefined && sc.Keyboard.keymap[' '].once) {
 				this.showpoint = !this.showpoint
 			}
@@ -156,40 +153,83 @@
 			// if (!(sc.Keyboard.keymap['r'] !== undefined && sc.Keyboard.keymap['r'].once)) {
 			// 	return
 			// }
+			this.time += delta / 1000
+			let x = Math.round(Math.sin(this.time) * 20 + 70)
+			let y = Math.round(Math.sin(this.time + 2134) * 20 + 70)
+			console.log(x)
+			this.rect = SUN.Rect.XYWH(x, y, 256 - x * 2, 256 - y * 2)
+			console.log(this.rect)
+
 			sc.Renderer.clear(this.backgroundcolor)
 			// console.log(this.pointlist)
 
-			let poly = new SUN.EdgeTable()
+			let color = SUN.Color.PICO(7)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x, this.rect.position.y, this.rect.position.x + this.rect.size.x, this.rect.position.y, color)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x + this.rect.size.x, this.rect.position.y, this.rect.position.x + this.rect.size.x, this.rect.position.y + this.rect.size.y, color)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x + this.rect.size.x, this.rect.position.y + this.rect.size.y, this.rect.position.x, this.rect.position.y + this.rect.size.y, color)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x, this.rect.position.y + this.rect.size.y, this.rect.position.x, this.rect.position.y, color)
+
+			let polyTable = new SUN.EdgeTable()
+			let poly = new SUN.Polygon2D()
 
 
-			this.shapelist.forEach((pointlist) => {
-				if (pointlist.length >= 2) {
-					for (let i = 1; i < pointlist.length; i++) {
-						let from = pointlist[i]
-						let to = pointlist[i - 1]
-						// sc.Renderer.draw_Line_DDA(from.position.x, from.position.y, to.position.x, to.position.y, SUN.Color.RGB8(255, 0, 0, 100))
-						poly.add_Edge(from.position.x, from.position.y, to.position.x, to.position.y)
-					}
-				}
+			for (let i = 0; i < this.pointlist.length; i++) {
+				let to = this.pointlist[i]
+				// sc.Renderer.draw_Line_DDA(from.position.x, from.position.y, to.position.x, to.position.y, SUN.Color.RGB8(255, 0, 0, 100))
+				poly.add_Point(new SUN.Vector2(to.position.x, to.position.y))
+			}
 
-				if (pointlist.length >= 3) {
-					let from = pointlist[0]
-					let to = pointlist[pointlist.length - 1]
-					// sc.Renderer.draw_Line_DDA(from.position.x, from.position.y, to.position.x, to.position.y, SUN.Color.RGB8(255, 0, 0, 100))
-					poly.add_Edge(from.position.x, from.position.y, to.position.x, to.position.y)
-				}
-			})
 
+			let cut = poly.cut(this.rect)
+
+			// console.log(poly)
+			// console.log(cut)
+
+			// throw new Error("")
+
+			for (let i = 1; i < poly.pointlist.length; i++) {
+				let to = poly.pointlist[i]
+				let from = poly.pointlist[i - 1]
+				sc.Renderer.draw_Line_DDA(from.x, from.y, to.x, to.y, SUN.Color.RGB8(255, 255, 0, 20))
+			}
+
+			if (poly.pointlist.length >= 2) {
+				let from = poly.pointlist[poly.pointlist.length - 1]
+				let to = poly.pointlist[0]
+				// sc.Renderer.draw_Line_DDA(from.position.x, from.position.y, to.position.x, to.position.y, SUN.Color.RGB8(255, 0, 0, 100))
+				sc.Renderer.draw_Line_DDA(from.x, from.y, to.x, to.y, SUN.Color.RGB8(255, 255, 0, 20))
+			}
+
+			for (let i = 1; i < cut.pointlist.length; i++) {
+				let to = cut.pointlist[i]
+				let from = cut.pointlist[i - 1]
+				sc.Renderer.draw_Line_DDA(from.x, from.y, to.x, to.y, SUN.Color.RGB8(255, 0, 0, 100))
+				polyTable.add_Edge(from.x, from.y, to.x, to.y)
+			}
+
+			if (cut.pointlist.length >= 2) {
+				let from = cut.pointlist[cut.pointlist.length - 1]
+				let to = cut.pointlist[0]
+				// sc.Renderer.draw_Line_DDA(from.position.x, from.position.y, to.position.x, to.position.y, SUN.Color.RGB8(255, 0, 0, 100))
+				sc.Renderer.draw_Line_DDA(from.x, from.y, to.x, to.y, SUN.Color.RGB8(255, 0, 0, 100))
+				polyTable.add_Edge(from.x, from.y, to.x, to.y)
+			}
+
+			// console.log(polyTable)
 
 			// poly.print()
-			sc.Renderer.draw_Polygon_ScanLine(poly, SUN.Color.RGB8(0, 0, 255))
 
 			if (this.showpoint)
-				this.shapelist.forEach((pointlist, index) => {
-					pointlist.forEach((point) => {
-						point.render(sc, delta, index + 10)
-					})
+
+				this.pointlist.forEach((point) => {
+					point.render(sc, delta, 10)
 				})
+			else sc.Renderer.draw_Polygon_ScanLine(polyTable, SUN.Color.RGB8(0, 0, 255, 50))
+
+			cut.pointlist.forEach((point) => {
+				sc.Renderer.draw_Pixel(point.x, point.y, SUN.Color.PICO(11))
+			})
+			// throw new Error("")
 		}
 	}
 

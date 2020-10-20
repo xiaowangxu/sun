@@ -116,11 +116,11 @@
 		render(sc, delta) {
 			sc.Renderer.clear(this.backgroundcolor)
 
-			let white = SUN.Color.PICO(7)
-			sc.Renderer.draw_Line_DDA(this.rect.position.x, this.rect.position.y, this.rect.position.x + this.rect.size.x, this.rect.position.y, white)
-			sc.Renderer.draw_Line_DDA(this.rect.position.x + this.rect.size.x, this.rect.position.y, this.rect.position.x + this.rect.size.x, this.rect.position.y + this.rect.size.y, white)
-			sc.Renderer.draw_Line_DDA(this.rect.position.x + this.rect.size.x, this.rect.position.y + this.rect.size.y, this.rect.position.x, this.rect.position.y + this.rect.size.y, white)
-			sc.Renderer.draw_Line_DDA(this.rect.position.x, this.rect.position.y + this.rect.size.y, this.rect.position.x, this.rect.position.y, white)
+			let color = SUN.Color.PICO(7)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x, this.rect.position.y, this.rect.position.x + this.rect.size.x, this.rect.position.y, color)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x + this.rect.size.x, this.rect.position.y, this.rect.position.x + this.rect.size.x, this.rect.position.y + this.rect.size.y, color)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x + this.rect.size.x, this.rect.position.y + this.rect.size.y, this.rect.position.x, this.rect.position.y + this.rect.size.y, color)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x, this.rect.position.y + this.rect.size.y, this.rect.position.x, this.rect.position.y, color)
 
 			sc.Renderer.draw_Line_DDA(this.point1.position.x, this.point1.position.y, this.point2.position.x, this.point2.position.y, SUN.Color.PICO(8))
 			this.point1.render(sc, delta, 10)

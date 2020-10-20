@@ -145,6 +145,194 @@ export class Line2D {
 
 		return new Line2D(x0, y0, x1, y1)
 	}
+
+	copy() {
+		return new Line2D(this.x0, this.y0, this.x1, this.y1)
+	}
+}
+
+export class Polygon2D {
+	constructor(array = []) {
+		this.pointlist = array
+	}
+
+	add_Point(point) {
+		this.pointlist.push(point)
+	}
+
+	cut(rect) {
+		let pointlist = this.pointlist.map((point) => {
+			return new Vector2(point.x, point.y)
+		})
+		function judge_Top(x0, y0, x1, y1, xmin, ymin, xmax, ymax) {
+			let k = (x1 - x0) / (y1 - y0)
+			if (y0 < ymin && y1 < ymin) {
+				return null
+			}
+			else if (y0 >= ymin && y1 >= ymin) {
+				return { x0: x0, y0: y0, x1: x1, y1: y1 }
+			}
+			else if (y0 < ymin && y1 >= ymin) {
+				let b = x1 - k * y1
+				x0 = ymin
+				y0 = (y0 - b) / k
+				return { x0: x0, y0: y0, x1: x1, y1: y1 }
+			}
+			else {
+				let b = y1 - k * x1
+				y1 = ymin
+				x1 = (y1 - b) / k
+				return { x0: x0, y0: y0, x1: x1, y1: y1 }
+			}
+		}
+		function judge_Bottom(x0, y0, x1, y1, xmin, ymin, xmax, ymax) {
+			let k = (y1 - y0) / (x1 - x0)
+			if (y0 < ymax && y1 < ymax) {
+				return { x0: x0, y0: y0, x1: x1, y1: y1 }
+
+			}
+			else if (y0 < ymax && y1 >= ymax) {
+				let b = y1 - k * x1
+				y1 = ymax
+				x1 = (y1 - b) / k
+				return { x0: x0, y0: y0, x1: x1, y1: y1 }
+			}
+			else if (y0 >= ymax && y1 < ymax) {
+				let b = y1 - k * x1
+				y0 = ymax
+				x0 = (y0 - b) / k
+				return { x0: x0, y0: y0, x1: x1, y1: y1 }
+			}
+			else {
+				return null
+			}
+
+		}
+		function judge_Left(x0, y0, x1, y1, xmin, ymin, xmax, ymax) {
+			let k = (y1 - y0) / (x1 - x0)
+			if (x0 < xmin && x1 < xmin) {
+				return null
+			}
+			else if (x0 < xmin && x1 >= xmin) {
+				let b = y1 - k * x1
+				x0 = xmin
+				y0 = k * xmin + b
+				return { x0: x0, y0: y0, x1: x1, y1: y1 }
+			}
+			else if (x0 >= xmin && x1 < xmin) {
+				let b = y1 - k * x1
+				x1 = xmin
+				y1 = k * xmin + b
+				return { x0: x0, y0: y0, x1: x1, y1: y1 }
+
+			}
+			else {
+				return { x0: x0, y0: y0, x1: x1, y1: y1 }
+			}
+		}
+		function judge_Right(x0, y0, x1, y1, xmin, ymin, xmax, ymax) {
+			let k = (y1 - y0) / (x1 - x0)
+			if (x0 < xmax && x1 < xmax) {
+				return { x0: x0, y0: y0, x1: x1, y1: y1 }
+			}
+			else if (x0 < xmax && x1 >= xmax) {
+				let b = y1 - k * x1
+				x1 = xmax
+				y1 = xmax * k + b
+				return { x0: x0, y0: y0, x1: x1, y1: y1 }
+			}
+			else if (x0 >= xmax && x1 < xmax) {
+				let b = y1 - k * x1
+				x0 = xmax
+				y0 = xmax * k + b
+				return { x0: x0, x1: x1, y0: y0, y1: y1 }
+
+			}
+			else {
+				return null
+			}
+
+		}
+
+		//Left
+		{
+			let newpointlist = []
+			for (let i = 1; i < pointlist.length; i++) {
+				let from = pointlist[i - 1]
+				let to = pointlist[i]
+				let newline = judge_Left(from.x, from.y, to.x, to.y, rect.position.x, rect.position.y, rect.position.x + rect.size.x, rect.position.y + rect.size.y)
+				if (newline !== null) {
+					newpointlist.push(new Vector2(newline.x0, newline.y0))
+					newpointlist.push(new Vector2(newline.x1, newline.y1))
+				}
+			}
+			{
+				if (pointlist.length >= 2) {
+					let from = pointlist[pointlist.length - 1]
+					let to = pointlist[0]
+					let newline = judge_Left(from.x, from.y, to.x, to.y, rect.position.x, rect.position.y, rect.position.x + rect.size.x, rect.position.y + rect.size.y)
+					if (newline !== null) {
+						newpointlist.push(new Vector2(newline.x0, newline.y0))
+						newpointlist.push(new Vector2(newline.x1, newline.y1))
+					}
+				}
+
+			}
+			pointlist = newpointlist
+		}
+		//Top
+		// {
+		// 	//Left
+		// 	let newpointlist = []
+		// 	for (let i = 1; i < pointlist.length; i++) {
+		// 		let from = pointlist[i - 1]
+		// 		let to = pointlist[i]
+		// 		let newline = judge_Top(from.x, from.y, to.x, to.y, rect.position.x, rect.position.y, rect.position.x + rect.size.x, rect.position.y + rect.size.y)
+		// 		if (newline !== null) {
+		// 			newpointlist.push(new Vector2(newline.x0, newline.y0))
+		// 			newpointlist.push(new Vector2(newline.x1, newline.y1))
+		// 		}
+		// 	}
+		// 	{
+		// 		let from = pointlist[pointlist.length - 1]
+		// 		let to = pointlist[0]
+		// 		let newline = judge_Top(from.x, from.y, to.x, to.y, rect.position.x, rect.position.y, rect.position.x + rect.size.x, rect.position.y + rect.size.y)
+		// 		if (newline !== null) {
+		// 			newpointlist.push(new Vector2(newline.x0, newline.y0))
+		// 			newpointlist.push(new Vector2(newline.x1, newline.y1))
+		// 		}
+		// 	}
+		// 	pointlist = newpointlist
+		// }
+		//Right
+		{
+			let newpointlist = []
+			for (let i = 1; i < pointlist.length; i++) {
+				let from = pointlist[i - 1]
+				let to = pointlist[i]
+				let newline = judge_Right(from.x, from.y, to.x, to.y, rect.position.x, rect.position.y, rect.position.x + rect.size.x, rect.position.y + rect.size.y)
+				if (newline !== null) {
+					newpointlist.push(new Vector2(newline.x0, newline.y0))
+					newpointlist.push(new Vector2(newline.x1, newline.y1))
+				}
+			}
+			{
+				if (pointlist.length >= 2) {
+					let from = pointlist[pointlist.length - 1]
+					let to = pointlist[0]
+					let newline = judge_Right(from.x, from.y, to.x, to.y, rect.position.x, rect.position.y, rect.position.x + rect.size.x, rect.position.y + rect.size.y)
+					if (newline !== null) {
+						newpointlist.push(new Vector2(newline.x0, newline.y0))
+						newpointlist.push(new Vector2(newline.x1, newline.y1))
+					}
+				}
+
+			}
+			pointlist = newpointlist
+		}
+
+		return new Polygon2D(pointlist)
+	}
 }
 
 export class Vector3 {
@@ -375,6 +563,10 @@ export class EdgeTable {
 
 	add_Edge(x1, y1, x2, y2) {
 		// console.log("add_line ", x1, y1, x2, y2)
+		x1 = Math.round(x1)
+		x2 = Math.round(x2)
+		y1 = Math.round(y1)
+		y2 = Math.round(y2)
 		if (y2 < y1) { // y2 >= y1
 			let tmp = x1
 			x1 = x2
