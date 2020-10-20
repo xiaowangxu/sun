@@ -64,6 +64,89 @@ export class Vector2 {
 	}
 }
 
+export class Line2D {
+	constructor(x0, y0, x1, y1) {
+		this.x0 = x0
+		this.y0 = y0
+		this.x1 = x1
+		this.y1 = y1
+	}
+
+	cut(rect) {
+		const INSIDE = 0, LEFT = 1, RIGHT = 2, BOTTOM = 4, TOP = 8
+		function encode(x, y, xmin, xmax, ymin, ymax) {
+			let c = 0
+
+			if (x < xmin)
+				c |= LEFT
+			if (x > xmax)
+				c |= RIGHT
+			if (y < ymin)
+				c |= BOTTOM
+			if (y > ymax)
+				c |= TOP
+			return c
+		}
+
+		let x0 = this.x0
+		let x1 = this.x1
+		let y0 = this.y0
+		let y1 = this.y1
+		let xmin = rect.position.x
+		let xmax = rect.position.x + rect.size.x
+		let ymin = rect.position.y
+		let ymax = rect.position.y + rect.size.y
+
+		let code1, code2, code, k, b, x, y
+		code1 = encode(x0, y0, xmin, xmax, ymin, ymax)
+		code2 = encode(x1, y1, xmin, xmax, ymin, ymax)
+		while (code1 != 0 || code2 != 0) {
+			if ((code1 & code2) != 0) {
+				return null
+			}
+			code = code1
+			if (code1 == 0)
+				code = code2
+			k = (y1 - y0) / (x1 - x0)
+			b = y1 - k * x1
+			if ((LEFT & code) != 0) {
+				x = xmin
+				y = k * xmin + b
+			}
+			if ((RIGHT & code) != 0) {
+				x = xmax
+				y = k * xmax + b
+			}
+			if ((BOTTOM & code) != 0) {
+				y = ymin
+				x = (y - b) / k
+			}
+			if ((TOP & code) != 0) {
+				y = ymax
+				x = (y - b) / k
+			}
+			if (code == code1) {
+				x0 = x
+				y0 = y
+				code1 = encode(x, y, xmin, xmax, ymin, ymax)
+			}
+			else {
+				x1 = x
+				y1 = y
+				code2 = encode(x, y, xmin, xmax, ymin, ymax)
+			}
+		}
+
+		x0 = Math.round(x0)
+		y0 = Math.round(y0)
+		x1 = Math.round(x1)
+		y0 = Math.round(y0)
+
+
+		return new Line2D(x0, y0, x1, y1)
+	}
+}
+
 export class Vector3 {
 	constructor(x = 0, y = 0, z = 0) {
 		this.x = x

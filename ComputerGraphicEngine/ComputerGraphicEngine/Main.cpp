@@ -28,7 +28,7 @@ public:
 
 	void draw_Mesh()
 	{
-		float angle = time;
+		float angle = time * 0.6;
 		Matrix4 rotateY = Matrix4::ROTATE_Y(angle);
 		Matrix4 rotateZ = Matrix4::ROTATE_Z(angle * 0.5);
 		Matrix4 rotateX = Matrix4::ROTATE_X(angle);
@@ -100,9 +100,9 @@ public:
 
 			FillTriangle(olc::vi2d(pf1._x, pf1._y), olc::vi2d(pf2._x, pf2._y), olc::vi2d(pf3._x, pf3._y), color);
 
-			DrawLine(pf1._x, pf1._y, pf2._x, pf2._y);
-			DrawLine(pf2._x, pf2._y, pf3._x, pf3._y);
-			DrawLine(pf1._x, pf1._y, pf3._x, pf3._y);
+			//DrawLine(pf1._x, pf1._y, pf2._x, pf2._y);
+			//DrawLine(pf2._x, pf2._y, pf3._x, pf3._y);
+			//DrawLine(pf1._x, pf1._y, pf3._x, pf3._y);
 		}
 	}
 

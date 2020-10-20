@@ -1,0 +1,154 @@
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SHU 计算机图形学</title>
+</head>
+
+<body>
+	<div id="container">
+
+	</div>
+</body>
+
+<style>
+	body {
+		margin: 0px;
+		height: 100%;
+		width: 100%;
+	}
+
+	#container {
+		width: 100%;
+		height: 100%;
+		/* padding: auto; */
+		background-color: rgb(255, 255, 255);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	#container>canvas {
+		/* width: 500px; */
+		height: 100%;
+		/* width: 100%; */
+		/* height: 500px; */
+	}
+</style>
+
+<script type="module">
+	import * as SUN from '../ComputerGraphic2020/GBsun.js'
+
+	let gameconsole = new SUN.sunConsole(256, 256)
+	document.getElementById('container').appendChild(gameconsole.get_ConsoleDOM())
+	let font = SUN.Font.DEFAULT()
+
+	let geo = new SUN.EdgeTable()
+
+	class Point {
+		constructor(x = 10, y = 10, d = 4) {
+			this.position = new SUN.Vector2(x, y)
+			this.d = d
+			this.rect = SUN.Rect.XYWH(x - d, y - d, d * 2 + 1, d * 2 + 1)
+			this.lastposition = new SUN.Vector2(0, 0)
+			this.dragging = false
+		}
+
+		set_Position(position) {
+			this.rect.position.copy(position.minus(new SUN.Vector2(this.d, this.d)))
+			this.position.copy(position)
+		}
+
+		update(sc, delta, pointlist) {
+			if (sc.Mouse.keymap[0] === undefined) {
+				this.dragging = false
+				return false
+			}
+
+			else {
+				if (this.dragging) {
+					this.set_Position(this.position.add(sc.Mouse.position.minus(this.lastposition)))
+					this.lastposition.copy(sc.Mouse.position)
+					return true
+				}
+				else {
+					if (sc.Mouse.keymap[0].once && this.rect.inside(sc.Mouse.position)) {
+						this.dragging = true
+						this.lastposition.copy(sc.Mouse.position)
+						return true
+					}
+				}
+			}
+			return false
+		}
+
+		render(sc, delta, color = 10) {
+			sc.Renderer.draw_Circle(this.position.x, this.position.y, this.d, SUN.Color.PICO(color))
+			sc.Renderer.draw_Pixel(this.position.x, this.position.y, SUN.Color.PICO(color))
+			// sc.Renderer.draw_Rect(this.rect, SUN.Color.PICO(12))
+		}
+	}
+
+	class Console {
+		constructor() {
+			this.point1 = new Point()
+			this.point2 = new Point(100, 100)
+			this.showpoint = true
+			this.rect = SUN.Rect.XYWH(30, 60, 256 - 60, 256 - 120)
+		}
+
+		init(width, height) {
+			// this.draw_objects.push((sc) => {
+			// 	sc.Renderer.draw_Polygon_ScanLine(geo, SUN.Color.PICO(12))
+			// })
+		}
+
+		update(sc, delta) {
+			let dragged = false
+			if (!dragged)
+				dragged = dragged || this.point1.update(sc, delta)
+			if (!dragged)
+				dragged = dragged || this.point2.update(sc, delta)
+		}
+
+		render(sc, delta) {
+			sc.Renderer.clear(this.backgroundcolor)
+
+			let white = SUN.Color.PICO(7)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x, this.rect.position.y, this.rect.position.x + this.rect.size.x, this.rect.position.y, white)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x + this.rect.size.x, this.rect.position.y, this.rect.position.x + this.rect.size.x, this.rect.position.y + this.rect.size.y, white)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x + this.rect.size.x, this.rect.position.y + this.rect.size.y, this.rect.position.x, this.rect.position.y + this.rect.size.y, white)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x, this.rect.position.y + this.rect.size.y, this.rect.position.x, this.rect.position.y, white)
+
+			sc.Renderer.draw_Line_DDA(this.point1.position.x, this.point1.position.y, this.point2.position.x, this.point2.position.y, SUN.Color.PICO(8))
+			this.point1.render(sc, delta, 10)
+			this.point2.render(sc, delta, 10)
+
+			let line = new SUN.Line2D(this.point1.position.x, this.point1.position.y, this.point2.position.x, this.point2.position.y)
+			let cutline = line.cut(this.rect)
+			if (cutline !== null)
+				sc.Renderer.draw_Line_MID(new SUN.Vector2(cutline.x0, cutline.y0), new SUN.Vector2(cutline.x1, cutline.y1), SUN.Color.PICO(11))
+
+		}
+	}
+
+	let sunconsole = new Console()
+
+	gameconsole.init = (sc) => {
+		sunconsole.init(sc.Renderer.size.x, sc.Renderer.size.y)
+	}
+
+	gameconsole.action = (sc, delta) => {
+		sunconsole.update(sc, delta)
+	}
+
+	gameconsole.render = (sc, delta) => {
+		sunconsole.render(sc, delta)
+	}
+
+	gameconsole.run()
+</script>
+
+</html>
