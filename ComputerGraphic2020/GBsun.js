@@ -64,6 +64,12 @@ export class Vector2 {
 	}
 }
 
+export class Matrix3 {
+	constructor(elem) {
+		this.mat = elem
+	}
+}
+
 export class Line2D {
 	constructor(x0, y0, x1, y1) {
 		this.x0 = x0
@@ -384,6 +390,15 @@ export class Vector3 {
 		this.x = x
 		this.y = y
 		this.z = z
+	}
+
+	x_mat3(mat) {
+		let i = this
+		let m = mat.mat
+		let x = i.x * m[0][0] + i.y * m[0][1] + i.z * m[0][2]
+		let y = i.x * m[1][0] + i.y * m[1][1] + i.z * m[1][2]
+		let z = i.x * m[2][0] + i.y * m[2][1] + i.z * m[2][2]
+		return new Vector3(x, y, z)
 	}
 
 	x_mat4(mat) {
