@@ -14,13 +14,21 @@ class Camera
 {
 public:
 	Vector3 _position;
-	Vector3 _lookat;
+	Vector3 _lookdir;
+	Vector3 _up;
 
 public:
 	Camera()
 	{
 		_position.set(0, 0, 0);
-		_lookat.set(0, 0, -1);
+		_lookdir.set(0, 0, 1);
+		_up.set(0, 1, 0);
+	}
+
+	Matrix4 cameraMatrix()
+	{
+		Vector3 target = _position + _lookdir;
+		return Matrix4::POINTAT(_position, target, _up);
 	}
 };
 
@@ -82,7 +90,7 @@ public:
 
 class TriFaceMesh
 {
-private:
+public:
 	vector<TriFace> _faces;
 
 public:

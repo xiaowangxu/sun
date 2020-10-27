@@ -2,6 +2,7 @@
 	"liveServer.settings.multiRootWorkspaceName": "GB sun JS",
 	"files.associations": {
 		"*.vue": "html",
-		"ostream": "cpp"
+		"ostream": "cpp",
+		"ios": "cpp"
 	}
 }

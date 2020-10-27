@@ -156,9 +156,9 @@
 			this.time += delta / 1000
 			let x = Math.round(Math.sin(this.time) * 20 + 70)
 			let y = Math.round(Math.sin(this.time + 2134) * 20 + 70)
-			console.log(x)
+			// console.log(x)
 			this.rect = SUN.Rect.XYWH(x, y, 256 - x * 2, 256 - y * 2)
-			console.log(this.rect)
+			// console.log(this.rect)
 
 			sc.Renderer.clear(this.backgroundcolor)
 			// console.log(this.pointlist)
@@ -226,9 +226,9 @@
 				})
 			else sc.Renderer.draw_Polygon_ScanLine(polyTable, SUN.Color.RGB8(0, 0, 255, 50))
 
-			cut.pointlist.forEach((point) => {
-				sc.Renderer.draw_Pixel(point.x, point.y, SUN.Color.PICO(11))
-			})
+			// cut.pointlist.forEach((point) => {
+			// 	sc.Renderer.draw_Pixel(point.x, point.y, SUN.Color.PICO(11))
+			// })
 			// throw new Error("")
 		}
 	}
