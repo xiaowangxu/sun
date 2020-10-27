@@ -1,0 +1,253 @@
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SHU 计算机图形学</title>
+</head>
+
+<body>
+	<div id="container">
+
+	</div>
+</body>
+
+<style>
+	body {
+		margin: 0px;
+		height: 100%;
+		width: 100%;
+	}
+
+	#container {
+		width: 100%;
+		height: 100%;
+		/* padding: auto; */
+		background-color: rgb(255, 255, 255);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	#container>canvas {
+		/* width: 500px; */
+		height: 100%;
+		/* width: 100%; */
+		/* height: 500px; */
+	}
+</style>
+
+<script type="module">
+	import * as SUN from '../ComputerGraphic2020/GBsun.js'
+
+	let gameconsole = new SUN.sunConsole(256, 256)
+	document.getElementById('container').appendChild(gameconsole.get_ConsoleDOM())
+	let font = SUN.Font.DEFAULT()
+
+	let geo = new SUN.EdgeTable()
+
+	class Point {
+		constructor(x = 10, y = 10, d = 4) {
+			this.position = new SUN.Vector2(x, y)
+			this.d = d
+			this.rect = SUN.Rect.XYWH(x - d, y - d, d * 2 + 1, d * 2 + 1)
+			this.lastposition = new SUN.Vector2(0, 0)
+			this.dragging = false
+		}
+
+		set_Position(position) {
+			this.rect.position.copy(position.minus(new SUN.Vector2(this.d, this.d)))
+			this.position.copy(position)
+		}
+
+		update(sc, delta, pointlist) {
+			if (sc.Mouse.keymap[2] !== undefined && sc.Mouse.keymap[2].once && this.rect.inside(sc.Mouse.position)) {
+				sunconsole.remove(pointlist, this)
+				return true
+			}
+			if (sc.Mouse.keymap[1] !== undefined && sc.Mouse.keymap[1].once && this.rect.inside(sc.Mouse.position)) {
+				sunconsole.add(pointlist, this)
+				return true
+			}
+			if (sc.Mouse.keymap[0] === undefined) {
+				this.dragging = false
+				return false
+			}
+
+			else {
+				if (this.dragging) {
+					this.set_Position(this.position.add(sc.Mouse.position.minus(this.lastposition)))
+					this.lastposition.copy(sc.Mouse.position)
+					return true
+				}
+				else {
+					if (sc.Mouse.keymap[0].once && this.rect.inside(sc.Mouse.position)) {
+						this.dragging = true
+						this.lastposition.copy(sc.Mouse.position)
+						return true
+					}
+				}
+			}
+			return false
+		}
+
+		render(sc, delta, color = 10) {
+			sc.Renderer.draw_Circle(this.position.x, this.position.y, this.d, SUN.Color.PICO(color))
+			sc.Renderer.draw_Pixel(this.position.x, this.position.y, SUN.Color.PICO(color))
+			// sc.Renderer.draw_Rect(this.rect, SUN.Color.PICO(12))
+		}
+	}
+
+	class Console {
+		constructor() {
+			this.time = 0
+			this.pointlist = [new Point(), new Point(100, 10), new Point(100, 200), new Point(10, 100)]
+			this.rect = SUN.Rect.XYWH(50, 70, 256 - 100, 256 - 140)
+			this.showpoint = true
+		}
+
+		init(width, height) {
+			// this.draw_objects.push((sc) => {
+			// 	sc.Renderer.draw_Polygon_ScanLine(geo, SUN.Color.PICO(12))
+			// })
+		}
+
+		remove(pointlist, point) {
+			if (pointlist.length <= 3) return
+			for (let i = 0; i < pointlist.length; i++) {
+				if (pointlist[i] === point) {
+					pointlist.splice(i, 1)
+					return
+				}
+			}
+		}
+
+		add(pointlist, point) {
+			for (let i = 0; i < pointlist.length; i++) {
+				if (pointlist[i] === point) {
+					let point
+					if (i < pointlist.length - 1)
+						point = new Point(Math.round((pointlist[i].position.x + pointlist[i + 1].position.x) / 2), Math.round((pointlist[i].position.y + pointlist[i + 1].position.y) / 2))
+					else
+						point = new Point(Math.round((pointlist[i].position.x + pointlist[0].position.x) / 2), Math.round((pointlist[i].position.y + pointlist[0].position.y) / 2))
+					pointlist.splice(i + 1, 0, point)
+					return
+				}
+			}
+		}
+
+		update(sc, delta) {
+			let dragged = false
+			this.pointlist.forEach((point) => {
+				if (!dragged)
+					dragged = dragged || point.update(sc, delta, this.pointlist)
+			})
+
+			if (sc.Keyboard.keymap[' '] !== undefined && sc.Keyboard.keymap[' '].once) {
+				this.showpoint = !this.showpoint
+			}
+		}
+
+		render(sc, delta) {
+			// if (!(sc.Keyboard.keymap['r'] !== undefined && sc.Keyboard.keymap['r'].once)) {
+			// 	return
+			// }
+			// this.time += delta / 1000
+			// let x = Math.round(Math.sin(this.time) * 20 + 70)
+			// let y = Math.round(Math.sin(this.time + 2134) * 20 + 70)
+			// console.log(x)
+			// this.rect = SUN.Rect.XYWH(x, y, 256 - x * 2, 256 - y * 2)
+			// console.log(this.rect)
+
+			// sc.Renderer.clear(this.backgroundcolor)
+			// console.log(this.pointlist)
+
+			let color = SUN.Color.PICO(7)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x, this.rect.position.y, this.rect.position.x + this.rect.size.x, this.rect.position.y, color)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x + this.rect.size.x, this.rect.position.y, this.rect.position.x + this.rect.size.x, this.rect.position.y + this.rect.size.y, color)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x + this.rect.size.x, this.rect.position.y + this.rect.size.y, this.rect.position.x, this.rect.position.y + this.rect.size.y, color)
+			sc.Renderer.draw_Line_DDA(this.rect.position.x, this.rect.position.y + this.rect.size.y, this.rect.position.x, this.rect.position.y, color)
+
+			let polyTable = new SUN.EdgeTable()
+			let poly = new SUN.Polygon2D()
+
+
+			for (let i = 0; i < this.pointlist.length; i++) {
+				let to = this.pointlist[i]
+				// sc.Renderer.draw_Line_DDA(from.position.x, from.position.y, to.position.x, to.position.y, SUN.Color.RGB8(255, 0, 0, 100))
+				poly.add_Point(new SUN.Vector2(to.position.x, to.position.y))
+			}
+
+
+			let cut = poly.cut(this.rect)
+
+			// console.log(poly)
+			// console.log(cut)
+
+			// throw new Error("")
+
+			for (let i = 1; i < poly.pointlist.length; i++) {
+				let to = poly.pointlist[i]
+				let from = poly.pointlist[i - 1]
+				sc.Renderer.draw_Line_DDA(from.x, from.y, to.x, to.y, SUN.Color.RGB8(255, 255, 0, 20))
+			}
+
+			if (poly.pointlist.length >= 2) {
+				let from = poly.pointlist[poly.pointlist.length - 1]
+				let to = poly.pointlist[0]
+				// sc.Renderer.draw_Line_DDA(from.position.x, from.position.y, to.position.x, to.position.y, SUN.Color.RGB8(255, 0, 0, 100))
+				sc.Renderer.draw_Line_DDA(from.x, from.y, to.x, to.y, SUN.Color.RGB8(255, 255, 0, 20))
+			}
+
+			for (let i = 1; i < cut.pointlist.length; i++) {
+				let to = cut.pointlist[i]
+				let from = cut.pointlist[i - 1]
+				sc.Renderer.draw_Line_DDA(from.x, from.y, to.x, to.y, SUN.Color.RGB8(255, 0, 0, 100))
+				polyTable.add_Edge(from.x, from.y, to.x, to.y)
+			}
+
+			if (cut.pointlist.length >= 2) {
+				let from = cut.pointlist[cut.pointlist.length - 1]
+				let to = cut.pointlist[0]
+				// sc.Renderer.draw_Line_DDA(from.position.x, from.position.y, to.position.x, to.position.y, SUN.Color.RGB8(255, 0, 0, 100))
+				sc.Renderer.draw_Line_DDA(from.x, from.y, to.x, to.y, SUN.Color.RGB8(255, 0, 0, 100))
+				polyTable.add_Edge(from.x, from.y, to.x, to.y)
+			}
+
+			// console.log(polyTable)
+
+			// poly.print()
+
+			if (this.showpoint)
+
+				this.pointlist.forEach((point) => {
+					point.render(sc, delta, 10)
+				})
+			else sc.Renderer.draw_Polygon_ScanLine(polyTable, SUN.Color.RGB8(0, 0, 255, 50))
+
+			cut.pointlist.forEach((point) => {
+				sc.Renderer.draw_Pixel(point.x, point.y, SUN.Color.PICO(11))
+			})
+			// throw new Error("")
+		}
+	}
+
+	let sunconsole = new Console()
+
+	gameconsole.init = (sc) => {
+		sunconsole.init(sc.Renderer.size.x, sc.Renderer.size.y)
+	}
+
+	gameconsole.action = (sc, delta) => {
+		sunconsole.update(sc, delta)
+	}
+
+	gameconsole.render = (sc, delta) => {
+		sunconsole.render(sc, delta)
+	}
+
+	gameconsole.run()
+</script>
+
+</html>
