@@ -22,7 +22,7 @@ public:
 		this->_x = copy._x;
 		this->_y = copy._y;
 		this->_z = copy._z;
-		this->_w = 1;
+		this->_w = copy._w;
 	}
 
 	Vector3 &operator=(const Vector3 &copy)
@@ -194,6 +194,21 @@ public:
 			}
 	}
 
+	Matrix4 quickInvert()
+	{
+		double m30 = -(_mat[0][3] * _mat[0][0] + _mat[1][3] * _mat[1][0] + _mat[2][3] * _mat[2][0]);
+		double m31 = -(_mat[0][3] * _mat[0][1] + _mat[1][3] * _mat[1][1] + _mat[2][3] * _mat[2][1]);
+		double m32 = -(_mat[0][3] * _mat[0][2] + _mat[1][3] * _mat[1][2] + _mat[2][3] * _mat[2][2]);
+		double list[4][4] =
+			{{_mat[0][0], _mat[1][0], _mat[2][0], m30},
+			 {_mat[0][1], _mat[1][1], _mat[2][1], m31},
+			 {_mat[0][2], _mat[1][2], _mat[2][2], m32},
+			 {0, 0, 0, 1}};
+
+		Matrix4 ans(list);
+		return ans;
+	}
+
 	Matrix4 &operator=(const Matrix4 &copy)
 	{
 		for (u_int i = 0; i < 4; ++i)
@@ -207,9 +222,9 @@ public:
 	Matrix4 operator*(const Matrix4 &b)
 	{
 		Matrix4 ans;
-		for (int c = 0; c < 4; c++)
-			for (int r = 0; r < 4; r++)
-				ans._mat[r][c] = _mat[r][0] * b._mat[0][c] + _mat[r][1] * b._mat[1][c] + _mat[r][2] * b._mat[2][c] + _mat[r][3] * b._mat[3][c];
+		for (int i = 0; i < 4; i++)
+			for (int j = 0; j < 4; j++)
+				ans._mat[i][j] = _mat[i][0] * b._mat[0][j] + _mat[i][1] * b._mat[1][j] + _mat[i][2] * b._mat[2][j] + _mat[i][3] * b._mat[3][j];
 		return ans;
 	}
 
@@ -221,14 +236,6 @@ public:
 		ans._y = b._x * _mat[1][0] + b._y * _mat[1][1] + b._z * _mat[1][2] + b._w * _mat[1][3];
 		ans._z = b._x * _mat[2][0] + b._y * _mat[2][1] + b._z * _mat[2][2] + b._w * _mat[2][3];
 		ans._w = b._x * _mat[3][0] + b._y * _mat[3][1] + b._z * _mat[3][2] + b._w * _mat[3][3];
-		if (ans._w != 0)
-		{
-			ans._x /= ans._w;
-			ans._y /= ans._w;
-			ans._z /= ans._w;
-			ans._w = 1;
-			return ans;
-		}
 		return ans;
 	}
 
@@ -242,18 +249,18 @@ public:
 	}
 
 	// static
-	static Matrix4 PROJECTION(const double &aspect_ratio, const double &fov_rad, const double &near_panel, const double &far_panel)
+	inline static Matrix4 PROJECTION(const double &aspect_ratio, const double &fov_rad, const double &near_panel, const double &far_panel)
 	{
 		double f_n = far_panel - near_panel;
 		double list[4][4] = {{aspect_ratio * fov_rad, 0, 0, 0},
 							 {0, fov_rad, 0, 0},
-							 {0, 0, far_panel / f_n, 1},
-							 {0, 0, (-far_panel * near_panel) / f_n, 0}};
+							 {0, 0, far_panel / f_n, (-far_panel * near_panel) / f_n},
+							 {0, 0, 1, 0}};
 		Matrix4 ans(list);
 		return ans;
 	}
 
-	static Matrix4 ROTATE_X(const double &angle)
+	inline static Matrix4 ROTATE_X(const double &angle)
 	{
 		double list[4][4] = {{1, 0, 0, 0},
 							 {0, cos(angle), -sin(angle), 0},
@@ -263,7 +270,7 @@ public:
 		return ans;
 	}
 
-	static Matrix4 ROTATE_Y(const double &angle)
+	inline static Matrix4 ROTATE_Y(const double &angle)
 	{
 		double list[4][4] = {{cos(angle), 0, sin(angle), 0},
 							 {0, 1, 0, 0},
@@ -273,7 +280,7 @@ public:
 		return ans;
 	}
 
-	static Matrix4 ROTATE_Z(const double &angle)
+	inline static Matrix4 ROTATE_Z(const double &angle)
 	{
 		double list[4][4] = {{cos(angle), -sin(angle), 0, 0},
 							 {sin(angle), cos(angle), 0, 0},
@@ -283,7 +290,7 @@ public:
 		return ans;
 	}
 
-	static Matrix4 ROTATE(const double &x, const double &y, const double &z)
+	inline static Matrix4 ROTATE(const double &x, const double &y, const double &z)
 	{
 		Matrix4 ans = Matrix4::ROTATE_X(x);
 		ans = ans * Matrix4::ROTATE_Y(y);
@@ -291,12 +298,30 @@ public:
 		return ans;
 	}
 
-	static Matrix4 TRANSLATE(const double &x, const double &y, const double &z)
+	inline static Matrix4 TRANSLATE(const double &x, const double &y, const double &z)
 	{
 		double list[4][4] = {{1, 0, 0, x},
 							 {0, 1, 0, y},
 							 {0, 0, 1, z},
 							 {0, 0, 0, 1}};
+		Matrix4 ans(list);
+		return ans;
+	}
+
+	inline static Matrix4 POINTAT(Vector3 pos, Vector3 target, Vector3 up)
+	{
+		Vector3 forward = (target - pos).normalize();
+		Vector3 a = forward * (up * forward);
+		Vector3 newup = (up - a).normalize();
+
+		Vector3 right = newup.cross(forward);
+
+		double list[4][4] =
+			{{right._x, newup._x, forward._x, pos._x},
+			 {right._y, newup._y, forward._y, pos._y},
+			 {right._z, newup._z, forward._z, pos._z},
+			 {0, 0, 0, 1}};
+
 		Matrix4 ans(list);
 		return ans;
 	}
