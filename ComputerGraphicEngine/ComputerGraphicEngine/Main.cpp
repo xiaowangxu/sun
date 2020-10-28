@@ -25,7 +25,7 @@ public:
 		// Called once at the start, so create things here
 		//double list[4][4] = { {0.1 * 720.0 / 1080,0,0,0}, {0,0.1,0,0},{0,0,0,0},{0,0,0,1} };
 		//projection = Matrix4(list);
-		mesh = TriFaceMesh::LOAD_OBJ("untitled1.obj");
+		mesh = TriFaceMesh::LOAD_OBJ("teapot.obj");
 		return true;
 	}
 
@@ -147,14 +147,14 @@ public:
 private:
 	float time = 0;
 	TriFaceMesh mesh;
-	Matrix4 projection = Matrix4::PROJECTION(864.0 / 1536.0, 1 / tan(60.0 / 2 / 180 * acos(-1)), 0.1, 1000);
+	Matrix4 projection = Matrix4::PROJECTION(720.0 / 1280.0, 1 / tan(60.0 / 2 / 180 * acos(-1)), 0.1, 1000);
 	Camera camera;
 };
 
 int main()
 {
 	Example demo;
-	if (demo.Construct(1536, 864, 1, 1))
+	if (demo.Construct(1280, 720, 1, 1))
 		demo.Start();
 
 	return 0;
