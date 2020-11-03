@@ -1,7 +1,7 @@
 \documentclass[12pt,oneside,a4paper]{ctexart}
 \usepackage{booktabs}
 \usepackage{amsmath}
-\usepackage{tikzpfeile}
+\usepackage{indentfirst}
 \begin{document}
 
 \title{计算机图形学 \\ 课程项目}
@@ -30,57 +30,197 @@
 
 \section{三维图形的表示与变换}
 \subsection{向量与点}
+在三维空间中我们常用一个三维向量表示一个点，虽然向量本身只表达长度和方向，他是无关坐标系的，
+而点显然是与选取的坐标系是相关的。因此在这里将点理解为在一个给定的坐标系下，原点按某一向量移动后的位置，它写作式(\ref{Point})：
+\begin{equation}
+	\mathbf{P} = \begin{bmatrix}
+		x \\
+		y \\
+		z
+	\end{bmatrix}
+	\label{Point}
+\end{equation}
 \subsection{变换}
+对于三维空间中的点，常用到的仿射变换和二维中的类似：平移、旋转和缩放。
 \subsubsection{平移}
+平移变换是将一个点按一个方向，移动一段距离。考虑到上面我们的点的定义即为在给点的坐标系下，原点按一个向量移动的距离。那么显然平移一个点即将原点平移两次，即点所代表的“向量”和平移向量的共同作用。
+
+对于点$\mathbf{P}$，将其平移$\mathbf{V}$：
+\begin{equation*}
+	\mathbf{P}=
+	\begin{bmatrix}
+		\mathbf{P}_x \\
+		\mathbf{P}_y \\
+		\mathbf{P}_z
+	\end{bmatrix}
+\end{equation*}
+\begin{equation*}
+	\mathbf{V}=
+	\begin{bmatrix}
+		\mathbf{V}_x \\
+		\mathbf{V}_y \\
+		\mathbf{V}_z
+	\end{bmatrix}
+\end{equation*}
+
+则有平移后的点$\mathbf{N}$：
+\begin{equation*}
+	\mathbf{N}=
+	\begin{bmatrix}
+		\mathbf{P}_x \\
+		\mathbf{P}_y \\
+		\mathbf{P}_z
+	\end{bmatrix}+\begin{bmatrix}
+		\mathbf{V}_x \\
+		\mathbf{V}_y \\
+		\mathbf{V}_z
+	\end{bmatrix} =
+	\begin{bmatrix}
+		\mathbf{P}_x + \mathbf{V}_x \\
+		\mathbf{P}_y + \mathbf{V}_y \\
+		\mathbf{P}_z + \mathbf{V}_z
+	\end{bmatrix}
+\end{equation*}
 \subsubsection{旋转}
+旋转指的是：点以三维空间中的某点为旋转中心，进行旋转，这里简略的认为旋转中心为坐标系原点，即此时的旋转变换是一个特殊的线性变换。
+在三维坐标系中对点做按原点的旋转，即是对一个向量进行旋转。只需要求取原基向量 $\hat{i}$、$\hat{j}$、$\hat{k}$ ，在旋转后的 $\hat{i'}$、$\hat{j'}$、$\hat{k'}$，可以得到旋转矩阵：
+\begin{equation*}
+	RotateMatrix =
+	\begin{bmatrix}
+		\hat{i'_x} & \hat{i'_y} & \hat{i'_z} \\
+		\hat{j'_x} & \hat{j'_y} & \hat{j'_z} \\
+		\hat{k'_x} & \hat{k'_y} & \hat{k'_z}
+	\end{bmatrix}
+\end{equation*}
+
+则有旋转后的点$\mathbf{N}$：
+\begin{equation*}
+	\mathbf{N} = \begin{bmatrix}
+		\hat{i'_x} & \hat{i'_y} & \hat{i'_z} \\
+		\hat{j'_x} & \hat{j'_y} & \hat{j'_z} \\
+		\hat{k'_x} & \hat{k'_y} & \hat{k'_z}
+	\end{bmatrix} \times \begin{bmatrix}
+		\mathbf{P}_x \\
+		\mathbf{P}_y \\
+		\mathbf{P}_z
+	\end{bmatrix}
+\end{equation*}
+
+特别的，绕Y轴旋转 $\theta$ 弧度的旋转矩阵，可以这么考虑：首先Y轴显然是不变的，在左手系下从Y轴逆方向向下看，Z轴X轴正好组成一个平面直角坐标系。则 $\hat{i}$ 顺时针旋转过 $\theta$ 弧度后的向量为：
+\begin{equation*}
+	\hat{i'}=\begin{bmatrix}
+		cos(\theta)  \\
+		0            \\
+		-sin(\theta) \\
+	\end{bmatrix}
+\end{equation*}
+
+同样的 $\hat{k}$ 旋转过 $\theta$ 弧度后的向量为：
+\begin{equation*}
+	\hat{k'}=\begin{bmatrix}
+		sin(\theta) \\
+		0           \\
+		cos(\theta) \\
+	\end{bmatrix}
+\end{equation*}
+
+综上，Y轴旋转矩阵为：
+\begin{equation}
+	RotateY(\theta)=\begin{bmatrix}
+		cos(\theta)  & 0 & sin(\theta) \\
+		0            & 1 & 0           \\
+		-sin(\theta) & 0 & cos(\theta)
+	\end{bmatrix}
+	\label{RotateY}
+\end{equation}
+
+类似的我们也可以得到X轴旋转和Z轴旋转矩阵：
+\begin{equation}
+	RotateX(\theta)=\begin{bmatrix}
+		1 & 0           & 0            \\
+		0 & cos(\theta) & -sin(\theta) \\
+		0 & sin(\theta) & cos(\theta)
+	\end{bmatrix}
+	\label{RotateX}
+\end{equation}
+
+\begin{equation}
+	RotateZ(\theta)=\begin{bmatrix}
+		cos(\theta) & -sin(\theta) & 0 \\
+		sin(\theta) & cos(\theta)  & 0 \\
+		0           & 0            & 1
+	\end{bmatrix}
+	\label{RotateZ}
+\end{equation}
+
+最后，通过上述(\ref{RotateX})、(\ref{RotateY})、(\ref{RotateZ})的旋转矩阵的复合矩阵即可实现任意的旋转，即：
+\begin{equation*}
+	Rotate(\alpha,\beta,\gamma)=RotateZ(\gamma)\times{}RotateY(\beta)\times{}RotateX(\gamma)
+\end{equation*}
 \subsubsection{缩放}
+
+缩放的实现和旋转矩阵类似，计算出新的 $\hat{i'}$、$\hat{j'}$、$\hat{k'}$ 即可：
+\begin{equation*}
+	Scale(\alpha,\beta,\gamma)=\begin{bmatrix}
+		\alpha & 0     & 0      \\
+		0      & \beta & 0      \\
+		0      & 0     & \gamma
+	\end{bmatrix}
+\end{equation*}
+
+则缩放后的点为：
+\begin{equation*}
+	\mathbf{N}=\begin{bmatrix}
+		\alpha & 0     & 0      \\
+		0      & \beta & 0      \\
+		0      & 0     & \gamma
+	\end{bmatrix}
+	\times
+	\begin{bmatrix}
+		x \\
+		y \\
+		z
+	\end{bmatrix}=
+	\begin{bmatrix}
+		\alpha{}x \\
+		\beta{}y  \\
+		\gamma{}z
+	\end{bmatrix}
+\end{equation*}
+
 \subsubsection{复合变换}
+不难看出上述的变换中，旋转和缩放的变换可以简单地实现符合，将旋转矩阵和缩放矩阵进行矩阵乘法复合即可，同时这里两者是可交换的。
+
+但平移变换就无法使用矩阵表达（矩阵变换后的点 $\mathbf{N}$ 的一个分量可以表达为 $\mathbf{N}_x=a\mathbf{P}_x+b\mathbf{P}_y+c\mathbf{P}_z$ 而平移变换可表达为 $\mathbf{N}_x=\mathbf{P}_x+d$ 显然上述公式中 $a=1, \mathbf{P}_y+c\mathbf{P}_z=d$ 显然无法使用一个静态的矩阵实现），因此在描述一个点的平移、旋转和缩放变换时，我们使用下述公式(\ref{Transform_All})
+\begin{equation}
+	\mathbf{N}=
+	(
+	Scale(a,b,c)
+	\times
+	Rotate(\alpha,\beta,\gamma)
+	)
+	+
+	\mathbf{V}
+	\label{Transform_All}
+\end{equation}
+
+但使用上述公式计算是不“简单”的，我们希望能有一种方法通过一次一种计算即可表达上述三种变换，同时又能提高运算的效率。
 \subsection{三维的齐次坐标}
+在三维中我们无法将平移、旋转和缩放变换由一个矩阵描述。不妨假设我们在四维中，并规定点 $\mathbf{P}$ 在四维中的坐标为：
+\begin{equation*}
+	\mathbf{P}=
+	\begin{bmatrix}
+		x \\
+		y \\
+		z \\
+		1
+	\end{bmatrix}
+\end{equation*}
+
+即对于 $\forall{}\mathbf{P}$ 他们位于四维空间中分量 $z=1$ 的一个三维“切片”空间中。
 \subsection{三角面}
 \subsection{网格}
 \subsubsection{.obj文件的加载}
-在\LaTeX{}中排版中文。
-汉字和English单词混排，通常不需要在中英文之间添加额外的空格。
-当然，为了代码的可读性，加上汉字和 English 之间的空格也无妨。
-汉字换行时不会引入多余的空格。
-\begin{equation}
-	\begin{bmatrix}
-		1 & 2 \\
-		3 & 4
-	\end{bmatrix}
-	\label{test}
-\end{equation}
-\begin{equation}
-	\mathbf{X}=\int\limits_{a}^{b} \frac{\sqrt[3]{x^2-4ac} }{-2a} dx
-\end{equation}
-\begin{equation}
-	L_{l+1}=AF\left(
-	\begin{bmatrix}
-			w^l_{1,1}   & w^l_{2,1}   & \cdots & w^l_{a,1}   \\
-			w^l_{1,1}   & w^l_{2,2}   & \cdots & w^l_{a,2}   \\
-			\vdots      & \vdots      & \ddots & \vdots      \\
-			w^l_{1,b-1} & w^l_{2,b-1} & \cdots & w^l_{a,b-1} \\
-			w^l_{1,b}   & w^l_{2,b}   & \cdots & w^l_{a,b}   \\
-		\end{bmatrix}
-	\cdot
-	\begin{bmatrix}
-			H^l_1     \\
-			H^l_2     \\
-			\vdots    \\
-			H^l_{a-1} \\
-			H^l_{a}   \\
-		\end{bmatrix}
-	+
-	\begin{bmatrix}
-			\theta{}^{l+1}_1     \\
-			\theta{}^{l+1}_2     \\
-			\vdots               \\
-			\theta{}^{l+1}_{b-1} \\
-			\theta{}^{l+1}_{b}   \\
-		\end{bmatrix}
-	\right)\label{test2}
-\end{equation}
-公式(\ref{test})，是一个矩阵
 \section{投影}
 \subsection{正交投影}
 \subsection{透视投影}
