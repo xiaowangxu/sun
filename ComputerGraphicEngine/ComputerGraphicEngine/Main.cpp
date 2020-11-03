@@ -7,6 +7,7 @@
 #include <string>
 #include <algorithm>
 #include <fstream>
+#include <list>
 using namespace std;
 
 class Example : public olc::PixelGameEngine
@@ -16,7 +17,7 @@ class Example : public olc::PixelGameEngine
 public:
 	Example()
 	{
-		sAppName = "Example";
+		sAppName = "SHU ComputerGraphic Group 22";
 	}
 
 public:
@@ -25,7 +26,9 @@ public:
 		// Called once at the start, so create things here
 		//double list[4][4] = { {0.1 * 720.0 / 1080,0,0,0}, {0,0.1,0,0},{0,0,0,0},{0,0,0,1} };
 		//projection = Matrix4(list);
-		mesh = TriFaceMesh::LOAD_OBJ("teapot.obj");
+		meshes[0] = TriFaceMesh::LOAD_OBJ("untitled1.obj");
+		meshes[1] = TriFaceMesh::LOAD_OBJ("teapot.obj");
+		meshes[2] = TriFaceMesh::LOAD_OBJ("untitled.obj");
 		return true;
 	}
 
@@ -41,7 +44,7 @@ public:
 		//cout << transform << endl;
 		vector<TriFace> list;
 
-		for (TriFace face : mesh._faces)
+		for (TriFace face : (*mesh)._faces)
 		{
 
 			Vector3 p1 = transform * face.get_Point1();
@@ -55,26 +58,38 @@ public:
 			if (angle >= 0)
 				continue;
 
-			Vector3 pf1 = projection * (view * p1);
-			Vector3 pf2 = projection * (view * p2);
-			Vector3 pf3 = projection * (view * p3);
+			Vector3 pf1 = (view * p1);
+			Vector3 pf2 = (view * p2);
+			Vector3 pf3 = (view * p3);
 
-			pf1 /= pf1._w;
-			pf2 /= pf2._w;
-			pf3 /= pf3._w;
+			TriFace viewedface(pf1, pf2, pf3);
 
-			pf1._x *= -1;
-			pf1._y *= -1;
-			pf2._x *= -1;
-			pf2._y *= -1;
-			pf3._x *= -1;
-			pf3._y *= -1;
+			TriFace clipped[2];
+			int tri_count = camera._nearplane.clip_TriFace(viewedface, clipped[0], clipped[1]);
 
-			TriFace renderface(pf1, pf2, pf3);
+			for (int i = 0; i < tri_count; i++)
+			{
+				pf1 = projection * clipped[i].get_Point1();
+				pf2 = projection * clipped[i].get_Point2();
+				pf3 = projection * clipped[i].get_Point3();
 
-			renderface.get_Normal() = newface.get_Normal();
+				pf1 /= pf1._w;
+				pf2 /= pf2._w;
+				pf3 /= pf3._w;
 
-			list.emplace_back(renderface);
+				pf1._x *= -1;
+				pf1._y *= -1;
+				pf2._x *= -1;
+				pf2._y *= -1;
+				pf3._x *= -1;
+				pf3._y *= -1;
+
+				TriFace renderface(pf1, pf2, pf3);
+
+				renderface.get_Normal() = newface.get_Normal();
+
+				list.emplace_back(renderface);
+			}
 		}
 
 		sort(list.begin(), list.end(), [](TriFace &t1, TriFace &t2) {
@@ -86,55 +101,136 @@ public:
 		const Vector3 translate(1, 1, 0);
 		const Vector3 light(1, 1, -1);
 
-		for (TriFace face : list)
+		// Raster
+		for (TriFace &face : list)
 		{
-			Vector3 pf1 = face.get_Point1();
-			Vector3 pf2 = face.get_Point2();
-			Vector3 pf3 = face.get_Point3();
+			TriFace clipped[2];
+			int new_count = 1;
+			std::list<TriFace> trifacelist;
 
-			pf1 += translate;
-			pf2 += translate;
-			pf3 += translate;
+			trifacelist.push_back(face);
 
-			pf1._x *= width;
-			pf1._y *= height;
-			pf2._x *= width;
-			pf2._y *= height;
-			pf3._x *= width;
-			pf3._y *= height;
+			for (int p = 0; p < 4; p++)
+			{
+				int new_tri = 0;
+				while (new_count > 0)
+				{
+					TriFace test = trifacelist.front();
+					trifacelist.pop_front();
+					new_count--;
 
-			double alpha1 = pow(max((face.get_Normal() * light.normalize()), 0), 1);
+					if (p == 0) //top
+					{
+						const Vector3 pos(0, -1, 0);
+						const Vector3 normal(0, 1, 0);
+						Plane clip_plane(pos, normal);
+						new_tri = clip_plane.clip_TriFace(test, clipped[0], clipped[1]);
+					}
+					else if (p == 1) //bottom
+					{
+						const Vector3 pos(0, 1, 0);
+						const Vector3 normal(0, -1, 0);
+						Plane clip_plane(pos, normal);
+						new_tri = clip_plane.clip_TriFace(test, clipped[0], clipped[1]);
+					}
+					else if (p == 2) //left
+					{
+						const Vector3 pos(-1, 0, 0);
+						const Vector3 normal(1, 0, 0);
+						Plane clip_plane(pos, normal);
+						new_tri = clip_plane.clip_TriFace(test, clipped[0], clipped[1]);
+					}
+					else if (p == 3) //right
+					{
+						const Vector3 pos(1, 0, 0);
+						const Vector3 normal(-1, 0, 0);
+						Plane clip_plane(pos, normal);
+						new_tri = clip_plane.clip_TriFace(test, clipped[0], clipped[1]);
+					}
 
-			olc::Pixel color(uint8_t(255 * alpha1), uint8_t(255 * alpha1), uint8_t(255 * alpha1));
+					for (int i = 0; i < new_tri; i++)
+					{
+						trifacelist.push_back(clipped[i]);
+					}
+				}
+				new_count = trifacelist.size();
+			}
 
-			FillTriangle(olc::vi2d(pf1._x, pf1._y), olc::vi2d(pf2._x, pf2._y), olc::vi2d(pf3._x, pf3._y), color);
+			for (TriFace &new_face : trifacelist)
+			{
+				Vector3 pf1 = new_face.get_Point1();
+				Vector3 pf2 = new_face.get_Point2();
+				Vector3 pf3 = new_face.get_Point3();
 
-			//DrawLine(pf1._x, pf1._y, pf2._x, pf2._y);
-			//DrawLine(pf2._x, pf2._y, pf3._x, pf3._y);
-			//DrawLine(pf1._x, pf1._y, pf3._x, pf3._y);
+				pf1 += translate;
+				pf2 += translate;
+				pf3 += translate;
+
+				pf1._x *= width;
+				pf1._y *= height;
+				pf2._x *= width;
+				pf2._y *= height;
+				pf3._x *= width;
+				pf3._y *= height;
+
+				double alpha1 = pow(max((face.get_Normal() * light.normalize()), 0), 1);
+
+				olc::Pixel color(uint8_t(40 + 215 * alpha1), uint8_t(40 + 215 * alpha1), uint8_t(40 + 215 * alpha1));
+
+				if (wireframe)
+				{
+					DrawLine(pf1._x, pf1._y, pf2._x, pf2._y, color);
+					DrawLine(pf2._x, pf2._y, pf3._x, pf3._y, color);
+					DrawLine(pf1._x, pf1._y, pf3._x, pf3._y, color);
+				}
+				else
+				{
+					FillTriangle(olc::vi2d(pf1._x, pf1._y), olc::vi2d(pf2._x, pf2._y), olc::vi2d(pf3._x, pf3._y), color);
+				}
+			}
 		}
 	}
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
 		if (GetKey(olc::LEFT).bHeld)
-			camera._position._x += 8.0f * fElapsedTime;	// Travel Upwards
+			camera._position._x += 2.0f * fElapsedTime; // Travel Upwards
 
 		if (GetKey(olc::RIGHT).bHeld)
-			camera._position._x -= 8.0f * fElapsedTime;	// Travel Downwards
+			camera._position._x -= 2.0f * fElapsedTime; // Travel Downwards
 
 		if (GetKey(olc::UP).bHeld)
-			camera._position._y += 8.0f * fElapsedTime;	// Travel Upwards
+			camera._position._y += 2.0f * fElapsedTime; // Travel Upwards
 
 		if (GetKey(olc::DOWN).bHeld)
-			camera._position._y -= 8.0f * fElapsedTime;	// Travel Downwards
+			camera._position._y -= 2.0f * fElapsedTime; // Travel Downwards
 
 		if (GetKey(olc::W).bHeld)
-			camera._position._z += 8.0f * fElapsedTime;	// Travel Upwards
+			camera._position._z += 2.0f * fElapsedTime; // Travel Upwards
 
 		if (GetKey(olc::S).bHeld)
-			camera._position._z -= 8.0f * fElapsedTime;	// Travel Downwards
+			camera._position._z -= 2.0f * fElapsedTime; // Travel Downwards
 
+		if (GetKey(olc::A).bHeld)
+		{
+			fov = min(180.0, fov + 20 * fElapsedTime);
+			projection = Matrix4::PROJECTION(720.0 / 1280.0, 1 / tan(fov / 2 / 180 * acos(-1)), 0.1, 1000);
+		}
+
+		if (GetKey(olc::D).bHeld)
+		{
+			fov = max(45.0, fov - 20 * fElapsedTime);
+			projection = Matrix4::PROJECTION(720.0 / 1280.0, 1 / tan(fov / 2 / 180 * acos(-1)), 0.1, 1000);
+		}
+
+		if (GetKey(olc::SPACE).bPressed)
+			wireframe = !wireframe; // Travel Downwards
+
+		if (GetKey(olc::K).bPressed)
+		{
+			current = (current + 1) % 3;
+			mesh = &meshes[current];
+		}
 
 		Clear(olc::Pixel(0, 0, 0, 255));
 		draw_Mesh();
@@ -146,9 +242,13 @@ public:
 
 private:
 	float time = 0;
-	TriFaceMesh mesh;
+	TriFaceMesh meshes[3];
+	TriFaceMesh *mesh = &meshes[0];
+	int current = 0;
 	Matrix4 projection = Matrix4::PROJECTION(720.0 / 1280.0, 1 / tan(60.0 / 2 / 180 * acos(-1)), 0.1, 1000);
 	Camera camera;
+	double fov = 60.0;
+	bool wireframe = false;
 };
 
 int main()

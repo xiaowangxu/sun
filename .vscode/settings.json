@@ -3,6 +3,7 @@
 	"files.associations": {
 		"*.vue": "html",
 		"ostream": "cpp",
-		"ios": "cpp"
+		"ios": "cpp",
+		"list": "cpp"
 	}
 }

@@ -6,6 +6,7 @@
 
 class Vector3;
 class Matrix4;
+class TriFace;
 
 class Vector3
 {
@@ -33,17 +34,17 @@ public:
 		_w = copy._w;
 		return *this;
 	}
-	Vector3 operator+(const Vector3 &b)
+	Vector3 operator+(const Vector3 &b) const
 	{
 		Vector3 ans(this->_x + b._x, this->_y + b._y, this->_z + b._z);
 		return ans;
 	}
-	Vector3 operator-(const Vector3 &b)
+	Vector3 operator-(const Vector3 &b) const
 	{
 		Vector3 ans(this->_x - b._x, this->_y - b._y, this->_z - b._z);
 		return ans;
 	}
-	Vector3 operator*(const double &a)
+	Vector3 operator*(const double &a) const
 	{
 		Vector3 ans(this->_x * a, this->_y * a, this->_z * a);
 		return ans;
@@ -53,7 +54,7 @@ public:
 		Vector3 ans(b._x * a, b._y * a, b._z * a);
 		return ans;
 	}
-	double operator*(const Vector3 &b)
+	double operator*(const Vector3 &b) const
 	{
 		double ans = this->_x * b._x + this->_y * b._y + this->_z * b._z;
 		return ans;
@@ -104,7 +105,7 @@ public:
 		_z /= len;
 		return *this;
 	}
-	Vector3 cross(const Vector3 &b)
+	Vector3 cross(const Vector3 &b) const
 	{
 		Vector3 ans(_y * b._z - _z * b._y,
 					_z * b._x - _x * b._z, _x * b._y - _y * b._x);
@@ -156,6 +157,163 @@ public:
 	{
 		Vector3 ans(1, 0, 0);
 		return ans;
+	}
+};
+
+class TriFace
+{
+private:
+	Vector3 _p1, _p2, _p3, _normal;
+
+public:
+	TriFace()
+	{
+		_p1 = Vector3(0, 0, 0);
+		_p2 = Vector3(0, 0, 0);
+		_p3 = Vector3(0, 0, 0);
+		_normal = Vector3(0, 0, 0);
+	}
+	TriFace(Vector3 &point1, Vector3 &point2, Vector3 &point3)
+	{
+		_p1 = point1;
+		_p2 = point2;
+		_p3 = point3;
+		_normal = (point2 - point1).crossed(point3 - point1).normalized();
+	}
+	TriFace(const TriFace &copy)
+	{
+		_p1 = copy._p1;
+		_p2 = copy._p2;
+		_p3 = copy._p3;
+		_normal = copy._normal;
+	}
+	Vector3 &get_Normal()
+	{
+		return _normal;
+	}
+	Vector3 &get_Point1()
+	{
+		return _p1;
+	}
+	Vector3 &get_Point2()
+	{
+		return _p2;
+	}
+	Vector3 &get_Point3()
+	{
+		return _p3;
+	}
+
+	TriFace &set(Vector3 &point1, Vector3 &point2, Vector3 &point3)
+	{
+		_p1 = point1;
+		_p2 = point2;
+		_p3 = point3;
+		Vector3 _line1 = point2 - point1;
+		Vector3 _line2 = point3 - point1;
+		_normal = _line1.crossed(_line2).normalized();
+		return *this;
+	}
+};
+
+class Plane
+{
+public:
+	Vector3 _position;
+	Vector3 _normal;
+
+public:
+	Plane() {};
+	Plane(const Vector3 &pos, const Vector3 &nor) : _position(pos), _normal(nor.normalize()){};
+	Plane(const Plane &p) : _position(p._position), _normal(p._normal){};
+
+	double distance(const Vector3 &pos) const
+	{
+		return _normal._x * pos._x + _normal._y * pos._y + _normal._z * pos._z - (_position * _normal);
+	}
+
+	Vector3 intersect_Line(Vector3 &start, Vector3 &end) const
+	{
+		double plane_d = -(_position * _normal);
+		double ad = start * _normal;
+		double bd = end * _normal;
+		double t = (-plane_d - ad) / (bd - ad);
+		Vector3 lineStartToEnd = end - start;
+		Vector3 lineToIntersect = lineStartToEnd * t;
+		return start + lineToIntersect;
+	}
+
+	int clip_TriFace(TriFace &in, TriFace &out1, TriFace &out2) const
+	{
+		Vector3 *inside_point[3];
+		int inside_count = 0;
+		Vector3 *outside_point[3];
+		int outside_count = 0;
+
+		double d0 = distance(in.get_Point1());
+		double d1 = distance(in.get_Point2());
+		double d2 = distance(in.get_Point3());
+
+		if (d0 >= 0)
+		{
+			inside_point[inside_count++] = &in.get_Point1();
+		}
+		else
+		{
+			outside_point[outside_count++] = &in.get_Point1();
+		}
+
+		if (d1 >= 0)
+		{
+			inside_point[inside_count++] = &in.get_Point2();
+		}
+		else
+		{
+			outside_point[outside_count++] = &in.get_Point2();
+		}
+
+		if (d2 >= 0)
+		{
+			inside_point[inside_count++] = &in.get_Point3();
+		}
+		else
+		{
+			outside_point[outside_count++] = &in.get_Point3();
+		}
+
+		if (inside_count == 0)
+		{
+			// No remain triface
+			return 0;
+		}
+
+		if (inside_count == 3)
+		{
+			// origin triface
+			out1 = in;
+			return 1;
+		}
+
+		if (inside_count == 1 && outside_count == 2)
+		{
+			// one remain triface
+			Vector3 p2 = intersect_Line(*inside_point[0], *outside_point[0]);
+			Vector3 p3 = intersect_Line(*inside_point[0], *outside_point[1]);
+			out1.set(*inside_point[0], p2, p3);
+			return 1;
+		}
+
+		if (inside_count == 2 && outside_count == 1)
+		{
+			// two new triface
+			Vector3 p12 = intersect_Line(*inside_point[0], *outside_point[0]);
+			out1.set(*inside_point[0], *inside_point[1], p12);
+
+			Vector3 p22 = intersect_Line(*inside_point[1], *outside_point[0]);
+			out2.set(*inside_point[1], p12, p22);
+
+			return 2;
+		}
 	}
 };
 

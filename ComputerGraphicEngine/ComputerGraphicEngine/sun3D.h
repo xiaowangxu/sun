@@ -6,7 +6,6 @@
 #include <strstream>
 using namespace std;
 
-class TriFace;
 class TriFaceMesh;
 class Camera;
 
@@ -16,75 +15,27 @@ public:
 	Vector3 _position;
 	Vector3 _lookdir;
 	Vector3 _up;
+	Plane _nearplane;
+	double _near, _far;
 
 public:
 	Camera()
 	{
+		_near = 0.1;
+		_far = 1000;
 		_position.set(0, 0, 0);
 		_lookdir.set(0, 0, 1);
 		_up.set(0, 1, 0);
+		Vector3 origin(0, 0, _near);
+		Vector3 normal(0, 0, 1);
+		_nearplane._position = origin;
+		_nearplane._normal = normal;
 	}
 
 	Matrix4 cameraMatrix()
 	{
 		Vector3 target = _position + _lookdir;
 		return Matrix4::POINTAT(_position, target, _up);
-	}
-};
-
-class TriFace
-{
-private:
-	Vector3 _p1, _p2, _p3, _normal;
-
-public:
-	TriFace()
-	{
-		_p1 = Vector3(0, 0, 0);
-		_p2 = Vector3(0, 0, 0);
-		_p3 = Vector3(0, 0, 0);
-		_normal = Vector3(0, 0, 0);
-	}
-	TriFace(Vector3 &point1, Vector3 &point2, Vector3 &point3)
-	{
-		_p1 = point1;
-		_p2 = point2;
-		_p3 = point3;
-		_normal = (point2 - point1).crossed(point3 - point1).normalized();
-	}
-	TriFace(const TriFace &copy)
-	{
-		_p1 = copy._p1;
-		_p2 = copy._p2;
-		_p3 = copy._p3;
-		_normal = copy._normal;
-	}
-	Vector3 &get_Normal()
-	{
-		return _normal;
-	}
-	Vector3 &get_Point1()
-	{
-		return _p1;
-	}
-	Vector3 &get_Point2()
-	{
-		return _p2;
-	}
-	Vector3 &get_Point3()
-	{
-		return _p3;
-	}
-
-	TriFace &set(Vector3 &point1, Vector3 &point2, Vector3 &point3)
-	{
-		_p1 = point1;
-		_p2 = point2;
-		_p3 = point3;
-		Vector3 _line1 = point2 - point1;
-		Vector3 _line2 = point3 - point1;
-		_normal = _line1.cross(_line2);
-		return *this;
 	}
 };
 
