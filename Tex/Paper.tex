@@ -4,30 +4,41 @@
 \usepackage{tikzpfeile}
 \begin{document}
 
-\title{计算机图形学}
+\title{计算机图形学 \\ 课程项目}
 \author{ 王徐笑风\thanks{学号:18120193 E-mail:2208740924@qq.com}
-	\and Ted\thanks{Corresponding author}}
+	\and 凌泽辉\thanks{学号:18120193 E-mail:785896610@qq.com}}
 \date{\today}
 \maketitle
 \newpage
 \tableofcontents
 \newpage
 \begin{abstract}
-	在\LaTeX{}中排版中文。
-	汉字和English单词混排，通常不需要在中英文之间添加额外的空格。
-	当然，为了代码的可读性，加上汉字和 English 之间的空格也无妨。
-	汉字换行时不会引入多余的空格。
+	查找资料，学习了解三维网格模型的相关知识。完成一个三维网格模型的显示系统。
+
+	数据输入：通过文件读取模型数据
+
+	数据存储：设计程序内用于存储模型数据的数据结构
+
+	数据输出：在窗口界面进行模型显示
+
+	编程实现三维到二维的投影变换计算
+
+	编程实现通过键盘或鼠标驱动模型的平移、缩放及旋转变换
+
+	可以使用开发工具中提供光照函数，若自己编程实现光照计算，则可获得额外加分
 \end{abstract}
 
-\section{三维图形的表示}
-\subsection{向量}
-在\TeX{}中排版中文。
-汉字和English单词混排，通常不需要在中英文之间添加额外的空格。
-当然，为了代码的可读性，加上汉字和 English 之间的空格也无妨。
-汉字换行时不会引入多余的空格。
-
-表格
-
+\section{三维图形的表示与变换}
+\subsection{向量与点}
+\subsection{变换}
+\subsubsection{平移}
+\subsubsection{旋转}
+\subsubsection{缩放}
+\subsubsection{复合变换}
+\subsection{三维的齐次坐标}
+\subsection{三角面}
+\subsection{网格}
+\subsubsection{.obj文件的加载}
 在\LaTeX{}中排版中文。
 汉字和English单词混排，通常不需要在中英文之间添加额外的空格。
 当然，为了代码的可读性，加上汉字和 English 之间的空格也无妨。
@@ -71,21 +82,24 @@
 \end{equation}
 公式(\ref{test})，是一个矩阵
 \section{投影}
-\section{绘制}
+\subsection{正交投影}
+\subsection{透视投影}
+\section{相机变换}
+\subsection{世界坐标系}
+\subsection{视口坐标系}
+\subsection{坐标系变换}
+\section{绘制/光栅化}
 \subsection{三角填充}
 \subsection{绘制顺序问题}
 \subsection{画家算法}
-\subsubsection{画家算法——类比}
 \subsubsection{画家算法的问题}
 \subsubsection{改进方向}
-\section{相机变换}
 \section{三维裁剪}
 \subsection{性能问题与原因}
-\subsection{平面表达}
-\subsection{三角面与平面裁剪}
-\subsection{视口裁剪}
+\subsection{三角面裁剪}
+\subsubsection{近平面裁剪}
+\subsubsection{视口裁剪}
 \section{基础光照}
 \subsection{全局光照}
 \subsection{方向光}
-\subsection{冯氏光照模型}
 \end{document}
