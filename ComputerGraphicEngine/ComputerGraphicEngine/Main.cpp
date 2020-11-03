@@ -34,13 +34,15 @@ public:
 
 	void draw_Mesh()
 	{
-		float angle = time * 0.6;
+		float angle = time;
+		double s = sin(angle * 20.0) * 0.5 + 1;
+		Matrix4 scale = Matrix4::SCALE(1, 1, 1);
 		Matrix4 rotateY = Matrix4::ROTATE_Y(angle);
 		Matrix4 rotateZ = Matrix4::ROTATE_Z(angle * 0.35);
 		Matrix4 rotateX = Matrix4::ROTATE_X(angle);
 		Matrix4 move = Matrix4::TRANSLATE(0, 0, 5);
 		Matrix4 view = camera.cameraMatrix().quickInvert();
-		Matrix4 transform = move * (rotateX * (rotateY * rotateZ));
+		Matrix4 transform = move * (rotateX * (rotateY * (rotateZ * scale)));
 		//cout << transform << endl;
 		vector<TriFace> list;
 
@@ -211,17 +213,17 @@ public:
 		if (GetKey(olc::S).bHeld)
 			camera._position._z -= 2.0f * fElapsedTime; // Travel Downwards
 
-		if (GetKey(olc::A).bHeld)
-		{
-			fov = min(180.0, fov + 20 * fElapsedTime);
-			projection = Matrix4::PROJECTION(720.0 / 1280.0, 1 / tan(fov / 2 / 180 * acos(-1)), 0.1, 1000);
-		}
+		// if (GetKey(olc::A).bHeld)
+		// {
+		// 	fov = min(180.0, fov + 20 * fElapsedTime);
+		// 	projection = Matrix4::PROJECTION(720.0 / 1280.0, 1 / tan(fov / 2 / 180 * acos(-1)), 0.1, 1000);
+		// }
 
-		if (GetKey(olc::D).bHeld)
-		{
-			fov = max(45.0, fov - 20 * fElapsedTime);
-			projection = Matrix4::PROJECTION(720.0 / 1280.0, 1 / tan(fov / 2 / 180 * acos(-1)), 0.1, 1000);
-		}
+		// if (GetKey(olc::D).bHeld)
+		// {
+		// 	fov = max(45.0, fov - 20 * fElapsedTime);
+		// 	projection = Matrix4::PROJECTION(720.0 / 1280.0, 1 / tan(fov / 2 / 180 * acos(-1)), 0.1, 1000);
+		// }
 
 		if (GetKey(olc::SPACE).bPressed)
 			wireframe = !wireframe; // Travel Downwards

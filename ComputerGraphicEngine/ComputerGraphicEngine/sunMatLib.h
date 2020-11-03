@@ -223,7 +223,7 @@ public:
 	Vector3 _normal;
 
 public:
-	Plane() {};
+	Plane(){};
 	Plane(const Vector3 &pos, const Vector3 &nor) : _position(pos), _normal(nor.normalize()){};
 	Plane(const Plane &p) : _position(p._position), _normal(p._normal){};
 
@@ -453,6 +453,16 @@ public:
 		Matrix4 ans = Matrix4::ROTATE_X(x);
 		ans = ans * Matrix4::ROTATE_Y(y);
 		ans = ans * Matrix4::ROTATE_Z(z);
+		return ans;
+	}
+
+	inline static Matrix4 SCALE(const double &x, const double &y, const double &z)
+	{
+		double list[4][4] = {{x, 0, 0, 0},
+							 {0, y, 0, 0},
+							 {0, 0, z, 0},
+							 {0, 0, 0, 1}};
+		Matrix4 ans(list);
 		return ans;
 	}
 
