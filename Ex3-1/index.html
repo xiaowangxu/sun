@@ -147,6 +147,10 @@
 			if (sc.Keyboard.keymap[' '] !== undefined && sc.Keyboard.keymap[' '].once) {
 				this.showpoint = !this.showpoint
 			}
+
+			if (sc.Keyboard.keymap['a'] !== undefined && sc.Keyboard.keymap['a'].once) {
+				this.pointlist.push(new Point(sc.Mouse.position.x, sc.Mouse.position.y))
+			}
 		}
 
 		render(sc, delta) {
@@ -162,18 +166,20 @@
 
 			sc.Renderer.clear(this.backgroundcolor)
 			// console.log(this.pointlist)
-			sc.Renderer.draw_Line_DDA(this.pointlist[0].position.x, this.pointlist[0].position.y, this.pointlist[1].position.x, this.pointlist[1].position.y, SUN.Color.RGB8(255, 255, 0, 50))
-			sc.Renderer.draw_Line_DDA(this.pointlist[2].position.x, this.pointlist[2].position.y, this.pointlist[3].position.x, this.pointlist[3].position.y, SUN.Color.RGB8(255, 255, 0, 50))
+			for (let i = 1; i < this.pointlist.length; i++) {
+				sc.Renderer.draw_Line_DDA(this.pointlist[i].position.x, this.pointlist[i].position.y, this.pointlist[i - 1].position.x, this.pointlist[i - 1].position.y, SUN.Color.RGB8(255, 255, 0, 50))
+
+			}
 
 
 			let point1 = this.pointlist[0].position
 			let point2 = this.pointlist[1].position
 			let point3 = this.pointlist[2].position
 			let point4 = this.pointlist[3].position
-			for (let i = 0; i < 1; i += 0.05) {
-				let next = Math.min(i + 0.05, 1)
-				let point = this.CalculateBezierPointForCubic(i, point1, point2, point3, point4)
-				let nextpoint = this.CalculateBezierPointForCubic(next, point1, point2, point3, point4)
+			for (let i = 0; i < 1; i += 0.01) {
+				let next = Math.min(i + 0.01, 1)
+				let point = this.deCasteljau(i, this.pointlist.length - 1, 0)
+				let nextpoint = this.deCasteljau(next, this.pointlist.length - 1, 0)
 				sc.Renderer.draw_Line_DDA(point.x, point.y, nextpoint.x, nextpoint.y, SUN.Color.COLOR('red'))
 			}
 			// console.log(polyTable)
@@ -193,6 +199,21 @@
 			point.x = p0.x * temp * temp * temp + 3 * p1.x * t * temp * temp + 3 * p2.x * t * t * temp + p3.x * t * t * t;
 			point.y = p0.y * temp * temp * temp + 3 * p1.y * t * temp * temp + 3 * p2.y * t * t * temp + p3.y * t * t * t;
 			return point;
+		}
+
+		deCasteljau(u, n, j) {
+			if (n === 0) {
+				let ans = new SUN.Vector2(0, 0)
+				ans.copy(this.pointlist[j].position)
+				return ans
+			}
+			else {
+				let a = this.deCasteljau(u, n - 1, j)
+				let b = this.deCasteljau(u, n - 1, j + 1)
+				let x = (1 - u) * a.x + u * b.x
+				let y = (1 - u) * a.y + u * b.y
+				return new SUN.Vector2(x, y)
+			}
 		}
 	}
 

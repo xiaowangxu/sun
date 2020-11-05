@@ -1,8 +1,24 @@
 \documentclass[12pt,oneside,a4paper]{ctexart}
 \usepackage{booktabs}
+\usepackage{fontspec}
 \usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
 \usepackage{indentfirst}
 \begin{document}
+
+\lstset{numbers=left,
+	tabsize=4,
+	frame=single,
+	xleftmargin=1em,
+	basicstyle=\fontspec{Consolas},
+	numberstyle=\fontspec{Consolas},
+	showstringspaces=false,
+	breaklines,
+	keywordstyle= \color{ blue!70},
+	commentstyle=\color{red!50!green!50!blue!50},
+	rulesepcolor= \color{ red!20!green!20!blue!20}
+}
 
 \title{计算机图形学 \\ 课程项目}
 \author{ 王徐笑风\thanks{学号:18120193 E-mail:2208740924@qq.com}
@@ -28,7 +44,7 @@
 	可以使用开发工具中提供光照函数，若自己编程实现光照计算，则可获得额外加分
 \end{abstract}
 
-\section{三维图形的表示与变换}
+\section{三维图形的变换与表示}
 \subsection{向量与点}
 在三维空间中我们常用一个三维向量表示一个点，虽然向量本身只表达长度和方向，他是无关坐标系的，
 而点显然是与选取的坐标系是相关的。因此在这里将点理解为在一个给定的坐标系下，原点按某一向量移动后的位置，它写作式(\ref{Point})：
@@ -85,20 +101,20 @@
 旋转指的是：点以三维空间中的某点为旋转中心，进行旋转，这里简略的认为旋转中心为坐标系原点，即此时的旋转变换是一个特殊的线性变换。
 在三维坐标系中对点做按原点的旋转，即是对一个向量进行旋转。只需要求取原基向量 $\hat{i}$、$\hat{j}$、$\hat{k}$ ，在旋转后的 $\hat{i'}$、$\hat{j'}$、$\hat{k'}$，可以得到旋转矩阵：
 \begin{equation*}
-	RotateMatrix =
+	\mathbf{RotateMatrix} =
 	\begin{bmatrix}
-		\hat{i'_x} & \hat{i'_y} & \hat{i'_z} \\
-		\hat{j'_x} & \hat{j'_y} & \hat{j'_z} \\
-		\hat{k'_x} & \hat{k'_y} & \hat{k'_z}
+		\hat{i'_x} & \hat{j'_x} & \hat{k'_x} \\
+		\hat{i'_y} & \hat{j'_y} & \hat{k'_y} \\
+		\hat{i'_z} & \hat{j'_z} & \hat{k'_z}
 	\end{bmatrix}
 \end{equation*}
 
 则有旋转后的点$\mathbf{N}$：
 \begin{equation*}
 	\mathbf{N} = \begin{bmatrix}
-		\hat{i'_x} & \hat{i'_y} & \hat{i'_z} \\
-		\hat{j'_x} & \hat{j'_y} & \hat{j'_z} \\
-		\hat{k'_x} & \hat{k'_y} & \hat{k'_z}
+		\hat{i'_x} & \hat{j'_x} & \hat{k'_x} \\
+		\hat{i'_y} & \hat{j'_y} & \hat{k'_y} \\
+		\hat{i'_z} & \hat{j'_z} & \hat{k'_z}
 	\end{bmatrix} \times \begin{bmatrix}
 		\mathbf{P}_x \\
 		\mathbf{P}_y \\
@@ -126,7 +142,7 @@
 
 综上，Y轴旋转矩阵为：
 \begin{equation}
-	RotateY(\theta)=\begin{bmatrix}
+	\mathbf{RotateY}(\theta)=\begin{bmatrix}
 		cos(\theta)  & 0 & sin(\theta) \\
 		0            & 1 & 0           \\
 		-sin(\theta) & 0 & cos(\theta)
@@ -136,7 +152,7 @@
 
 类似的我们也可以得到X轴旋转和Z轴旋转矩阵：
 \begin{equation}
-	RotateX(\theta)=\begin{bmatrix}
+	\mathbf{RotateX}(\theta)=\begin{bmatrix}
 		1 & 0           & 0            \\
 		0 & cos(\theta) & -sin(\theta) \\
 		0 & sin(\theta) & cos(\theta)
@@ -145,7 +161,7 @@
 \end{equation}
 
 \begin{equation}
-	RotateZ(\theta)=\begin{bmatrix}
+	\mathbf{RotateZ}(\theta)=\begin{bmatrix}
 		cos(\theta) & -sin(\theta) & 0 \\
 		sin(\theta) & cos(\theta)  & 0 \\
 		0           & 0            & 1
@@ -155,13 +171,13 @@
 
 最后，通过上述(\ref{RotateX})、(\ref{RotateY})、(\ref{RotateZ})的旋转矩阵的复合矩阵即可实现任意的旋转，即：
 \begin{equation*}
-	Rotate(\alpha,\beta,\gamma)=RotateZ(\gamma)\times{}RotateY(\beta)\times{}RotateX(\gamma)
+	\mathbf{Rotate}(\alpha,\beta,\gamma)=\mathbf{RotateZ}(\gamma)\times{}\mathbf{RotateY}(\beta)\times{}\mathbf{RotateX}(\gamma)
 \end{equation*}
 \subsubsection{缩放}
 
 缩放的实现和旋转矩阵类似，计算出新的 $\hat{i'}$、$\hat{j'}$、$\hat{k'}$ 即可：
 \begin{equation*}
-	Scale(\alpha,\beta,\gamma)=\begin{bmatrix}
+	\mathbf{Scale}(\alpha,\beta,\gamma)=\begin{bmatrix}
 		\alpha & 0     & 0      \\
 		0      & \beta & 0      \\
 		0      & 0     & \gamma
@@ -195,10 +211,11 @@
 \begin{equation}
 	\mathbf{N}=
 	(
-	Scale(a,b,c)
+	\mathbf{Scale}(a,b,c)
 	\times
-	Rotate(\alpha,\beta,\gamma)
-	)
+	\mathbf{Rotate}(\alpha,\beta,\gamma)
+	)\times
+	\mathbf{P}
 	+
 	\mathbf{V}
 	\label{Transform_All}
@@ -213,14 +230,204 @@
 		x \\
 		y \\
 		z \\
+		w=1
+	\end{bmatrix}
+\end{equation*}
+
+即对于 $\forall{}\mathbf{P}$ 他们位于四维空间中分量 $w=1$ 的一个三维“切片”空间中。而对于 $w\neq 1$ 的点，可以通过计算 $x'=\frac{x}{w}, y'=\frac{y}{w}, z'=\frac{z}{w}$ 来得到对应单位空间中的坐标。
+
+有了三维其次坐标后，我们可以改写公式(\ref{Transform_All})为：
+\begin{equation}
+	\mathbf{N} =
+	\begin{bmatrix}
+		a & b & c & d \\
+		e & f & g & h \\
+		i & j & k & l \\
+		0 & 0 & 0 & 1
+	\end{bmatrix}_{\mathbf{Transform}}
+	\times
+	\begin{bmatrix}
+		x \\
+		y \\
+		z \\
+		1
+	\end{bmatrix}_{\mathbf{P}}
+	=
+	\begin{bmatrix}
+		ax+by+cz+d \\
+		ex+fy+gz+h \\
+		ix+jy+kz+l \\
+		1          \\
+	\end{bmatrix}
+	\label{Transform_All_New}
+\end{equation}
+
+观察公式(\ref{Transform_All_New})，其中 $d, h, l$ 显然对应了平移向量：
+\begin{equation*}
+	\mathbf{V}=
+	\begin{bmatrix}
+		d \\
+		h \\
+		l \\
 		1
 	\end{bmatrix}
 \end{equation*}
 
-即对于 $\forall{}\mathbf{P}$ 他们位于四维空间中分量 $z=1$ 的一个三维“切片”空间中。
+它可以写成一个平移矩阵：
+\begin{equation}
+	\mathbf{Translate}=
+	\begin{bmatrix}
+		1 & 0 & 0 & d \\
+		0 & 1 & 0 & h \\
+		0 & 0 & 1 & l \\
+		0 & 0 & 0 & 1 \\
+	\end{bmatrix}
+	\label{Translate_Matrix}
+\end{equation}
+
+而将平移矩阵和旋转缩放矩阵复合即可得到公式(\ref{Transform_All_New})中的变换矩阵：
+\begin{align}
+	\mathbf{Translate}\times \mathbf{Scale}\times \mathbf{Rotation}= &
+	\begin{bmatrix}
+		1 & 0 & 0 & d \\
+		0 & 1 & 0 & h \\
+		0 & 0 & 1 & l \\
+		0 & 0 & 0 & 1 \\
+	\end{bmatrix}_{\mathbf{Translate}}
+	\times
+	\begin{bmatrix}
+		a & b & c & 0 \\
+		e & f & g & 0 \\
+		i & j & k & 0 \\
+		0 & 0 & 0 & 1
+	\end{bmatrix}_{\mathbf{Scale}\times \mathbf{Rotation}}         \notag                                       \\
+	=                                                                & \begin{bmatrix}
+		a & b & c & d \\
+		e & f & g & h \\
+		i & j & k & l \\
+		0 & 0 & 0 & 1
+	\end{bmatrix}_{\mathbf{Transform}}\notag
+\end{align}
+
+综上我们通过三维空间中的齐次坐标实现了3种变换的复合。当然 $Transform$ 矩阵也能表达切变等仿射变换，由于在三维投影的过程中并不常用，这里就不详细叙述。
+
+\subsubsection{$sunMatLib.h$ 矩阵运算库}
+在本项目中，除了窗口创建和像素绘制使用到了第三方软件库，所有的数据结构、矩阵矩阵运算、投影、光栅化、光照等都有我们小组自己实现。这里简单介绍一下整个项目中频繁使用到的矩阵运算类库，见源码：
+\begin{lstlisting}[language=c++]
+class Vector3
+{
+	friend class Matrix4;
+	
+public:
+	double _x, _y, _z, _w;
+	
+public:
+	Vector3();
+	Vector3(const double &x, const double &y, const double &z);
+	Vector3(const Vector3 &copy);
+	
+	Vector3 &operator=(const Vector3 &copy);
+	Vector3 operator+(const Vector3 &b) const;
+	Vector3 operator-(const Vector3 &b) const;
+	Vector3 operator*(const double &a) const;
+	friend Vector3 operator*(const double &a, const Vector3 &b);
+	double operator*(const Vector3 &b) const;
+	Vector3 &operator*=(const double &a);
+	Vector3 &operator+=(const Vector3 &b);
+	friend Vector3 operator/(const Vector3 &b, const double &a);
+	friend Vector3 &operator/=(Vector3 &b, const double &a);
+	double length() const;
+	Vector3 normalize() const;
+	Vector3 &normalized();
+	Vector3 cross(const Vector3 &b) const;
+	Vector3 &crossed(const Vector3 &b);
+	Vector3 &set(const double &x, const double &y, const double &z);
+	
+	static Vector3 ONE();
+	static Vector3 ZERO();
+	static Vector3 UP();
+	static Vector3 FRONT();
+	static Vector3 RIGHT();
+};
+\end{lstlisting}
+\begin{lstlisting}[language=c++]
+class Matrix4
+{
+	friend class Vector3;
+
+	private:
+	double _mat[4][4];
+
+	public:
+	Matrix4();
+	Matrix4(double copy[4][4]);
+	Matrix4(const Matrix4 &copy);
+
+	Matrix4 quickInvert();
+	Matrix4 &operator=(const Matrix4 &copy);
+	Matrix4 operator*(const Matrix4 &b);
+	Vector3 operator*(const Vector3 &b);
+
+	static Matrix4 PROJECTION(const double &aspect_ratio, const double &fov_rad, const double &near_panel, const double &far_panel);
+	static Matrix4 ROTATE_X(const double &angle);
+	static Matrix4 ROTATE_Y(const double &angle);
+	static Matrix4 ROTATE_Z(const double &angle);
+	static Matrix4 ROTATE(const double &x, const double &y, const double &z);
+	static Matrix4 SCALE(const double &x, const double &y, const double &z);
+	static Matrix4 TRANSLATE(const double &x, const double &y, const double &z);
+	static Matrix4 POINTAT(Vector3 pos, Vector3 target, Vector3 up);
+};
+\end{lstlisting}
+
 \subsection{三角面}
+虽然三维形体有很多表示方法，但在三维的渲染引擎或是游戏引擎中，最常使用到的还是三角网格模型。
+
+在这种网格模型中一个面一个三维空间中的三角面，它由3个顶点 $\mathbf{P}_1,\mathbf{P}_2, \mathbf{P}_3$ 即可表达。
+
+保留法向信息，三角化的 $.obj$ 文件就是这样一种三角网格模型，在本项目中也该文件格式作为标准。
+
+特别的，在三维渲染中，单个三角面往往还有“朝向”这一属性。背对我们的三角面是不显示的，只有面对我们的才会渲染。这种规定在处理封闭模型和时候会更加有效：首先我们是无法看到封闭模型的内部的，自然无需渲染其三角面的背面；第二，背对我们的三角面不进行渲染也能降低对于性能的需求。因此三角面还存在一个法向量，它垂直于三角面所在的平面，并与三角面朝向同向。
+
+但这不代表我们需要使用除3个三维点以外的数据保存法向信息。在 $.obj$ 中一个三角面 $face$ 由3个顶点 $vertex$ 组成。这三个顶点按原三角面的逆时针排列，其法向满足右手螺旋定则，因此对于1个三角面的有序顶点 $\mathbf{P}_1,\mathbf{P}_2, \mathbf{P}_3$ ，该三角面的单位法向量 $\mathbf{U}$ 为：
+\begin{equation*}
+	\mathbf{U}=
+	\frac{(\mathbf{P}_2 - \mathbf{P}_1)\times
+		(\mathbf{P}_3 - \mathbf{P}_1)}{\left\lvert (\mathbf{P}_2 - \mathbf{P}_1)\times
+		(\mathbf{P}_3 - \mathbf{P}_1)\right\rvert }
+\end{equation*}
+
+在 $sunMatLib.h$ 也有三角面类 $TriFace$ ，它实现了法向的自动计算，在通过顶点构造了三角面后，即可通过 $get_Normal()$ 方法获得单位法向量。具体实现可见源程序代码。
 \subsection{网格}
-\subsubsection{.obj文件的加载}
+在有了三角面的数据结构后，三角网格模型的最简单的实现就是使用变长数组保存每一个三角面。
+
+在 $sun3D.h$ 中的 $Mesh$ 类就是使用了 $std::vector<TriFace>$ 来保存三角网格模型。
+\subsubsection{$.obj$ 文件的加载}
+
+$.obj$ 文件的构成或是说格式，基本上一一对应了上述的三角面、三角网格模型的数据结构。我们先来看一个  $.obj$ 文件实例（$untitled1.obj$ 文件有省略）：
+
+\begin{lstlisting}
+# Blender v2.83.4 OBJ File: ''
+# www.blender.org
+o Torus
+v 1.250000 0.000000 0.000000
+v 1.216506 0.125000 0.000000
+v 1.125000 0.216506 0.000000
+v 1.000000 0.250000 0.000000
+......
+s off
+f 13 2 1
+f 2 15 3
+f 15 4 3
+f 16 5 4
+......
+\end{lstlisting}
+
+其中“\#”开头的是注释，忽略即可。
+
+“v” 开头的一行定义了一个顶点，后跟三个数值分别表示该顶点 $\mathbf{P}$ 的 $x, y, z$ 分量
+
+“f” 开头的一行定义了一个三角面，后跟三个整数分别表示该三角面的3个顶点 $\mathbf{P}_1, \mathbf{P}_2, \mathbf{P}_3$ 所对应的顶点“v”的序号。例如：上述文件中的第10行 “f 13 2 1”，其中 “2 1” 表明 $\mathbf{P}_2$ 为第5行的顶点， $\mathbf{P}_3$ 为第4行的顶点。
+
 \section{投影}
 \subsection{正交投影}
 \subsection{透视投影}
@@ -234,6 +441,7 @@
 \subsection{画家算法}
 \subsubsection{画家算法的问题}
 \subsubsection{改进方向}
+\newpage
 \section{三维裁剪}
 \subsection{性能问题与原因}
 \subsection{三角面裁剪}
