@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.26)  5 NOV 2020 15:38
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.26)  5 NOV 2020 19:37
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -438,7 +438,7 @@ Package fontspec Info: Font family 'Consolas(0)' created for font 'Consolas'
 (fontspec)             <->"Consolas/BI/OT:script=latn;language=dflt;"
 (fontspec)             - 'bold italic small caps'  (b/scit) with NFSS spec.: 
 
- [8] [9] [10] [11] [12] [13] [14] (./Paper.aux) ) 
+ [8] [9] [10] [11] [12] [13] [14] [15] (./Paper.aux) ) 
 Here is how much of TeX's memory you used:
  9411 strings out of 479393
  238677 string characters out of 5880193
@@ -448,4 +448,4 @@ Here is how much of TeX's memory you used:
  36 hyphenation exceptions out of 8191
  97i,14n,100p,362b,1750s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Paper.pdf (14 pages).
+Output written on Paper.pdf (15 pages).
