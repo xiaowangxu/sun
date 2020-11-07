@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.27)  7 NOV 2020 13:54
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.27)  7 NOV 2020 19:23
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -660,6 +660,10 @@ File: lstlang1.sty 2020/03/24 1.8d listings language file
 ) (c:/texlive/2020/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
 )
+Underfull \hbox (badness 10000) in paragraph at lines 321--323
+
+ []
+
 
 Package fontspec Info: Font family 'Consolas(0)' created for font 'Consolas'
 (fontspec)             with options [].
@@ -680,7 +684,12 @@ Package fontspec Info: Font family 'Consolas(0)' created for font 'Consolas'
 (fontspec)             <->"Consolas/BI/OT:script=latn;language=dflt;"
 (fontspec)             - 'bold italic small caps'  (b/scit) with NFSS spec.: 
 
- [8] [9] [10] [11]
+[8] [9] [10]
+Underfull \hbox (badness 10000) in paragraph at lines 413--415
+
+ []
+
+[11]
 File: Picture/Annotation 2020-06-23 205119.png Graphic file (type bmp)
 <Picture/Annotation 2020-06-23 205119.png>
  [12]
@@ -689,7 +698,25 @@ File: Picture/Annotation 2020-06-23 205119.png Graphic file (type bmp)
  [13] [14]
 File: Picture/Annotation 2020-06-23 205119.png Graphic file (type bmp)
 <Picture/Annotation 2020-06-23 205119.png>
- [15] [16] [17] [18] [19] [20] (./Paper.aux)
+ [15] [16] [17] [18] [19]
+File: Picture/Annotation 2020-06-23 205119.png Graphic file (type bmp)
+<Picture/Annotation 2020-06-23 205119.png>
+ [20]
+Overfull \hbox (2.05664pt too wide) in paragraph at lines 794--795
+\OML/zplm/m/it/12 N[]\OT1/ppl/m/n/12 , \OML/zplm/m/it/12 N[]\OT1/ppl/m/n/12 , \OML/zplm/m/it/12 inside\OT1/zplm/m/n/12 [\OT1/ppl/m/n/12 0\OT1/zplm/m/n/12 ]$ \TU/SimSun(0)/m/n/12 也 是 逆 时 针 排 列 的，|  即 裁 剪 后 的 新 三 角 面 $\OML/zplm/m/it/12 TriFace\OT1/zplm/m/n/12 (\OML/zplm/m/it/12 N[]\OT1/ppl/m/n/12 , \OML/zplm/m/it/12 N[]\OT1/ppl/m/n/12 , \OML/zplm/m/it/12 inside\OT1/zplm/m/n/12 [\OT1/ppl/m/n/12 0\OT1/zplm/m/n/12 ])$
+ []
+
+[21]
+Underfull \hbox (badness 10000) in paragraph at lines 799--801
+
+ []
+
+[22] [23]
+Underfull \hbox (badness 10000) in paragraph at lines 873--875
+
+ []
+
+[24] [25] [26] (./Paper.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
@@ -698,12 +725,12 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 20448 strings out of 479393
- 473810 string characters out of 5880193
- 1104836 words of memory out of 5000000
- 39413 multiletter control sequences out of 15000+600000
+ 20532 strings out of 479393
+ 474795 string characters out of 5880193
+ 1111822 words of memory out of 5000000
+ 39497 multiletter control sequences out of 15000+600000
  551670 words of font info for 110 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  97i,14n,100p,412b,1748s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Paper.pdf (20 pages).
+Output written on Paper.pdf (26 pages).

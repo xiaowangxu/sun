@@ -240,7 +240,7 @@
 	\end{bmatrix}
 \end{equation*}
 
-即对于 $\forall{}\mathbf{P}$ 他们位于四维空间中分量 $w=1$ 的一个三维“切片”空间中。而对于 $w\neq 1$ 的点，可以通过计算 $x'=\frac{x}{w}, y'=\frac{y}{w}, z'=\frac{z}{w}$ 来得到对应单位空间中的坐标。
+即对于 $\forall{}\mathbf{P}$ 他们位于四维空间中分量 $w=1$ 的一个三维“切片”空间中。
 
 有了三维其次坐标后，我们可以改写公式(\ref{Transform_All})为：
 \begin{equation}
@@ -319,6 +319,7 @@
 
 \subsubsection{$sunMatLib.h$ 矩阵运算库}
 在本项目中，除了窗口创建和像素绘制使用到了第三方软件库，所有的数据结构、矩阵矩阵运算、投影、光栅化、光照等都有我们小组自己实现。这里简单介绍一下整个项目中频繁使用到的矩阵运算类库，见源码：
+\newline
 \begin{lstlisting}[language=c++]
 class Vector3
 {
@@ -410,7 +411,7 @@ class Matrix4
 \subsubsection{$.obj$ 文件的加载}
 
 $.obj$ 文件的构成或是说格式，基本上一一对应了上述的三角面、三角网格模型的数据结构。我们先来看一个  $.obj$ 文件实例（$untitled1.obj$ 文件有省略）：
-
+\newline
 \begin{lstlisting}
 # Blender v2.83.4 OBJ File: ''
 # www.blender.org
@@ -705,11 +706,11 @@ $A$ 所在Z平面的上端坐标 $Z_y$:
 		0            & \frac{2f}{h} & 0             & 0              \\
 		0            & 0            & \frac{1}{f-n} & -\frac{n}{f-n} \\
 		0            & 0            & 1             & 0
-	\end{bmatrix}
+	\end{bmatrix}\notag
 \end{align}
 
 注意上述矩阵中的 $w$ 和 $h$ 是远平面的宽高。实际上 $\frac{2f}{h}$ 即为图(\ref{Persp})中的 $\cot(\theta)$ ，常用 $fov=2\theta$ ，$aspect=\frac{w}{h}$ ，则透视投影矩阵变为：
-\begin{equation}
+\begin{equation*}
 	\mathbf{Perspective} =
 	\begin{bmatrix}
 		\frac{\cot(\frac{\theta}{2})}{aspect} & 0                      & 0             & 0              \\
@@ -717,14 +718,39 @@ $A$ 所在Z平面的上端坐标 $Z_y$:
 		0                                     & 0                      & \frac{1}{f-n} & -\frac{n}{f-n} \\
 		0                                     & 0                      & 1             & 0
 	\end{bmatrix}
-\end{equation}
+\end{equation*}
 
 最后，注意到公式(\ref{PersptoOrth})中的矩阵 $\mathbf{Persp}\rightarrow\mathbf{Orth}$ 的变换结果为 $x'_z, y'_z$ ，因此在计算完 $\mathbf{N}=\mathbf{Perspective}\times\mathbf{P}$ 后， $\frac{N_x}{N_w}, \frac{N_y}{N_w}$ 才是最终的结果。
-\section{相机变换}
+\section{相机视口变换}
 \subsection{世界坐标系}
 在第二章中讲到的两种投影变换都是按照相机位于三维空间原点，朝向Z轴方向，Y轴向上，X轴向右的情况下得到的。但在实际的实现中，我们往往希望相机也能作为一个三维物体进行移动、旋转等变换。这就使得我们不能直接按照三维点关于原三维空间的坐标进行投影变换。
 \subsection{视口坐标系}
+换而言之，需要进行投影操作的点的坐标实际上是该点在以相机为原点，按相机朝向旋转后的基向量组成的坐标系，这里称为“视口坐标系”。我了能够正确的实现从相机获得的画面，我们需要对点的世界坐标进行变换。
 \subsection{坐标系变换}
+可知相机有旋转和平移变换，将这一变换记作 $\mathbf{C}$ ，则有视口坐标系基向量组成的矩阵 $B$:
+\begin{equation*}
+	\mathbf{C}\mathbf{I}=\mathbf{B}
+\end{equation*}
+\begin{equation*}
+	\mathbf{C}=\mathbf{B}
+\end{equation*}
+
+而对于三维世界坐标系中的一点 $\mathbf{P}$ ，其视口坐标为 $\mathbf{P'}$ ，则有：
+\begin{equation*}
+	\mathbf{BP'}=\mathbf{P}
+\end{equation*}
+
+两边同左乘 $\mathbf{B^{-1}}$
+\begin{align}
+	\mathbf{B^{-1}BP'} & =\mathbf{B^{-1}P}\notag \\
+	\mathbf{P'}        & =\mathbf{B^{-1}P}\notag \\
+	                   & =\mathbf{C^{-1}P}
+	\label{ViewMatrix}
+\end{align}
+
+其中称式(\ref{ViewMatrix})中的 $\mathbf{C^{-1}}$ 为视口变换矩阵。
+
+综上，在将点进行投影之前，首先要计算 $\mathbf{P'}=\mathbf{C^{-1}P}$ ，后将 $\mathbf{P'}$ 作为需要变换的点即可。矩阵的逆的算法不是本次项目的重点，这里不做介绍，可见 $sunMatLib.h$ 文件。
 \section{绘制/光栅化}
 \subsection{三角填充}
 \subsection{绘制顺序问题}
@@ -734,9 +760,167 @@ $A$ 所在Z平面的上端坐标 $Z_y$:
 \newpage
 \section{三维裁剪}
 \subsection{性能问题与原因}
+在上述的功能实现后，程序已经能够正确地绘制三维网格模型了，但在我们将摄像机靠近模型时，我们会发现性能的快速下降。在十分靠近模型的时候还会出现“卡死”的情况。
+
+该问题的原因十分简单，虽然在投影一章中我们设置了远近两个平面，但在这两个平面以外的点实际上只是 $z$ 分量不在 $[0,1]$ 的区间中，他们仍会参与绘制。在正交投影中还不能看出这有什么问题，但在透视投影中，在视口坐标系Z轴正半轴区域内的点，越靠近原点，由于近大远小的原因，投影后的坐标在屏幕坐标系中将变得很大，此时三角面的光栅化将难以运行。
+
+因此我们只希望渲染近平面以外的视域中的三角面（不考虑远平面），但在光栅化的过程中时以三角面为单位，单纯判断整个三角面是否在视域外无法解决上述的性能问题，而单纯判断三角面是否有顶点在视域外又会造成整个三角面不被渲染，从而导致模型“破损”，因此我们需要对三角面进行裁剪，对于每个面只保留在视域中的部分。
 \subsection{三角面裁剪}
+在三维空间中对三角面的裁剪如下图(\ref{Cut})，是一个三角面关于一张三维空间中平面的裁剪。
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.4]{Picture/Annotation 2020-06-23 205119.png}
+	\vspace{-2ex}
+	\caption{正交投影 $vs$ 透视投影}
+	\label{Cut}
+\end{figure}
+
+以平面法向的正方向表示要保留的区域，则会出现四种情况：
+\begin{enumerate}
+	\item 整个三角面都在保留区内
+	\item 整个三角面都在保留区外
+	\item 有1个顶点在保留区外，此时要保留的部分是2个三角面
+	\item 有2个顶点在保留区外，此时要保留的部分是1个三角面
+\end{enumerate}
+
+首先引入“有向距离” $distance(\mathbf{P_n})$ 是空间中一点 $\mathbf{P_n}$ 到一张平面的垂直距离，在保留区内为正，否则为负。
+
+显然， $distance<0$ 的点在保留区外。对于三角面的每个顶点 $\mathbf{P_n}$（按顺时针顺序处理），当 $distance(\mathbf{P_n}) < 0$ ，将 $\mathbf{P_n}$ 放入 $outside$ 数组，否则放入 $inside$ 数组。
+
+当 $inside$ 数组长度为 $3$ 时对应情况1，返回原三角面。
+
+当 $inside$ 数组长度为 $0$ 时对应情况2，返回空。
+
+当 $inside$ 数组长度为 $1$ ，$outside$ 数组长度为 $2$ 时对应情况4，此时计算 $outside[0]$ 与 $inside[0]$ 连线与裁剪面的交点 $N_0$ ，计算 $outside[1]$ 与 $inside[0]$ 连线与裁剪面的交点 $N_1$。显然 $outside[0], outside[1], inside[0]$ 是逆时针排列的，则 $N_0, N_1, inside[0]$ 也是逆时针排列的，即裁剪后的新三角面 $TriFace(N_0, N_1, inside[0])$ 保持了原三角面的朝向。
+
+当 $inside$ 数组长度为 $2$ ，$outside$ 数组长度为 $1$ 时对应情况3，此时计算 $outside[0]$ 与 $inside[0]$ 连线与裁剪面的交点 $N_0$ ，计算 $outside[0]$ 与 $inside[1]$ 连线与裁剪面的交点 $N_1$。显然 $inside[0], inside[1], outside[0]$ 是逆时针排列的，则 $inside[0], inside[1], N_0$ 也是逆时针排列的，即裁剪后的新三角面 $TriFace(inside[0], $
+$inside[1], N_0)$ 保持了原三角面的朝向。而 $inside[1], N_0, N_1$ 也是逆时针排列的，即裁剪后的第二个三角面 $TriFace(inside[0], N_0, N_1)$ 也保持了原三角面的朝向。
+
+$sunMatLib.h$ 中的 $Plane$ 类实现了上述裁剪算法，代码如下：
+\newline
+\begin{lstlisting}[language=c++]
+int clip_TriFace(TriFace &in, TriFace &out1, TriFace &out2) const
+{
+	Vector3 *inside_point[3];
+	int inside_count = 0;
+	Vector3 *outside_point[3];
+	int outside_count = 0;
+	double d0 = distance(in.get_Point1());
+	double d1 = distance(in.get_Point2());
+	double d2 = distance(in.get_Point3());
+	if (d0 >= 0)
+	{
+		inside_point[inside_count++] = &in.get_Point1();
+	}
+	else
+	{
+		outside_point[outside_count++] = &in.get_Point1();
+	}
+	if (d1 >= 0)
+	{
+		inside_point[inside_count++] = &in.get_Point2();
+	}
+	else
+	{
+		outside_point[outside_count++] = &in.get_Point2();
+	}
+	if (d2 >= 0)
+	{
+		inside_point[inside_count++] = &in.get_Point3();
+	}
+	else
+	{
+		outside_point[outside_count++] = &in.get_Point3();
+	}
+	if (inside_count == 0)
+	{
+		// No remain triface
+		return 0;
+	}
+	if (inside_count == 3)
+	{
+		// origin triface
+		out1 = in;
+		return 1;
+	}
+	if (inside_count == 1 && outside_count == 2)
+	{
+		// one remain triface
+		Vector3 p2 = intersect_Line(*inside_point[0], *outside_point[0]);
+		Vector3 p3 = intersect_Line(*inside_point[0], *outside_point[1]);
+		out1.set(*inside_point[0], p2, p3);
+		return 1;
+	}
+	if (inside_count == 2 && outside_count == 1)
+	{
+		// two new triface
+		Vector3 p12 = intersect_Line(*inside_point[0], *outside_point[0]);
+		out1.set(*inside_point[0], *inside_point[1], p12);
+		Vector3 p22 = intersect_Line(*inside_point[1], *outside_point[0]);
+		out2.set(*inside_point[1], p12, p22);
+		return 2;
+	}
+}
+\end{lstlisting}
+
 \subsubsection{近平面裁剪}
+在有了上述的平面裁剪算法后实现近平面算法实现就很简单了。首先实例化一个 $Plane$ 类，其坐标为 $(0,0,n)$ ，法向为Z轴方向 $(0,0,1)$ 。在一个三角面执行了视口变换后，将变换后的三角面执行关于近平面的裁剪算法，将得到的结果放入投影数组即可。
 \subsubsection{视口裁剪}
+视口裁剪在投影前和投影后都可以实现。投影前的裁剪和近平面裁剪类似，将近平面裁剪的结果放入裁剪队列，然后对于上下左右四个视域侧面的裁剪面，进行裁剪操作，每次都将上次的裁剪结果作为带裁剪数据。从而实现视域的裁剪。这种裁剪由于视域是一个锥体，所以上下左右裁剪面的法向较难计算。
+
+在投影后相当于在正交投影的视域内裁剪，步骤和上述裁剪一致，只是上下左右裁剪面是固定值，计算较为便利。
+
+在我们的程序使用后者进行视口裁剪：
+\newline
+\begin{lstlisting}[language=c++]
+TriFace clipped[2];
+int new_count = 1;
+std::list<TriFace> trifacelist;
+trifacelist.push_back(face);
+for (int p = 0; p < 4; p++)
+{
+	int new_tri = 0;
+	while (new_count > 0)
+	{
+		TriFace test = trifacelist.front();
+		trifacelist.pop_front();
+		new_count--;
+		if (p == 0) //top
+		{
+			const Vector3 pos(0, -1, 0);
+			const Vector3 normal(0, 1, 0);
+			Plane clip_plane(pos, normal);
+			new_tri = clip_plane.clip_TriFace(test, clipped[0],clipped[1]);
+		}
+		else if (p == 1) //bottom
+		{
+			const Vector3 pos(0, 1, 0);
+			const Vector3 normal(0, -1, 0);
+			Plane clip_plane(pos, normal);
+			new_tri = clip_plane.clip_TriFace(test, clipped[0],clipped[1]);
+		}
+		else if (p == 2) //left
+		{
+			const Vector3 pos(-1, 0, 0);
+			const Vector3 normal(1, 0, 0);
+			Plane clip_plane(pos, normal);
+			new_tri = clip_plane.clip_TriFace(test, clipped[0],clipped[1]);
+		}
+		else if (p == 3) //right
+		{
+			const Vector3 pos(1, 0, 0);
+			const Vector3 normal(-1, 0, 0);
+			Plane clip_plane(pos, normal);
+			new_tri = clip_plane.clip_TriFace(test, clipped[0],clipped[1]);
+		}
+		for (int i = 0; i < new_tri; i++)
+		{
+			trifacelist.push_back(clipped[i]);
+		}
+	}
+	new_count = trifacelist.size();
+}
+\end{lstlisting}
 \section{基础光照}
 \subsection{全局光照}
 \subsection{方向光}
