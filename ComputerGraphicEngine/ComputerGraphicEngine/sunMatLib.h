@@ -412,7 +412,7 @@ public:
 		double f_n = far_panel - near_panel;
 		double list[4][4] = {{aspect_ratio * fov_rad, 0, 0, 0},
 							 {0, fov_rad, 0, 0},
-							 {0, 0, far_panel / f_n, (-far_panel * near_panel) / f_n},
+							 {0, 0, 1.0 / f_n, (-near_panel) / f_n},
 							 {0, 0, 1, 0}};
 		Matrix4 ans(list);
 		return ans;

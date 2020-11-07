@@ -40,7 +40,7 @@ public:
 		Matrix4 rotateY = Matrix4::ROTATE_Y(angle);
 		Matrix4 rotateZ = Matrix4::ROTATE_Z(angle * 0.35);
 		Matrix4 rotateX = Matrix4::ROTATE_X(angle);
-		Matrix4 move = Matrix4::TRANSLATE(0, 0, 5);
+		Matrix4 move = Matrix4::TRANSLATE(0, 0, 10);
 		Matrix4 view = camera.cameraMatrix().quickInvert();
 		Matrix4 transform = move * (rotateX * (rotateY * (rotateZ * scale)));
 		//cout << transform << endl;

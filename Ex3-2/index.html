@@ -104,6 +104,10 @@
 			this.shapelist = [[new Point(), new Point(100, 10), new Point(100, 100), new Point(10, 100)], [new Point(20, 20), new Point(20, 50), new Point(50, 50), new Point(50, 20)]]
 			this.showpoint = true
 			this.pointlist = [new Point(0, 0), new Point(100, 0), new Point(0, 100)]
+			this.angle = 0
+			this.scale = 1
+			this.font = SUN.Font.DEFAULT()
+			this.position = new SUN.Vector2(0, 0)
 		}
 
 		init(width, height) {
@@ -145,13 +149,34 @@
 							dragged = dragged || point.update(sc, delta, pointlist)
 					})
 				})
-			this.pointlist.forEach((point) => {
-				if (!dragged)
-					dragged = dragged || point.update(sc, delta, this.pointlist)
-			})
+			// this.pointlist.forEach((point) => {
+			// 	if (!dragged)
+			// 		dragged = dragged || point.update(sc, delta, this.pointlist)
+			// })
 
-			if (sc.Keyboard.keymap['a'] !== undefined && sc.Keyboard.keymap['a'].once) {
-				this.shapelist.push([new Point(5, 5), new Point(10, 5), new Point(10, 10), new Point(5, 10)])
+			if (sc.Keyboard.keymap['a'] !== undefined && sc.Keyboard.keymap['a'].continue) {
+				this.position.x -= 1
+			}
+			if (sc.Keyboard.keymap['w'] !== undefined && sc.Keyboard.keymap['w'].continue) {
+				this.position.y -= 1
+			}
+			if (sc.Keyboard.keymap['d'] !== undefined && sc.Keyboard.keymap['d'].continue) {
+				this.position.x += 1
+			}
+			if (sc.Keyboard.keymap['s'] !== undefined && sc.Keyboard.keymap['s'].continue) {
+				this.position.y += 1
+			}
+			if (sc.Keyboard.keymap['j'] !== undefined && sc.Keyboard.keymap['j'].continue) {
+				this.angle += 0.01
+			}
+			if (sc.Keyboard.keymap['k'] !== undefined && sc.Keyboard.keymap['k'].continue) {
+				this.angle -= 0.01
+			}
+			if (sc.Keyboard.keymap['n'] !== undefined && sc.Keyboard.keymap['n'].continue) {
+				this.scale -= 0.01
+			}
+			if (sc.Keyboard.keymap['m'] !== undefined && sc.Keyboard.keymap['m'].continue) {
+				this.scale += 0.01
 			}
 			if (sc.Keyboard.keymap[' '] !== undefined && sc.Keyboard.keymap[' '].once) {
 				this.showpoint = !this.showpoint
@@ -165,29 +190,35 @@
 			sc.Renderer.clear(this.backgroundcolor)
 			// console.log(this.pointlist)
 
-			let poly = new SUN.EdgeTable()
+			sc.Renderer.draw_String(10, 10, "WASD to MOVE  JK to ROTATE  NM to SCALE", this.font, SUN.Color.RGB8(255, 255, 255, 40))
+
+			// let poly = new SUN.EdgeTable()
 
 			let x = this.pointlist[1].position.minus(this.pointlist[0].position)
 			let y = this.pointlist[2].position.minus(this.pointlist[0].position)
-			let affinity_matrix = new SUN.Matrix3([
-				[x.x / 100, y.x / 100, this.pointlist[0].position.x],
-				[x.y / 100, y.y / 100, this.pointlist[0].position.y],
-				[0, 0, 1]])
+			let rotate = SUN.Matrix3.ROTATE(this.angle)
+			let scale = SUN.Matrix3.SCALE(this.scale)
+			let translate = SUN.Matrix3.TRANSLATE(this.position.x, this.position.y)
+			// let affinity_matrix = new SUN.Matrix3([
+			// 	[x.x / 100, y.x / 100, this.pointlist[0].position.x],
+			// 	[x.y / 100, y.y / 100, this.pointlist[0].position.y],
+			// 	[0, 0, 1]])
+			let affinity_matrix = translate.times(scale.times(rotate))
 
 
-			for (let i = 0; i <= 256; i += 16) {
-				{
-					let fromVec3 = (new SUN.Vector3(0, i, 1)).x_mat3(affinity_matrix)
-					let toVec3 = (new SUN.Vector3(256, i, 1)).x_mat3(affinity_matrix)
-					sc.Renderer.draw_Line_DDA(fromVec3.x, fromVec3.y, toVec3.x, toVec3.y, SUN.Color.RGB8(255, 255, 0, 20))
-				}
-				{
-					let fromVec3 = (new SUN.Vector3(i, 0, 1)).x_mat3(affinity_matrix)
-					let toVec3 = (new SUN.Vector3(i, 256, 1)).x_mat3(affinity_matrix)
-					sc.Renderer.draw_Line_DDA(fromVec3.x, fromVec3.y, toVec3.x, toVec3.y, SUN.Color.RGB8(255, 255, 0, 20))
-				}
+			// for (let i = 0; i <= 256; i += 16) {
+			// 	{
+			// 		let fromVec3 = (new SUN.Vector3(0, i, 1)).x_mat3(affinity_matrix)
+			// 		let toVec3 = (new SUN.Vector3(256, i, 1)).x_mat3(affinity_matrix)
+			// 		sc.Renderer.draw_Line_DDA(fromVec3.x, fromVec3.y, toVec3.x, toVec3.y, SUN.Color.RGB8(255, 255, 0, 20))
+			// 	}
+			// 	{
+			// 		let fromVec3 = (new SUN.Vector3(i, 0, 1)).x_mat3(affinity_matrix)
+			// 		let toVec3 = (new SUN.Vector3(i, 256, 1)).x_mat3(affinity_matrix)
+			// 		sc.Renderer.draw_Line_DDA(fromVec3.x, fromVec3.y, toVec3.x, toVec3.y, SUN.Color.RGB8(255, 255, 0, 20))
+			// 	}
 
-			}
+			// }
 
 			this.shapelist.forEach((pointlist) => {
 				if (pointlist.length >= 2) {
@@ -213,18 +244,18 @@
 
 
 			// poly.print()
-			sc.Renderer.draw_Polygon_ScanLine(poly, SUN.Color.RGB8(0, 0, 255))
+			// sc.Renderer.draw_Polygon_ScanLine(poly, SUN.Color.RGB8(0, 0, 255))
 
-			if (this.showpoint)
-				this.shapelist.forEach((pointlist, index) => {
-					pointlist.forEach((point) => {
-						point.render(sc, delta, index + 10)
-					})
-				})
+			// if (this.showpoint)
+			// 	this.shapelist.forEach((pointlist, index) => {
+			// 		pointlist.forEach((point) => {
+			// 			point.render(sc, delta, index + 10)
+			// 		})
+			// 	})
 
-			this.pointlist.forEach((point) => {
-				point.render(sc, delta, 14)
-			})
+			// this.pointlist.forEach((point) => {
+			// 	point.render(sc, delta, 14)
+			// })
 		}
 	}
 

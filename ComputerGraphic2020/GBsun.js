@@ -68,6 +68,29 @@ export class Matrix3 {
 	constructor(elem) {
 		this.mat = elem
 	}
+
+	static ROTATE(angle) {
+		let data = [[Math.cos(angle), Math.sin(angle), 0], [-Math.sin(angle), Math.cos(angle), 0], [0, 0, 1]]
+		return new Matrix3(data)
+	}
+
+	static TRANSLATE(x, y) {
+		let data = [[1, 0, x], [0, 1, y], [0, 0, 1]]
+		return new Matrix3(data)
+	}
+
+	static SCALE(scale) {
+		let data = [[scale, 0, 0], [0, scale, 0], [0, 0, 1]]
+		return new Matrix3(data)
+	}
+
+	times(mat) {
+		let ans = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+		for (let j = 0; j < 3; j++)
+			for (let i = 0; i < 3; i++)
+				ans[i][j] = this.mat[i][0] * mat.mat[0][j] + this.mat[i][1] * mat.mat[1][j] + this.mat[i][2] * mat.mat[2][j]
+		return new Matrix3(ans)
+	}
 }
 
 export class Line2D {
