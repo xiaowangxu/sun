@@ -22,12 +22,12 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}正交投影}{12}{}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces 正交投影 $vs$ 透视投影}}{13}{}\protected@file@percent }
 \newlabel{OrthVSPers}{{1}{13}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces 正交投影 $vs$ 透视投影}}{13}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces 视域}}{13}{}\protected@file@percent }
 \newlabel{OrthViewCube}{{2}{13}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces $x$ 分量，与 $l,r$ 的映射关系}}{14}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.2}透视投影}{15}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces 正交投影 $vs$ 透视投影}}{15}{}\protected@file@percent }
-\newlabel{OrthViewCube}{{4}{15}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces 透视投影视域}}{15}{}\protected@file@percent }
+\newlabel{PerspViewCube}{{4}{15}}
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces $x$ 分量，与 $l,r$ 的映射关系}}{16}{}\protected@file@percent }
 \newlabel{Persp}{{5}{16}}
 \newlabel{PersptoOrth}{{10}{17}}
@@ -38,18 +38,28 @@
 \newlabel{ViewMatrix}{{11}{19}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}绘制/光栅化}{19}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}三角填充}{19}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}绘制顺序问题}{19}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}画家算法}{19}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}画家算法的问题}{19}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.2}改进方向}{19}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}三维裁剪}{20}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}性能问题与原因}{20}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}三角面裁剪}{20}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces 正交投影 $vs$ 透视投影}}{21}{}\protected@file@percent }
-\newlabel{Cut}{{6}{21}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}近平面裁剪}{24}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}视口裁剪}{24}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}基础光照}{26}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}全局光照}{26}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}方向光}{26}{}\protected@file@percent }
-\gdef \@abspage@last{26}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces 底部平行X轴}}{19}{}\protected@file@percent }
+\newlabel{BottomPTri}{{6}{19}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces 顶部平行X轴}}{20}{}\protected@file@percent }
+\newlabel{TopPTri}{{7}{20}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces 一般三角形}}{21}{}\protected@file@percent }
+\newlabel{NormalTri}{{8}{21}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}绘制顺序问题}{22}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}画家算法}{22}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.1}画家算法的问题}{23}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces 画家算法的问题}}{23}{}\protected@file@percent }
+\newlabel{PainterProblem}{{9}{23}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.3.2}改进方向，$Z-buffer$ 算法}{23}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}三维裁剪}{24}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}性能问题与原因}{24}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}三角面裁剪}{24}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces 三角面裁剪}}{25}{}\protected@file@percent }
+\newlabel{Cut}{{10}{25}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces 三角面裁剪}}{25}{}\protected@file@percent }
+\newlabel{Cuts}{{11}{25}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.1}近平面裁剪}{28}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {5.2.2}视口裁剪}{28}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}基础光照}{30}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}环境光}{30}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}方向光}{30}{}\protected@file@percent }
+\gdef \@abspage@last{30}

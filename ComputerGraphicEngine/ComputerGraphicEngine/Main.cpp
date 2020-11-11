@@ -29,20 +29,19 @@ public:
 		meshes[0] = TriFaceMesh::LOAD_OBJ("untitled1.obj");
 		meshes[1] = TriFaceMesh::LOAD_OBJ("teapot.obj");
 		meshes[2] = TriFaceMesh::LOAD_OBJ("untitled.obj");
+		meshpos.set(0, 0, 10);
+		meshangle.set(0, 0, 0);
+		meshscale.set(1, 1, 1);
 		return true;
 	}
 
 	void draw_Mesh()
 	{
-		float angle = time;
-		double s = sin(angle * 20.0) * 0.5 + 1;
-		Matrix4 scale = Matrix4::SCALE(1, 1, 1);
-		Matrix4 rotateY = Matrix4::ROTATE_Y(angle);
-		Matrix4 rotateZ = Matrix4::ROTATE_Z(angle * 0.35);
-		Matrix4 rotateX = Matrix4::ROTATE_X(angle);
-		Matrix4 move = Matrix4::TRANSLATE(0, 0, 10);
+		Matrix4 scale = Matrix4::SCALE(meshscale._x, meshscale._y, meshscale._z);
+		Matrix4 rotate = Matrix4::ROTATE(meshangle._x, meshangle._y, meshangle._z);
+		Matrix4 move = Matrix4::TRANSLATE(meshpos._x, meshpos._y, meshpos._z);
 		Matrix4 view = camera.cameraMatrix().quickInvert();
-		Matrix4 transform = move * (rotateX * (rotateY * (rotateZ * scale)));
+		Matrix4 transform = move * (rotate * scale);
 		//cout << transform << endl;
 		vector<TriFace> list;
 
@@ -79,11 +78,8 @@ public:
 				pf2 /= pf2._w;
 				pf3 /= pf3._w;
 
-				pf1._x *= -1;
 				pf1._y *= -1;
-				pf2._x *= -1;
 				pf2._y *= -1;
-				pf3._x *= -1;
 				pf3._y *= -1;
 
 				TriFace renderface(pf1, pf2, pf3);
@@ -195,23 +191,75 @@ public:
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
-		if (GetKey(olc::LEFT).bHeld)
-			camera._position._x += 2.0f * fElapsedTime; // Travel Upwards
+		//if (GetKey(olc::LEFT).bHeld)
+		//	camera._position._x += 2.0f * fElapsedTime; // Travel Left
 
-		if (GetKey(olc::RIGHT).bHeld)
-			camera._position._x -= 2.0f * fElapsedTime; // Travel Downwards
+		//if (GetKey(olc::RIGHT).bHeld)
+		//	camera._position._x -= 2.0f * fElapsedTime; // Travel Right
 
-		if (GetKey(olc::UP).bHeld)
-			camera._position._y += 2.0f * fElapsedTime; // Travel Upwards
+		//if (GetKey(olc::UP).bHeld)
+		//	camera._position._y += 2.0f * fElapsedTime; // Travel Upwards
 
-		if (GetKey(olc::DOWN).bHeld)
-			camera._position._y -= 2.0f * fElapsedTime; // Travel Downwards
+		//if (GetKey(olc::DOWN).bHeld)
+		//	camera._position._y -= 2.0f * fElapsedTime; // Travel Downwards
+
+		//if (GetKey(olc::W).bHeld)
+		//	camera._position._z += 2.0f * fElapsedTime; // Travel Towards
+
+		//if (GetKey(olc::S).bHeld)
+		//	camera._position._z -= 2.0f * fElapsedTime; // Travel Backwards
+
+
 
 		if (GetKey(olc::W).bHeld)
-			camera._position._z += 2.0f * fElapsedTime; // Travel Upwards
-
+			meshpos._z += 2.0f * fElapsedTime; // Travel Upwards
 		if (GetKey(olc::S).bHeld)
-			camera._position._z -= 2.0f * fElapsedTime; // Travel Downwards
+			meshpos._z -= 2.0f * fElapsedTime; // Travel Downwards
+		if (GetKey(olc::LEFT).bHeld)
+			meshpos._x -= 2.0f * fElapsedTime; // Travel Upwards
+		if (GetKey(olc::RIGHT).bHeld)
+			meshpos._x += 2.0f * fElapsedTime; // Travel Downwards
+		if (GetKey(olc::UP).bHeld)
+			meshpos._y += 2.0f * fElapsedTime; // Travel Upwards
+		if (GetKey(olc::DOWN).bHeld)
+			meshpos._y -= 2.0f * fElapsedTime; // Travel Downwards
+
+
+		if (GetKey(olc::I).bHeld)
+			meshangle._x -= 2.0f * fElapsedTime; // Travel Upwards
+		if (GetKey(olc::K).bHeld)
+			meshangle._x += 2.0f * fElapsedTime; // Travel Downwards
+		if (GetKey(olc::J).bHeld)
+			meshangle._y += 2.0f * fElapsedTime; // Travel Upwards
+		if (GetKey(olc::L).bHeld)
+			meshangle._y -= 2.0f * fElapsedTime; // Travel Downwards
+		if (GetKey(olc::O).bHeld)
+			meshangle._z += 2.0f * fElapsedTime; // Travel Upwards
+		if (GetKey(olc::U).bHeld)
+			meshangle._z -= 2.0f * fElapsedTime; // Travel Downwards
+
+
+		if (GetKey(olc::T).bHeld)
+			meshscale._x -= 2.0f * fElapsedTime; // Travel Upwards
+		if (GetKey(olc::G).bHeld)
+			meshscale._x += 2.0f * fElapsedTime; // Travel Downwards
+		if (GetKey(olc::F).bHeld)
+			meshscale._y += 2.0f * fElapsedTime; // Travel Upwards
+		if (GetKey(olc::H).bHeld)
+			meshscale._y -= 2.0f * fElapsedTime; // Travel Downwards
+		if (GetKey(olc::R).bHeld)
+			meshscale._z += 2.0f * fElapsedTime; // Travel Upwards
+		if (GetKey(olc::Y).bHeld)
+			meshscale._z -= 2.0f * fElapsedTime; // Travel Downwards
+
+		if (GetKey(olc::ESCAPE).bHeld)
+		{
+			meshangle.set(0, 0, 0);
+			meshpos.set(0, 0, 10);
+			meshscale.set(1, 1, 1);
+		}
+
+
 
 		// if (GetKey(olc::A).bHeld)
 		// {
@@ -228,7 +276,7 @@ public:
 		if (GetKey(olc::SPACE).bPressed)
 			wireframe = !wireframe; // Travel Downwards
 
-		if (GetKey(olc::K).bPressed)
+		if (GetKey(olc::ENTER).bPressed)
 		{
 			current = (current + 1) % 3;
 			mesh = &meshes[current];
@@ -236,7 +284,6 @@ public:
 
 		Clear(olc::Pixel(0, 0, 0, 255));
 		draw_Mesh();
-		time += fElapsedTime * 0.1;
 		// std::cout << time << std::endl;
 
 		return true;
@@ -251,6 +298,9 @@ private:
 	Camera camera;
 	double fov = 60.0;
 	bool wireframe = false;
+	Vector3 meshpos;
+	Vector3 meshangle;
+	Vector3 meshscale;
 };
 
 int main()

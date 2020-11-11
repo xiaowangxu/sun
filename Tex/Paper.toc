@@ -19,15 +19,15 @@
 \contentsline {subsection}{\numberline {3.3}坐标系变换}{19}{}%
 \contentsline {section}{\numberline {4}绘制/光栅化}{19}{}%
 \contentsline {subsection}{\numberline {4.1}三角填充}{19}{}%
-\contentsline {subsection}{\numberline {4.2}绘制顺序问题}{19}{}%
-\contentsline {subsection}{\numberline {4.3}画家算法}{19}{}%
-\contentsline {subsubsection}{\numberline {4.3.1}画家算法的问题}{19}{}%
-\contentsline {subsubsection}{\numberline {4.3.2}改进方向}{19}{}%
-\contentsline {section}{\numberline {5}三维裁剪}{20}{}%
-\contentsline {subsection}{\numberline {5.1}性能问题与原因}{20}{}%
-\contentsline {subsection}{\numberline {5.2}三角面裁剪}{20}{}%
-\contentsline {subsubsection}{\numberline {5.2.1}近平面裁剪}{24}{}%
-\contentsline {subsubsection}{\numberline {5.2.2}视口裁剪}{24}{}%
-\contentsline {section}{\numberline {6}基础光照}{26}{}%
-\contentsline {subsection}{\numberline {6.1}全局光照}{26}{}%
-\contentsline {subsection}{\numberline {6.2}方向光}{26}{}%
+\contentsline {subsection}{\numberline {4.2}绘制顺序问题}{22}{}%
+\contentsline {subsection}{\numberline {4.3}画家算法}{22}{}%
+\contentsline {subsubsection}{\numberline {4.3.1}画家算法的问题}{23}{}%
+\contentsline {subsubsection}{\numberline {4.3.2}改进方向，$Z-buffer$ 算法}{23}{}%
+\contentsline {section}{\numberline {5}三维裁剪}{24}{}%
+\contentsline {subsection}{\numberline {5.1}性能问题与原因}{24}{}%
+\contentsline {subsection}{\numberline {5.2}三角面裁剪}{24}{}%
+\contentsline {subsubsection}{\numberline {5.2.1}近平面裁剪}{28}{}%
+\contentsline {subsubsection}{\numberline {5.2.2}视口裁剪}{28}{}%
+\contentsline {section}{\numberline {6}基础光照}{30}{}%
+\contentsline {subsection}{\numberline {6.1}环境光}{30}{}%
+\contentsline {subsection}{\numberline {6.2}方向光}{30}{}%

@@ -21,7 +21,7 @@ public:
 public:
 	Camera()
 	{
-		_near = 1.1;
+		_near = 0.1;
 		_far = 1000;
 		_position.set(0, 0, 0);
 		_lookdir.set(0, 0, 1);

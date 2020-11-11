@@ -5,9 +5,11 @@
 \usepackage{float}
 \usepackage{fontspec}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathptmx}
+\usepackage{bm}
 \usepackage{graphicx}
 \usepackage{tikz}
-\usepackage{mathpazo}
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{indentfirst}
@@ -447,7 +449,7 @@ f 16 5 4
 一种简单的投影方式是“正交投影”。它几乎可以简单的理解为：忽略三维点的 $z$ 分量，直接将 $x, y$ 分量和屏幕坐标相关联。因此，正交投影是“忽略透视的”，他没有消失点这一概念，在三维空间中的平行线在投影到屏幕坐标后也是保持平行的。这当然我我们的现实经验是不同的，见图(\ref{OrthVSPers})。虽然在某些场景下，正交投影的这种性质能更好地表达某些信息，但更为常用的还是“透视投影”。只因正交投影在之后介绍透视投影会有所帮助，因此在这里做简要的介绍。
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.4]{Picture/Annotation 2020-06-23 205119.png}
+	\includegraphics[scale=0.4]{Picture/OvP.png}
 	\vspace{-2ex}
 	\caption{正交投影 $vs$ 透视投影}
 	\label{OrthVSPers}
@@ -456,9 +458,9 @@ f 16 5 4
 在正交投影中，我们需要把某个区域内的点映射到 $[-1,1]$ 的屏幕空间中，这个区域是一个长方体，称为“视域”。它由上下左右和远近6个平面组成。
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.4]{Picture/Annotation 2020-06-23 205119.png}
+	\includegraphics[scale=0.6]{Picture/ViewCube.png}
 	\vspace{-2ex}
-	\caption{正交投影 $vs$ 透视投影}
+	\caption{视域}
 	\label{OrthViewCube}
 \end{figure}
 
@@ -559,10 +561,10 @@ f 16 5 4
 透视投影能展现出人眼近大远小的视觉经验。它与正交透视的主要区别就是视域不同，不再是一个长方体，而是一个类似截去了一块的金字塔：
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.4]{Picture/Annotation 2020-06-23 205119.png}
+	\includegraphics[scale=0.6]{Picture/PerspViewCube.png}
 	\vspace{-2ex}
-	\caption{正交投影 $vs$ 透视投影}
-	\label{OrthViewCube}
+	\caption{透视投影视域}
+	\label{PerspViewCube}
 \end{figure}
 
 在上图中，4根侧边的棱的延长线会交于坐标原点。实际上，在视域中的任意一点与原点构成的直线上的任意一点都会被映射到屏幕空间上的同一点。这一性质为我们实现透视投影提供了线索。
@@ -753,11 +755,134 @@ $A$ 所在Z平面的上端坐标 $Z_y$:
 综上，在将点进行投影之前，首先要计算 $\mathbf{P'}=\mathbf{C^{-1}P}$ ，后将 $\mathbf{P'}$ 作为需要变换的点即可。矩阵的逆的算法不是本次项目的重点，这里不做介绍，可见 $sunMatLib.h$ 文件。
 \section{绘制/光栅化}
 \subsection{三角填充}
+标准的三角填充算法主要考虑了底部平行X轴和顶部平行X轴这两种情况，如图所示:
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{Picture/latex4.1.png}
+	\vspace{-2ex}
+	\caption{底部平行X轴}
+	\label{BottomPTri}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{Picture/latex4.2.png}
+	\vspace{-2ex}
+	\caption{顶部平行X轴}
+	\label{TopPTri}
+\end{figure}
+
+如图(\ref{BottomPTri})所示，我们从 $V1$ 开始平行于底部的 $V2V3$ 开始绘制一条条平行线，他们的交点分别为 $p1$ ，$p2$ ，显然 $p1.y=p2.y$
+
+同理， $V1.y-p1.y=V1.y-p2.y$ ,从 $V1$ 开始一条一条往下绘制直线来填充整个三角形。
+
+我们将 $\triangle y$ 设置为1，那么 $\triangle x = \frac{\triangle y}{k}$ $k$ 为 $V1V2$ 与 $V1V3$ 的斜率。
+
+那么我们可以得到如下公式
+\begin{equation*}
+	K_{V1V2} = \frac{V2.y-V1.y}{V2.x-V1.x}
+\end{equation*}
+
+\begin{equation*}
+	K_{V1V3} = \frac{V3.y-V1.y}{V2.x-V1.x}
+\end{equation*}
+
+\begin{equation*}
+	\triangle x_{V1V2} = \frac{\triangle y}{K_{V1V2}}
+\end{equation*}
+
+\begin{equation*}
+	\triangle x_{V1V3} = \frac{\triangle y}{K_{V1V3}}
+\end{equation*}
+
+其代码大致如下:
+\newline
+\begin{lstlisting}[language=c++]
+for(int y = v1; y<V2.y,y++)
+{
+	drawline(V2.x,y,V3.x,y)
+	V2.x+=dx
+	V3.x+=dx
+}
+\end{lstlisting}
+
+对于图(\ref{TopPTri})的处理方法，与图1的处理方法是一样的，只是图二是由下向上绘制一条条的平行线，在此不多赘述。
+
+有了这两个三角形的绘制基础，接下来我们考虑一般三角形的情况
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{Picture/latex4.3.png}
+	\vspace{-2ex}
+	\caption{一般三角形}
+	\label{NormalTri}
+\end{figure}
+
+如图(\ref{NormalTri})，我们基本的思路是将该三角形分解为上面类型一样的两个三角形，一个平底的，一个平顶的。这样我们就能将一个新问题转化为已经解决了的问题。现在的问题关键点是我们应该如何切分这个三角形。
+
+在图3中，我们可以穿过 $V2$ 沿着X轴构建一条直线，假设这条线的与三角形的交点为 $V4$ 并且 $V4.y=V2.y$ $V4.x$ 也可以通过计算得出。最终我们获得了两个三角形 $\triangle{1} = (V1,V2,V4),\triangle{2} = (V2,V4,V3)$
+
+最终代码如下:
+\newline
+\begin{lstlisting}[language=c++]
+drawTriangle()
+{
+	sorty();		//将三个顶点按y值大小排序，确定顶部点
+	if(v2.y ==v3.y)			//平底三角形
+	{
+		fillBottomFlatTriangle(v1,v2,v3);
+	}
+	else if(v1.y == v2.y)	//平顶三角形
+	{
+		fillTopFlatTriangle(v1,v2,v3)
+	}
+	else					//一般情况
+	{
+		Vertice v4 = new Vertice
+		fillBottomFlatTriangle(v1,v2,v4)
+		fillTopFlatTriangle(v2,v4,v3)
+	}
+}
+\end{lstlisting}
 \subsection{绘制顺序问题}
+我们要做的是将一个三维的物体投影至二维平面。那么为了让三维的物体能够准确的显示，我们必须确定哪些多边形是可见的，哪些多边形是不可见的。当我们直视一个三维的物体时，其背面我们是无法看见的，因此投影时，背面的多边形是不可见的。因此，绘制时应该由远及近得绘制多边形，这样近的多边形会将远的多边形所覆盖从而变得不可见。
 \subsection{画家算法}
+“画家算法”表示头脑简单的画家首先绘制距离较远的场景，然后用绘专制距离较属近的场景覆盖较远的部分。画家算法首先将场景中的多边形根据深度进行排序，然后按照顺序进行描绘。这种方法通常会将不可见的部分覆盖，这样就可以解决可见性问题。
+
+其算法的大致思路如下：
+\begin{enumerate}
+	\item 将屏幕设成背景色
+	\item 把要画的物体（多边形）按其离开视点的从远到近排序由此构成深度优先级表。然后从远到近画物体（多边形），近的就因为优先级高而覆盖远的多边形。由此可消隐。
+\end{enumerate}
+
+伪代码如下:
+\newline
+\begin{lstlisting}[language=c++]
+sort(polygon.distance)			//对多边形的距离行排序
+for(int i = n; i > 0; i--)
+{
+	draw_polygon(polygon[i].distance);	//由远及近画多边形
+}
+\end{lstlisting}
 \subsubsection{画家算法的问题}
-\subsubsection{改进方向}
-\newpage
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.9]{Picture/latex4.4.png}
+	\vspace{-2ex}
+	\caption{画家算法的问题}
+	\label{PainterProblem}
+\end{figure}
+
+在有些场合下，画家算法可能无法解决可见性问题。如图(\ref{PainterProblem})，在这个例子中，多边形 A、B、C 互相重叠，我们无法确定哪一个多边形在上面，哪一个在下面，我们也无法确定两个多边形什么时候在三维空间中交叉。
+
+一些基本的画家算法实现方法也可能效率很低，因为这将使得系统将可见多边形集合中的每个点都进行渲染，而没有考虑这些多边形在最终场景中可能被其它部分遮挡。这也就是说，对于细致的场景来说，画家算法可能会过度地消耗计算机资源。
+\subsubsection{改进方向，$Z-buffer$ 算法}
+深度缓存（$Z-buffer$）算法是一种典型的、简单的图象空间面消隐算法。该算法需要一个深度缓存数组 $ZB$ ，此外还 需要一个颜色属性数组 $CB$ ，它们的大小与屏幕上像素点的个数相同。 $Z-buffer$ 算法的步骤如下：
+\begin{enumerate}
+	\item 初始化 $ZB$ 和 $CB$，使得 $ZB(i,j)=Zmax,CB(i,j)=backgroundcolor, i=1,\cdots ,m; j=1,\cdots,n$ 。
+	\item 对多边形 $P$，计算它在点 $(i,j)$ 处的深度值 $z(i,j)$ 。
+	\item 若 $z(i,j)<ZB(i,j)$ ，则 $ZB(i,j)=z(i,j),CB(i,j)=color of P$。
+	\item 对每个多边形重复（2）、（3）两步，最终在 $CB$ 中存放的就是消隐后的图形。 这个算法的关键在第（2）步，要尽快判断出哪些点落在一个多边形内，并尽快求出一个点的深度值。这里需要应用 多边形点与点之间的相关性，包括水平相关性和垂直相关性。
+\end{enumerate}
+
 \section{三维裁剪}
 \subsection{性能问题与原因}
 在上述的功能实现后，程序已经能够正确地绘制三维网格模型了，但在我们将摄像机靠近模型时，我们会发现性能的快速下降。在十分靠近模型的时候还会出现“卡死”的情况。
@@ -769,19 +894,27 @@ $A$ 所在Z平面的上端坐标 $Z_y$:
 在三维空间中对三角面的裁剪如下图(\ref{Cut})，是一个三角面关于一张三维空间中平面的裁剪。
 \begin{figure}[H]
 	\centering
-	\includegraphics[scale=0.4]{Picture/Annotation 2020-06-23 205119.png}
+	\includegraphics[scale=0.5]{Picture/Cutting.png}
 	\vspace{-2ex}
-	\caption{正交投影 $vs$ 透视投影}
+	\caption{三角面裁剪}
 	\label{Cut}
 \end{figure}
 
-以平面法向的正方向表示要保留的区域，则会出现四种情况：
+以平面法向的正方向表示要保留的区域，则会出现四种情况，如图(\ref{Cuts})：
 \begin{enumerate}
 	\item 整个三角面都在保留区内
 	\item 整个三角面都在保留区外
 	\item 有1个顶点在保留区外，此时要保留的部分是2个三角面
 	\item 有2个顶点在保留区外，此时要保留的部分是1个三角面
 \end{enumerate}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{Picture/Cuts.png}
+	\vspace{-2ex}
+	\caption{三角面裁剪}
+	\label{Cuts}
+\end{figure}
 
 首先引入“有向距离” $distance(\mathbf{P_n})$ 是空间中一点 $\mathbf{P_n}$ 到一张平面的垂直距离，在保留区内为正，否则为负。
 
@@ -922,6 +1055,6 @@ for (int p = 0; p < 4; p++)
 }
 \end{lstlisting}
 \section{基础光照}
-\subsection{全局光照}
+\subsection{环境光}
 \subsection{方向光}
 \end{document}

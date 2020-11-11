@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.27)  7 NOV 2020 19:23
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.27)  10 NOV 2020 19:22
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -300,6 +300,53 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
 \mathdisplay@stack=\toks23
 LaTeX Info: Redefining \[ on input line 2923.
 LaTeX Info: Redefining \] on input line 2924.
+) (c:/texlive/2020/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+ (c:/texlive/2020/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)) (c:/texlive/2020/texmf-dist/tex/latex/psnfss/mathptmx.sty
+Package: mathptmx 2020/03/25 PSNFSS-v9.3 Times w/ Math, improved (SPQR, WaS) 
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 28.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> OT1/ztmcm/m/n on input line 28.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/ztmcm/m/n on input line 28.
+LaTeX Font Info:    Redeclaring symbol font `letters' on input line 29.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> OML/ztmcm/m/it on input line 29.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> OML/ztmcm/m/it on input line 29.
+LaTeX Font Info:    Redeclaring symbol font `symbols' on input line 30.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> OMS/ztmcm/m/n on input line 30.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> OMS/ztmcm/m/n on input line 30.
+LaTeX Font Info:    Redeclaring symbol font `largesymbols' on input line 31.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> OMX/ztmcm/m/n on input line 31.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> OMX/ztmcm/m/n on input line 31.
+\symbold=\mathgroup6
+\symitalic=\mathgroup7
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> OT1/ptm/bx/n on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/ptm/bx/n on input line 34.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> OT1/ptm/m/it on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/ptm/m/it on input line 35.
+LaTeX Info: Redefining \hbar on input line 50.
+) (c:/texlive/2020/texmf-dist/tex/latex/tools/bm.sty
+Package: bm 2019/07/24 v1.2d Bold Symbol Support (DPC/FMi)
+LaTeX Info: Redefining \bm on input line 209.
 ) (c:/texlive/2020/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 2020/09/09 v1.2b Enhanced LaTeX Graphics (DPC,SPQR)
  (c:/texlive/2020/texmf-dist/tex/latex/graphics/graphics.sty
@@ -511,10 +558,7 @@ File: pgfmodulematrix.code.tex 2020/10/01 v3.1.6a (3.1.6a)
 \tikz@expandcount=\count316
  (c:/texlive/2020/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarytopaths.code.tex
 File: tikzlibrarytopaths.code.tex 2020/10/01 v3.1.6a (3.1.6a)
-))) (c:/texlive/2020/texmf-dist/tex/latex/psnfss/mathpazo.sty
-Package: mathpazo 2020/03/25 PSNFSS-v9.3 Palatino w/ Pazo Math (D.Puga, WaS) 
-\symupright=\mathgroup4
-) (c:/texlive/2020/texmf-dist/tex/latex/listings/listings.sty
+))) (c:/texlive/2020/texmf-dist/tex/latex/listings/listings.sty
 \lst@mode=\count317
 \lst@gtempboxa=\box65
 \lst@token=\toks36
@@ -543,38 +587,34 @@ Package: xeCJK-listings 2020/10/19 v3.8.6 xeCJK patch file for listings
 ) (c:/texlive/2020/texmf-dist/tex/latex/tools/indentfirst.sty
 Package: indentfirst 1995/11/23 v1.03 Indent first paragraph (DPC)
 )
-LaTeX Font Info:    Trying to load font information for TU+ppl on input line 14.
-LaTeX Font Info:    No file TUppl.fd. on input line 14.
+LaTeX Font Info:    Trying to load font information for TU+ptm on input line 16.
+LaTeX Font Info:    No file TUptm.fd. on input line 16.
 
 
-LaTeX Font Warning: Font shape `TU/ppl/m/n' undefined
-(Font)              using `TU/lmr/m/n' instead on input line 14.
+LaTeX Font Warning: Font shape `TU/ptm/m/n' undefined
+(Font)              using `TU/lmr/m/n' instead on input line 16.
 
-(./Paper.aux
-
-LaTeX Warning: Label `OrthViewCube' multiply defined.
-
-)
+(./Paper.aux)
 \openout1 = `Paper.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
  ABD: EverySelectfont initializing macros
-LaTeX Info: Redefining \selectfont on input line 14.
+LaTeX Info: Redefining \selectfont on input line 16.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
@@ -611,36 +651,56 @@ LaTeX Info: Redefining \selectfont on input line 14.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 \c@lstlisting=\count327
-LaTeX Font Info:    Trying to load font information for OT1+ppl on input line 33.
-(c:/texlive/2020/texmf-dist/tex/latex/psnfss/ot1ppl.fd
-File: ot1ppl.fd 2001/06/04 font definitions for OT1/ppl.
+LaTeX Font Info:    Trying to load font information for OT1+ztmcm on input line 35.
+(c:/texlive/2020/texmf-dist/tex/latex/psnfss/ot1ztmcm.fd
+File: ot1ztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ztmcm.
 )
-LaTeX Font Info:    Trying to load font information for OML+zplm on input line 33.
- (c:/texlive/2020/texmf-dist/tex/latex/psnfss/omlzplm.fd
-File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
+LaTeX Font Info:    Trying to load font information for OML+ztmcm on input line 35.
+ (c:/texlive/2020/texmf-dist/tex/latex/psnfss/omlztmcm.fd
+File: omlztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ztmcm.
 )
-LaTeX Font Info:    Trying to load font information for OMS+zplm on input line 33.
- (c:/texlive/2020/texmf-dist/tex/latex/psnfss/omszplm.fd
-File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
+LaTeX Font Info:    Trying to load font information for OMS+ztmcm on input line 35.
+ (c:/texlive/2020/texmf-dist/tex/latex/psnfss/omsztmcm.fd
+File: omsztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/ztmcm.
 )
-LaTeX Font Info:    Trying to load font information for OMX+zplm on input line 33.
- (c:/texlive/2020/texmf-dist/tex/latex/psnfss/omxzplm.fd
-File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
+LaTeX Font Info:    Trying to load font information for OMX+ztmcm on input line 35.
+ (c:/texlive/2020/texmf-dist/tex/latex/psnfss/omxztmcm.fd
+File: omxztmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/ztmcm.
 )
-LaTeX Font Info:    Trying to load font information for OT1+zplm on input line 33.
- (c:/texlive/2020/texmf-dist/tex/latex/psnfss/ot1zplm.fd
-File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
-) [1
+LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 35.
+ (c:/texlive/2020/texmf-dist/tex/latex/psnfss/ot1ptm.fd
+File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+)
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 35.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 35.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 35.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 35.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 35.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 35.
+ [1
 
 ]
 
-LaTeX Font Warning: Font shape `TU/ppl/b/n' undefined
-(Font)              using `TU/ppl/m/n' instead on input line 35.
+LaTeX Font Warning: Font shape `TU/ptm/b/n' undefined
+(Font)              using `TU/ptm/m/n' instead on input line 37.
 
 (./Paper.toc
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 2.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 2.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 2.
 
-LaTeX Font Warning: Font shape `TU/ppl/m/sl' undefined
-(Font)              using `TU/ppl/m/n' instead on input line 31.
+
+LaTeX Font Warning: Font shape `TU/ptm/m/sl' undefined
+(Font)              using `TU/ptm/m/n' instead on input line 31.
 
 LaTeX Font Info:    Font shape `TU/SimSun(0)/m/sl' in size <12> not available
 (Font)              Font shape `TU/SimSun(0)/m/it' tried instead on input line 31.
@@ -648,19 +708,14 @@ LaTeX Font Info:    Font shape `TU/SimSun(0)/m/sl' in size <12> not available
 \tf@toc=\write4
 \openout4 = `Paper.toc'.
 
- [3] [4] [5] [6]
-Overfull \hbox (16.04974pt too wide) detected at line 316
-[]
- []
-
-[7] (c:/texlive/2020/texmf-dist/tex/latex/listings/lstlang1.sty
+ [3] [4] [5] [6] [7] (c:/texlive/2020/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2020/03/24 1.8d listings language file
 ) (c:/texlive/2020/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2020/03/24 1.8d listings language file
 ) (c:/texlive/2020/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
 )
-Underfull \hbox (badness 10000) in paragraph at lines 321--323
+Underfull \hbox (badness 10000) in paragraph at lines 323--325
 
  []
 
@@ -685,52 +740,83 @@ Package fontspec Info: Font family 'Consolas(0)' created for font 'Consolas'
 (fontspec)             - 'bold italic small caps'  (b/scit) with NFSS spec.: 
 
 [8] [9] [10]
-Underfull \hbox (badness 10000) in paragraph at lines 413--415
+Underfull \hbox (badness 10000) in paragraph at lines 415--417
 
  []
 
 [11]
-File: Picture/Annotation 2020-06-23 205119.png Graphic file (type bmp)
-<Picture/Annotation 2020-06-23 205119.png>
+File: Picture/OvP.png Graphic file (type bmp)
+<Picture/OvP.png>
  [12]
-File: Picture/Annotation 2020-06-23 205119.png Graphic file (type bmp)
-<Picture/Annotation 2020-06-23 205119.png>
- [13] [14]
-File: Picture/Annotation 2020-06-23 205119.png Graphic file (type bmp)
-<Picture/Annotation 2020-06-23 205119.png>
- [15] [16] [17] [18] [19]
-File: Picture/Annotation 2020-06-23 205119.png Graphic file (type bmp)
-<Picture/Annotation 2020-06-23 205119.png>
- [20]
-Overfull \hbox (2.05664pt too wide) in paragraph at lines 794--795
-\OML/zplm/m/it/12 N[]\OT1/ppl/m/n/12 , \OML/zplm/m/it/12 N[]\OT1/ppl/m/n/12 , \OML/zplm/m/it/12 inside\OT1/zplm/m/n/12 [\OT1/ppl/m/n/12 0\OT1/zplm/m/n/12 ]$ \TU/SimSun(0)/m/n/12 也 是 逆 时 针 排 列 的，|  即 裁 剪 后 的 新 三 角 面 $\OML/zplm/m/it/12 TriFace\OT1/zplm/m/n/12 (\OML/zplm/m/it/12 N[]\OT1/ppl/m/n/12 , \OML/zplm/m/it/12 N[]\OT1/ppl/m/n/12 , \OML/zplm/m/it/12 inside\OT1/zplm/m/n/12 [\OT1/ppl/m/n/12 0\OT1/zplm/m/n/12 ])$
+File: Picture/ViewCube.png Graphic file (type bmp)
+<Picture/ViewCube.png>
+ [13]
+File: Picture/PerspViewCube.png Graphic file (type bmp)
+<Picture/PerspViewCube.png>
+ [14] [15] [16] [17] [18]
+File: Picture/latex4.1.png Graphic file (type bmp)
+<Picture/latex4.1.png>
+File: Picture/latex4.2.png Graphic file (type bmp)
+<Picture/latex4.2.png>
+ [19]
+Underfull \hbox (badness 10000) in paragraph at lines 797--799
+
+ []
+
+[20]
+File: Picture/latex4.3.png Graphic file (type bmp)
+<Picture/latex4.3.png>
+
+Underfull \hbox (badness 10000) in paragraph at lines 823--825
+
  []
 
 [21]
-Underfull \hbox (badness 10000) in paragraph at lines 799--801
+Underfull \hbox (badness 10000) in paragraph at lines 856--858
 
  []
 
-[22] [23]
-Underfull \hbox (badness 10000) in paragraph at lines 873--875
+[22]
+File: Picture/latex4.4.png Graphic file (type bmp)
+<Picture/latex4.4.png>
+
+Overfull \hbox (18.27914pt too wide) in paragraph at lines 880--881
+[]\TU/SimSun(0)/m/n/12 初 始 化 $\OML/ztmcm/m/it/12 ZB$ \TU/SimSun(0)/m/n/12 和 $\OML/ztmcm/m/it/12 CB$\TU/SimSun(0)/m/n/12 ，|  使 得 $\OML/ztmcm/m/it/12 ZB\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 i; j\OT1/ztmcm/m/n/12 ) = \OML/ztmcm/m/it/12 Zmax; CB\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 i; j\OT1/ztmcm/m/n/12 ) = \OML/ztmcm/m/it/12 backgroundcolor; i \OT1/ztmcm/m/n/12 = 1\OML/ztmcm/m/it/12 ; []  ; m\OT1/ztmcm/m/n/12 ; \OML/ztmcm/m/it/12 j \OT1/ztmcm/m/n/12 =
+ []
+
+[23]
+File: Picture/Cutting.png Graphic file (type bmp)
+<Picture/Cutting.png>
+ [24]
+File: Picture/Cuts.png Graphic file (type bmp)
+<Picture/Cuts.png>
+ [25]
+Overfull \hbox (34.57646pt too wide) in paragraph at lines 929--931
+\TU/SimSun(0)/m/n/12 剪 面 的 交 点 $\OML/ztmcm/m/it/12 N[]$\TU/SimSun(0)/m/n/12 。|  显 然 $\OML/ztmcm/m/it/12 inside\OT1/ztmcm/m/n/12 [0]\OML/ztmcm/m/it/12 ; inside\OT1/ztmcm/m/n/12 [1]\OML/ztmcm/m/it/12 ; outside\OT1/ztmcm/m/n/12 [0]$ \TU/SimSun(0)/m/n/12 是 逆 时 针 排 列 的，|  则 $\OML/ztmcm/m/it/12 inside\OT1/ztmcm/m/n/12 [0]\OML/ztmcm/m/it/12 ; inside\OT1/ztmcm/m/n/12 [1]\OML/ztmcm/m/it/12 ; N[]$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 932--934
 
  []
 
-[24] [25] [26] (./Paper.aux)
+[26] [27] [28]
+Underfull \hbox (badness 10000) in paragraph at lines 1006--1008
+
+ []
+
+[29] [30] (./Paper.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: There were multiply-defined labels.
-
  ) 
 Here is how much of TeX's memory you used:
- 20532 strings out of 479393
- 474795 string characters out of 5880193
- 1111822 words of memory out of 5000000
- 39497 multiletter control sequences out of 15000+600000
- 551670 words of font info for 110 fonts, out of 8000000 for 9000
+ 21197 strings out of 479393
+ 484176 string characters out of 5880193
+ 1113811 words of memory out of 5000000
+ 40141 multiletter control sequences out of 15000+600000
+ 563454 words of font info for 139 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  97i,14n,100p,412b,1748s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Paper.pdf (26 pages).
+Output written on Paper.pdf (30 pages).
