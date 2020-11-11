@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.27)  10 NOV 2020 19:22
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.26)  11 NOV 2020 22:35
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -805,18 +805,23 @@ Underfull \hbox (badness 10000) in paragraph at lines 1006--1008
 
  []
 
-[29] [30] (./Paper.aux)
+[29] [30]
+File: Picture/latex5.1.png Graphic file (type bmp)
+<Picture/latex5.1.png>
+File: Picture/latex5.2.png Graphic file (type bmp)
+<Picture/latex5.2.png>
+ [31] [32] (./Paper.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 21197 strings out of 479393
- 484176 string characters out of 5880193
+ 21222 strings out of 479393
+ 484527 string characters out of 5880193
  1113811 words of memory out of 5000000
- 40141 multiletter control sequences out of 15000+600000
+ 40164 multiletter control sequences out of 15000+600000
  563454 words of font info for 139 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  97i,14n,100p,412b,1748s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Paper.pdf (30 pages).
+Output written on Paper.pdf (32 pages).
