@@ -41,7 +41,7 @@
 <script type="module">
 	import * as SUN from './GBsun.js'
 
-	let gameconsole = new SUN.sunConsole(256, 256)
+	let gameconsole = new SUN.sunConsole(256, 256, true)
 	document.getElementById('container').appendChild(gameconsole.get_ConsoleDOM())
 	let font = SUN.Font.DEFAULT()
 
@@ -440,6 +440,16 @@
 
 	let sunconsole = new Console()
 
+	function GetColor(x) {
+		let logx = Math.log(Math.abs(x) + 1)
+		if (x < 0) {
+			return SUN.Color.RGB(logx, 1 - logx, 0)
+		}
+		if (x >= 0) {
+			return SUN.Color.RGB(0, 1 - logx, logx)
+		}
+	}
+
 	gameconsole.init = (sc) => {
 		sunconsole.init(sc.Renderer.size.x, sc.Renderer.size.y)
 	}
@@ -448,8 +458,112 @@
 		sunconsole.update(sc, delta)
 	}
 
+	let di = (i, j) => {
+		return 1 / 1 * j * Math.cos(i * j / 1500)
+	}
+
+	let dj = (i, j) => {
+		return 1 / 1 * i * Math.cos(i * j / 1500)
+	}
+
+	class Optimizer {
+		constructor(x0, y0) {
+			this.x0 = x0
+			this.y0 = y0
+			this.direction = new SUN.Vector2(0, 0)
+		}
+
+		next(di, dj) {
+			this.x0 = this.x0 - dx
+			this.y0 = this.y0 - dy
+			let dx = di(this.x0, this.y0)
+			let dy = dj(this.x0, this.y0)
+			this.x0 = this.x0 - dx
+			this.y0 = this.y0 - dy
+			this.direction.x = Math.round(-dx)
+			this.direction.y = Math.round(-dy)
+		}
+
+		render(sc, x, y) {
+			sc.Renderer.draw_Circle(x + this.x0 - 1, y + this.y0 - 1, 2, SUN.Color.RGB(1, 1, 1))
+		}
+	}
+
+	class GradientDescent extends Optimizer {
+		constructor(x0, y0, a = 0.02) {
+			super(x0, y0)
+			this.rate = a
+		}
+
+		next(di, dj) {
+			this.x0 = this.x0 - this.direction.x * this.rate
+			this.y0 = this.y0 - this.direction.y * this.rate
+			let dx = di(this.x0, this.y0)
+			let dy = dj(this.x0, this.y0)
+			this.direction.x = dx
+			this.direction.y = dy
+		}
+
+		render(sc, x, y) {
+			sc.Renderer.draw_Circle(x + this.x0, y + this.y0, 2, SUN.Color.RGB(1, 1, 1))
+			sc.Renderer.draw_Line_DDA(x + this.x0, y + this.y0, x + this.x0 - this.direction.x * this.rate, y + this.y0 - this.direction.y * this.rate, SUN.Color.RGB(1, 1, 1))
+		}
+	}
+
+	class Momentum extends Optimizer {
+		constructor(x0, y0, a = 0.02, u = 0.9) {
+			super(x0, y0)
+			this.rate = a
+			this.consider = u
+			this.direction = new SUN.Vector2(0, 0)
+			this.show_last_x = 0
+			this.show_last_y = 0
+			this.last_x = 5
+			this.last_y = 5
+		}
+
+		next(di, dj) {
+			this.x0 = this.x0 + (this.consider * this.last_x - this.direction.x * this.rate)
+			this.y0 = this.y0 + (this.consider * this.last_y - this.direction.y * this.rate)
+			this.last_x = (this.consider * this.last_x - this.direction.x * this.rate)
+			this.last_y = (this.consider * this.last_y - this.direction.y * this.rate)
+			let dx = di(this.x0, this.y0)
+			let dy = dj(this.x0, this.y0)
+			this.direction.x = dx
+			this.direction.y = dy
+		}
+
+		render(sc, x, y) {
+			sc.Renderer.draw_Circle(x + this.x0, y + this.y0, 2, SUN.Color.RGB(1, 1, 1))
+			sc.Renderer.draw_Line_DDA(x + this.x0, y + this.y0, x + this.x0 - this.direction.x * this.rate, y + this.y0 - this.direction.y * this.rate, SUN.Color.PICO(8))
+			sc.Renderer.draw_Line_DDA(x + this.x0, y + this.y0, x + this.x0 + this.last_x, y + this.y0 + this.last_y, SUN.Color.PICO(9))
+			sc.Renderer.draw_Line_DDA(x + this.x0, y + this.y0, x + this.x0 + this.last_x - this.direction.x * this.rate, y + this.y0 + this.last_y - this.direction.y * this.rate, SUN.Color.RGB(1, 1, 1))
+		}
+	}
+
+	const Grad = new GradientDescent(-20, -40)
+	const Grad2 = new Momentum(-20, -40, 0.5, 0.85)
+
 	gameconsole.render = (sc, delta) => {
-		sunconsole.render(sc, delta)
+		// sunconsole.render(sc, delta)
+		let x = 128
+		let y = 128
+		for (let i = -128; i < 128; i++) {
+			for (let j = -128; j < 128; j++) {
+				let ans = Math.sin(i * j / 1500) * 1000
+				// console.log(ans)
+				ans /= 100
+				// if (Math.abs(ans % 1) < 0.01)
+				sc.Renderer.draw_Pixel(x + i, y + j, GetColor(ans / 5))
+			}
+		}
+		if (sc.Keyboard.keymap[' '] && sc.Keyboard.keymap[' '].continue) {
+			Grad.next(di, dj)
+			Grad2.next(di, dj)
+		}
+		Grad.render(sc, x, y)
+		Grad2.render(sc, x, y)
+		sc.Renderer.draw_String(sc.Mouse.position.x, sc.Mouse.position.y + 6, di(sc.Mouse.position.x - x) + ", " + dj(sc.Mouse.position.y - y), font)
 	}
 
 	gameconsole.run()
