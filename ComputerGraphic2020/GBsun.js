@@ -2181,6 +2181,8 @@ export class Camera {
 //************************************
 //           Engine Obj
 //************************************
+const FONT = Font.DEFAULT()
+
 class Renderer {
 	constructor(width, height) {
 		this.canvas = document.createElement('canvas')
@@ -2888,7 +2890,7 @@ class Renderer {
 		return Rect.XYWH(x, y, char.width, char.height)
 	}
 
-	draw_String(x, y, string, font, color = Color.COLOR('WHITE'), split = 1, lineheight = 0, border = 0, backgroundcolor = null) {
+	draw_String(x, y, string, font = FONT, color = Color.COLOR('WHITE'), split = 1, lineheight = 0, border = 0, backgroundcolor = null) {
 		if (string === '') return
 		let lastx = 0
 		let rect = font.get_StringRect(string, split, lineheight)
@@ -2918,7 +2920,7 @@ class Renderer {
 		return Rect.XYWH(x, y, rect.size.x + border * 2, rect.size.y + border * 2)
 	}
 
-	draw_MultiString(x, y, string, font, color = Color.COLOR('WHITE'), split = 1, lineheight = 0, linesplit = 1, border = 0, backgroundcolor = null, linebackgroundcolor = null) {
+	draw_MultiString(x, y, string, font = FONT, color = Color.COLOR('WHITE'), split = 1, lineheight = 0, linesplit = 1, border = 0, backgroundcolor = null, linebackgroundcolor = null) {
 		let lines = string.split('\n')
 		let starty = 0
 		let rect = font.get_MultiStringRect(string, split, lineheight, linesplit)
@@ -2944,10 +2946,12 @@ class Renderer {
 		let starty = 0
 		let width = 0
 		let height = 0
-		array.forEach((item) => {
+		for (let i = 0; i < array.length; i++) {
+			let item = array[i]
 			let content = item[0]
 			let style = item[1]
 			let rect = Rect.XYWH(0, 0, 0, 0)
+			// console.log(item)
 			if (item[2] !== undefined) {
 				style = Object.assign(style, (item[2])(this.time))
 			}
@@ -2982,6 +2986,7 @@ class Renderer {
 				// this.draw_Rect(rect, Color.RGB8(255, 0, 0, 80))
 			}
 			else if (content instanceof Array) {
+				// console.log(">>>>>>>>>>", content)
 				let split = 1
 				let lineheight = 0
 				let linesplit = 1
@@ -2990,7 +2995,9 @@ class Renderer {
 					if (style.lineheight !== undefined) lineheight = style.lineheight
 					if (style.linesplit !== undefined) linesplit = style.linesplit
 				}
+				// console.log(">>>>>>>>>")
 				rect = this.draw_Richtext(x + startx, y + starty, content, split, lineheight, linesplit)
+				// console.log(">>>>>>>>>123")
 				// this.draw_Rect(rect, Color.RGB8(255, 0, 0, 80))
 			}
 			else if (content instanceof Sprite) {
@@ -3009,9 +3016,11 @@ class Renderer {
 				height = Math.max(rect.size.y, height)
 			}
 			width = Math.max(startx - split, width)
-		})
+		}
 		return Rect.XYWH(x, y, width, starty + height + lineheight)
 	}
+
+
 }
 
 class MouseInput {
