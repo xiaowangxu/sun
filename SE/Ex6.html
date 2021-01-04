@@ -1,0 +1,96 @@
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+
+<body>
+	<div class="container">
+		<input class="inputBox" type="number" value="2021" onchange="year_change(this.value)">
+		<input class="inputBox" type="number" value="1" onchange="month_change(this.value)">
+		<input class="inputBox" type="number" value="4" onchange="day_change(this.value)">
+		<h1>输入日期是：
+			<a id="inputText">//</a>
+		</h1>
+		<h1 style="margin: 0px;">下一个日期是：
+			<a id="nextText">//</a>
+		</h1>
+	</div>
+</body>
+
+<style>
+	body {
+		background-color: rgb(243, 243, 243);
+		height: -webkit-fill-available;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		box-sizing: content-box;
+	}
+
+	.container {
+		background-color: white;
+		width: auto;
+		margin: auto;
+		padding: 20px;
+		border-radius: 10px;
+		box-shadow: 0px 9px 13px 5px #00000030;
+	}
+
+	.inputBox {
+		background-color: gray;
+		outline: none;
+		border: none;
+		font-size: 34px;
+		padding: 8px;
+		text-align: center;
+		color: white;
+		border-radius: 8px;
+	}
+</style>
+
+<script>
+	var year = 2021;
+	function year_change(val) {
+		year = parseInt(val);
+		update_InputDate(get_DateStr());
+		update_nextDate(get_NextDateStr(year, month, day));
+	}
+
+	var month = 1;
+	function month_change(val) {
+		month = parseInt(val);
+		update_InputDate(get_DateStr());
+		update_nextDate(get_NextDateStr(year, month, day));
+	}
+
+	var day = 4;
+	function day_change(val) {
+		day = parseInt(val);
+		update_InputDate(get_DateStr());
+		update_nextDate(get_NextDateStr(year, month, day));
+	}
+
+	function get_DateStr() {
+		return [year, month, day].join('/');
+	}
+
+	function update_InputDate(date) {
+		document.querySelector('#inputText').innerHTML = date;
+	}
+
+	function update_nextDate(date) {
+		document.querySelector('#nextText').innerHTML = date;
+	}
+
+	update_InputDate(get_DateStr());
+
+	function get_NextDateStr(y, m, d) {
+		return [y, m, d].join('/');
+	}
+</script>
+
+</html>
