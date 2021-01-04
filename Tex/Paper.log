@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.26)  11 NOV 2020 22:38
+This is XeTeX, Version 3.14159265-2.6-0.999992 (TeX Live 2020/W32TeX) (preloaded format=xelatex 2020.10.26)  12 NOV 2020 23:31
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -594,7 +594,11 @@ LaTeX Font Info:    No file TUptm.fd. on input line 16.
 LaTeX Font Warning: Font shape `TU/ptm/m/n' undefined
 (Font)              using `TU/lmr/m/n' instead on input line 16.
 
-(./Paper.aux)
+(./Paper.aux
+
+LaTeX Warning: Label `ref4' multiply defined.
+
+)
 \openout1 = `Paper.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 16.
@@ -715,7 +719,7 @@ File: lstlang1.sty 2020/03/24 1.8d listings language file
 ) (c:/texlive/2020/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
 )
-Underfull \hbox (badness 10000) in paragraph at lines 323--325
+Underfull \hbox (badness 10000) in paragraph at lines 307--309
 
  []
 
@@ -740,7 +744,7 @@ Package fontspec Info: Font family 'Consolas(0)' created for font 'Consolas'
 (fontspec)             - 'bold italic small caps'  (b/scit) with NFSS spec.: 
 
 [8] [9] [10]
-Underfull \hbox (badness 10000) in paragraph at lines 415--417
+Underfull \hbox (badness 10000) in paragraph at lines 399--401
 
  []
 
@@ -759,7 +763,7 @@ File: Picture/latex4.1.png Graphic file (type bmp)
 File: Picture/latex4.2.png Graphic file (type bmp)
 <Picture/latex4.2.png>
  [19]
-Underfull \hbox (badness 10000) in paragraph at lines 797--799
+Underfull \hbox (badness 10000) in paragraph at lines 781--783
 
  []
 
@@ -767,12 +771,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 797--799
 File: Picture/latex4.3.png Graphic file (type bmp)
 <Picture/latex4.3.png>
 
-Underfull \hbox (badness 10000) in paragraph at lines 823--825
+Underfull \hbox (badness 10000) in paragraph at lines 807--809
 
  []
 
 [21]
-Underfull \hbox (badness 10000) in paragraph at lines 856--858
+Underfull \hbox (badness 10000) in paragraph at lines 840--842
 
  []
 
@@ -780,7 +784,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 856--858
 File: Picture/latex4.4.png Graphic file (type bmp)
 <Picture/latex4.4.png>
 
-Overfull \hbox (18.27914pt too wide) in paragraph at lines 880--881
+Overfull \hbox (18.27914pt too wide) in paragraph at lines 864--865
 []\TU/SimSun(0)/m/n/12 初 始 化 $\OML/ztmcm/m/it/12 ZB$ \TU/SimSun(0)/m/n/12 和 $\OML/ztmcm/m/it/12 CB$\TU/SimSun(0)/m/n/12 ，|  使 得 $\OML/ztmcm/m/it/12 ZB\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 i; j\OT1/ztmcm/m/n/12 ) = \OML/ztmcm/m/it/12 Zmax; CB\OT1/ztmcm/m/n/12 (\OML/ztmcm/m/it/12 i; j\OT1/ztmcm/m/n/12 ) = \OML/ztmcm/m/it/12 backgroundcolor; i \OT1/ztmcm/m/n/12 = 1\OML/ztmcm/m/it/12 ; []  ; m\OT1/ztmcm/m/n/12 ; \OML/ztmcm/m/it/12 j \OT1/ztmcm/m/n/12 =
  []
 
@@ -791,17 +795,17 @@ File: Picture/Cutting.png Graphic file (type bmp)
 File: Picture/Cuts.png Graphic file (type bmp)
 <Picture/Cuts.png>
  [25]
-Overfull \hbox (34.57646pt too wide) in paragraph at lines 929--931
+Overfull \hbox (34.57646pt too wide) in paragraph at lines 913--915
 \TU/SimSun(0)/m/n/12 剪 面 的 交 点 $\OML/ztmcm/m/it/12 N[]$\TU/SimSun(0)/m/n/12 。|  显 然 $\OML/ztmcm/m/it/12 inside\OT1/ztmcm/m/n/12 [0]\OML/ztmcm/m/it/12 ; inside\OT1/ztmcm/m/n/12 [1]\OML/ztmcm/m/it/12 ; outside\OT1/ztmcm/m/n/12 [0]$ \TU/SimSun(0)/m/n/12 是 逆 时 针 排 列 的，|  则 $\OML/ztmcm/m/it/12 inside\OT1/ztmcm/m/n/12 [0]\OML/ztmcm/m/it/12 ; inside\OT1/ztmcm/m/n/12 [1]\OML/ztmcm/m/it/12 ; N[]$
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 932--934
+Underfull \hbox (badness 10000) in paragraph at lines 916--918
 
  []
 
 [26] [27] [28]
-Underfull \hbox (badness 10000) in paragraph at lines 1006--1008
+Underfull \hbox (badness 10000) in paragraph at lines 990--992
 
  []
 
@@ -810,18 +814,36 @@ File: Picture/latex5.1.png Graphic file (type bmp)
 <Picture/latex5.1.png>
 File: Picture/latex5.2.png Graphic file (type bmp)
 <Picture/latex5.2.png>
- [31] [32] (./Paper.aux)
+ [31] [32]
+Overfull \hbox (0.50761pt too wide) in paragraph at lines 1130--1131
+\TU/ptm/m/sl/12 INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MER-
+ []
+
+[33]
+Underfull \hbox (badness 3635) in paragraph at lines 1135--1136
+[]\TU/ptm/m/sl/12 Code-It-Yourself! 3D Graphics Engine Part 1 - Triangles, Projec-
+ []
+
+
+Underfull \hbox (badness 2469) in paragraph at lines 1137--1138
+[]\TU/ptm/m/sl/12 Code-It-Yourself! 3D Graphics Engine Part 3 - Cameras, Clipping.
+ []
+
+[34] (./Paper.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
+
+LaTeX Warning: There were multiply-defined labels.
+
  ) 
 Here is how much of TeX's memory you used:
- 21222 strings out of 479393
- 484527 string characters out of 5880193
- 1113811 words of memory out of 5000000
- 40164 multiletter control sequences out of 15000+600000
- 563454 words of font info for 139 fonts, out of 8000000 for 9000
+ 21175 strings out of 479393
+ 481561 string characters out of 5880193
+ 1112111 words of memory out of 5000000
+ 40119 multiletter control sequences out of 15000+600000
+ 563438 words of font info for 137 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 97i,14n,100p,412b,1748s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 97i,14n,100p,795b,1748s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Paper.pdf (32 pages).
+Output written on Paper.pdf (34 pages).

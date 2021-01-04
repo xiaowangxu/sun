@@ -30,28 +30,12 @@
 
 \title{计算机图形学 \\ 课程项目}
 \author{ 王徐笑风\thanks{学号:18120193 E-mail:2208740924@qq.com}
-	\and 凌泽辉\thanks{学号:18120193 E-mail:785896610@qq.com}}
+	\and 凌泽辉\thanks{学号:18120203 E-mail:785896610@qq.com}}
 \date{\today}
 \maketitle
 \newpage
 \tableofcontents
 \newpage
-\begin{abstract}
-	查找资料，学习了解三维网格模型的相关知识。完成一个三维网格模型的显示系统。
-
-	数据输入：通过文件读取模型数据
-
-	数据存储：设计程序内用于存储模型数据的数据结构
-
-	数据输出：在窗口界面进行模型显示
-
-	编程实现三维到二维的投影变换计算
-
-	编程实现通过键盘或鼠标驱动模型的平移、缩放及旋转变换
-
-	可以使用开发工具中提供光照函数，若自己编程实现光照计算，则可获得额外加分
-\end{abstract}
-
 \section{三维图形的变换与表示}
 \subsection{向量与点}
 在三维空间中我们常用一个三维向量表示一个点，虽然向量本身只表达长度和方向，他是无关坐标系的，
@@ -875,7 +859,7 @@ for(int i = n; i > 0; i--)
 
 一些基本的画家算法实现方法也可能效率很低，因为这将使得系统将可见多边形集合中的每个点都进行渲染，而没有考虑这些多边形在最终场景中可能被其它部分遮挡。这也就是说，对于细致的场景来说，画家算法可能会过度地消耗计算机资源。
 \subsubsection{改进方向，$Z-buffer$ 算法}
-深度缓存（$Z-buffer$）算法是一种典型的、简单的图象空间面消隐算法。该算法需要一个深度缓存数组 $ZB$ ，此外还 需要一个颜色属性数组 $CB$ ，它们的大小与屏幕上像素点的个数相同。 $Z-buffer$ 算法的步骤如下：
+深度缓存（$Z-buffer$）算法是一种典型的、简单的图象空间面消隐算法。\cite{ref2}该算法需要一个深度缓存数组 $ZB$ ，此外还 需要一个颜色属性数组 $CB$ ，它们的大小与屏幕上像素点的个数相同。 $Z-buffer$ 算法的步骤如下：
 \begin{enumerate}
 	\item 初始化 $ZB$ 和 $CB$，使得 $ZB(i,j)=Zmax,CB(i,j)=backgroundcolor, i=1,\cdots ,m; j=1,\cdots,n$ 。
 	\item 对多边形 $P$，计算它在点 $(i,j)$ 处的深度值 $z(i,j)$ 。
@@ -1090,7 +1074,7 @@ for (int p = 0; p < 4; p++)
 	% \label{Cuts}
 \end{figure}
 
-利用方向光可以实现对物体的漫反射。当方向光射至物体时，到达物体表面的光实际上只有 $\vec{QP}$ 在 $\vec{TP}$ 上的投影，即 $\vec{QP} \cdot \cos{\alpha}$
+利用方向光可以实现对物体的漫反射。当方向光射至物体时，到达物体表面的光实际上只有 $\vec{QP}$ 在 $\vec{TP}$ 上的投影，即 $\vec{QP} \cdot \cos{\alpha}$ \cite{ref1}
 
 在此仅考虑 $\cos{\alpha}$ 大于零的情况，如果小于零，则说明方向光射至物体的背面。
 
@@ -1121,4 +1105,36 @@ for(int i = 0; i < n; i++)
 	}
 }
 \end{lstlisting}
+
+\section{总结}
+本次实验完成了一个三维网格模型的显示，实现了数据输入，数据存储，数据
+输出，等功能。通过键盘的操作，完成了物体的上，下，左，右的平移，镜头前，
+后的拉近拉远，物体各个方向的翻转与旋转，物体的放大，缩小，以及三维物体的
+网格显示和替换物体。本次实验的光照函数是由我们手动编程实现。
+
+\section*{致谢}
+感谢王宜敏老师的课程讲授。
+
+感谢One Lone Coder，他提供了本项目的图形环境olcPixelGameEngine -- Provides a fast, richly featured, cross platform pixel drawing and user interface framework for The development of games,Visualisation of algorithms,Prototyping and experimentation,Education.
+
+Copyright 2018, 2019, 2020 OneLoneCoder.com
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions or derivations of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+Redistributions or derivative works in binary form must reproduce the above copyright notice. This list of conditions and the following disclaimer must be reproduced in the documentation and/or other materials provided with the distribution.
+
+Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+\begin{thebibliography}{99}
+	\bibitem{ref1}上海大学数学系. 线性代数. 北京:高等教育出版社, 2012.8
+	\bibitem{ref2}Z-Buffer. baike.baidu.com/item/Z-Buffer/10929858?fr=aladdin, 2020,11,12
+	\bibitem{ref3}Code-It-Yourself! 3D Graphics Engine Part 1 - Triangles, Projection.www.youtube.com/watch?v=ih20l3pJoeU\&t=1836s, 2020,11,12
+	\bibitem{ref4}Code-It-Yourself! 3D Graphics Engine Part 2 - Normals, Culling, Lighting, Object Files. www.youtube.com/watch?v=XgMWc6LumG4, 2020,11,12
+	\bibitem{ref4}Code-It-Yourself! 3D Graphics Engine Part 3 - Cameras, Clipping. www.youtube.com/watch?v=HXSuNxpCzdM, 2020,11,12
+\end{thebibliography}
+
 \end{document}

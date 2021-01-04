@@ -31,3 +31,4 @@
 \contentsline {section}{\numberline {6}基础光照}{30}{}%
 \contentsline {subsection}{\numberline {6.1}环境光}{30}{}%
 \contentsline {subsection}{\numberline {6.2}方向光}{31}{}%
+\contentsline {section}{\numberline {7}总结}{32}{}%
