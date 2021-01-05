@@ -7,16 +7,43 @@
 </head>
 
 <body>
-	<div class="container">
-		<input class="inputBox" type="number" value="2021" onchange="year_change(this.value)">
-		<input class="inputBox" type="number" value="1" onchange="month_change(this.value)">
-		<input class="inputBox" type="number" value="4" onchange="day_change(this.value)">
-		<h1>输入日期是：
-			<a id="inputText">//</a>
-		</h1>
-		<h1 style="margin: 0px;">下一个日期是：
-			<a id="nextText">//</a>
-		</h1>
+	<div style="display: flex; flex-direction: column; gap: 20px;">
+		<div class="container">
+			<input class="inputBox" type="number" value="2021" onchange="year_change(this.value)">
+			<input class="inputBox" type="number" value="1" onchange="month_change(this.value)">
+			<input class="inputBox" type="number" value="4" onchange="day_change(this.value)">
+			<h1>输入日期是：
+				<a id="inputText">//</a>
+			</h1>
+			<h1 style="margin: 0px;">下一个日期是：
+				<a id="nextText">//</a>
+			</h1>
+		</div>
+		<div class="container"
+			style="display: flex; flex-direction: column; gap: 10px; max-width: 400px; align-self: flex-end;">
+			<h2 style="margin: 0px;">有效覆盖</h2>
+			<div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px; justify-content: center;">
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+			</div>
+			<h2 style="margin: 0px;">无效覆盖</h2>
+			<div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px; justify-content: center;">
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+				<button>2013/12/31</button>
+			</div>
+		</div>
 	</div>
 	<div class="container">
 		<table border="1" class="table" cellpadding="10">
@@ -195,6 +222,16 @@
 		color: white;
 		border-radius: 8px;
 		width: 150px;
+	}
+
+	button {
+		outline: none;
+		border: none;
+		font-size: 30px;
+		padding: 8px;
+		text-align: center;
+		border-radius: 8px;
+		width: 180px;
 	}
 
 	.table {
