@@ -1259,6 +1259,7 @@ SPARK_registe('分程序', () => {
 SPARK_registe('程序', () => {
 	return new SPARK_Match([
 		new MatchTerm('分程序'),
+		new MatchToken("TK_DOT", undefined),
 		new MatchToken("TK_EOF", undefined)
 	], (match, token) => {
 		return match.nodes[0]
