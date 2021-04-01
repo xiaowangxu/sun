@@ -245,6 +245,7 @@ export class Lexer {
 		while (!this.is_EOF() && (this.is_NumberChar(this.current) || this.current === '.')) {
 			position = this.current_pos.clone();
 			if (this.current === '.') {
+				break;
 				if (dot_count === 1)
 					break;
 				dot_count++;
