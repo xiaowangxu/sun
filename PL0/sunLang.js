@@ -273,7 +273,7 @@ export class Lexer {
 			this.advance();
 		}
 
-		const KEYWORD = ["begin", "call", "const", "do", "end", "if", "odd", "procedure", "read", "then", "var", "while", "write"];
+		const KEYWORD = ["begin", "call", "const", "do", "end", "if", "else", "odd", "procedure", "read", "then", "var", "while", "write"];
 
 		let keyword = identifier.toLowerCase()
 
@@ -657,10 +657,11 @@ export class SPARK_Match {
 }
 
 export class Once_or_None extends SPARK_Match {
-	constructor(subs, match_func) {
+	constructor(subs, match_func, returnundefinded = false) {
 		super(undefined, match_func);
 		if (subs.length === 1) {
 			this.subs = subs[0];
+			this.returnundefinded = returnundefinded;
 		}
 		else {
 			throw Error('<sPARks> node error: "Once_or_None" node only accept one sub node')
@@ -680,7 +681,7 @@ export class Once_or_None extends SPARK_Match {
 		else if (erroridx > idx) {
 			return [false, idx, undefined, error, erroridx]
 		}
-		return [true, idx, undefined, error, erroridx];
+		return [true, idx, this.returnundefinded ? ['null', null] : undefined, error, erroridx];
 	}
 
 	check(term_name, expanded, traveled = []) {
@@ -1082,11 +1083,20 @@ SPARK_registe('条件语句', () => {
 		new MatchTerm('条件表达式', undefined),
 		new MatchToken("TK_KEYWORD", "then"),
 		new MatchTerm('语句', undefined),
+		new Once_or_None([
+			new SPARK_Match([
+				new MatchToken("TK_KEYWORD", "else"),
+				new MatchTerm('语句', undefined)
+			], (match, token) => {
+				return match.nodes[0]
+			})
+		], undefined, true)
 	], (match, token) => {
 		return ['if', {
 			type: 'if',
 			expression: match.nodes[0][1],
-			sub: [match.nodes[1][1]]
+			sub: [match.nodes[1][1]],
+			else: [match.nodes[2][1]]
 		}]
 	})
 })
@@ -1343,6 +1353,10 @@ export class JSConverter {
 		return `console.log(${arr})`
 	}
 
+	value(ast) {
+		return ast.value
+	}
+
 	read(ast) {
 		let arr = []
 		let identifier = ast.identifiers
@@ -1367,7 +1381,8 @@ export class JSConverter {
 
 	if(ast) {
 		let ifbody = ast.sub.filter((i) => i !== null).map(s => this.get(s)).tab()
-		return `if (${this.exp(ast.expression)}) {\n${ifbody}\n}`
+		let elsebody = ast.else.filter((i) => i !== null).map(s => this.get(s)).tab()
+		return `if (${this.exp(ast.expression)}) {\n${ifbody}\n}\nelse {\n${elsebody}\n}`
 	}
 
 	while(ast) {

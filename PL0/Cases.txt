@@ -14,3 +14,20 @@ procedure add;
     write(sum)
   end;
 call add
+
+# sPARks PL/0 Hello World !!
+# 在这里键入PL/0 程序
+var a, b, c;
+begin
+read(a, b, c);
+if a+b > c then
+  if a+c > b then
+    if c+b > a then
+      write(1)
+    else
+      write(0)
+  else
+    write(0)
+else
+  write(0)
+end.
