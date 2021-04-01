@@ -1,0 +1,16 @@
+const num=100;
+Var a1,b2;
+Begin
+	Read(A1);
+	b2:=a1+num;
+	write(A1,B2);
+End.
+
+const a=10,b=20;
+var sum;
+procedure add;
+  begin
+    sum := a+b;
+    write(sum)
+  end;
+call add
