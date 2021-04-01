@@ -9,9 +9,9 @@
 <body>
 	<div style="display: flex; flex-direction: column; gap: 20px;">
 		<div class="container">
-			<input class="inputBox" type="number" value="2021" onchange="year_change(this.value)">
-			<input class="inputBox" type="number" value="1" onchange="month_change(this.value)">
-			<input class="inputBox" type="number" value="4" onchange="day_change(this.value)">
+			<input id="year" class="inputBox" type="number" value="2021" onchange="year_change(this.value)">
+			<input id="month" class="inputBox" type="number" value="1" onchange="month_change(this.value)">
+			<input id="day" class="inputBox" type="number" value="4" onchange="day_change(this.value)">
 			<h1>输入日期是：
 				<a id="inputText">//</a>
 			</h1>
@@ -23,25 +23,28 @@
 			style="display: flex; flex-direction: column; gap: 10px; max-width: 400px; align-self: flex-end;">
 			<h2 style="margin: 0px;">有效覆盖</h2>
 			<div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px; justify-content: center;">
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
+				<button name="button" value="2013/12/31" onclick="button_Click(this, this.value)">2013/12/31</button>
+				<button name="button" value="2015/11/30" onclick="button_Click(this, this.value)">2015/11/30</button>
+				<button name="button" value="2000/2/29" onclick="button_Click(this, this.value)">2000/2/29</button>
+				<button name="button" value="2002/2/28" onclick="button_Click(this, this.value)">2002/2/28</button>
 			</div>
 			<h2 style="margin: 0px;">无效覆盖</h2>
 			<div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px; justify-content: center;">
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
-				<button>2013/12/31</button>
+				<button name="button" value="1899/10/1" onclick="button_Click(this, this.value)">1899/10/1</button>
+				<button name="button" value="2055/10/1" onclick="button_Click(this, this.value)">2055/10/1</button>
+				<button name="button" value="2013/0/1" onclick="button_Click(this, this.value)">2013/0/1</button>
+				<button name="button" value="2013/13/1" onclick="button_Click(this, this.value)">2013/13/1</button>
+				<button name="button" value="2013/1/0" onclick="button_Click(this, this.value)">2013/1/0</button>
+				<button name="button" value="2013/1/32" onclick="button_Click(this, this.value)">2013/1/32</button>
+				<button name="button" value="2013/4/0" onclick="button_Click(this, this.value)">2013/4/0</button>
+				<button name="button" value="2013/4/31" onclick="button_Click(this, this.value)">2013/4/31</button>
+				<button name="button" value="2000/2/0" onclick="button_Click(this, this.value)">2000/2/0</button>
+				<button name="button" value="2000/2/30" onclick="button_Click(this, this.value)">2000/2/30</button>
+				<button name="button" value="2013/2/0" onclick="button_Click(this, this.value)">2013/2/0</button>
+				<button name="button" value="2013/2/29" onclick="button_Click(this, this.value)">2013/2/29</button>
+			</div>
+			<div style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 10px; justify-content: center;">
+				<button onclick="reset_CheckList()">重置</button>
 			</div>
 		</div>
 	</div>
@@ -234,6 +237,17 @@
 		width: 180px;
 	}
 
+	button:hover {
+		background-color: rgb(214, 214, 214);
+		outline: none;
+		border: none;
+		font-size: 30px;
+		padding: 8px;
+		text-align: center;
+		border-radius: 8px;
+		width: 180px;
+	}
+
 	.table {
 		font-size: 30px;
 		/* border: solid 2px black; */
@@ -243,6 +257,15 @@
 		background-color: yellow;
 		color: black;
 	}
+
+	.highlight-green {
+		background-color: rgb(0, 255, 13);
+		color: black;
+	}
+
+	.clicked {
+		background-color: yellow;
+	}
 </style>
 
 <script>
@@ -250,6 +273,8 @@
 	}
 
 	let myCollection = document.getElementsByTagName('td');
+	let myCollectionBut = document.getElementsByName('button');
+	console.log(myCollectionBut)
 
 	var iid = 1;
 
@@ -263,14 +288,20 @@
 	}
 
 	function reset_CheckList() {
+		for (i = 0; i < myCollectionBut.length; i++) {
+			let dom = myCollectionBut[i];
+			dom.classList.remove('clicked')
+		}
 		for (let key in checklist) {
 			checklist[key].checked = false;
+			checklist[key].dom.classList.remove("highlight-green");
 			checklist[key].dom.classList.remove("highlight-yellow");
 		}
 	}
 
 	function refresh_CheckList() {
 		for (let key in checklist) {
+			checklist[key].dom.classList.remove("highlight-green");
 			if (checklist[key].checked)
 				checklist[key].dom.classList.add("highlight-yellow");
 			else
@@ -302,7 +333,8 @@
 			set.add(id);
 			if (checklist[id]) {
 				checklist[id].checked = true;
-				checklist[id].dom.classList.add("highlight-yellow");
+				checklist[id].dom.classList.remove("highlight-yellow");
+				checklist[id].dom.classList.add("highlight-green");
 			}
 		}
 		if (y >= 1900 && y <= 2050) set_Check(1);
@@ -427,6 +459,24 @@
 				last_sets = new Set([...last_sets, ...ans]);
 			}
 		}
+	}
+
+	function button_Click(but, val) {
+		but.classList.add('clicked')
+		let date = val.split('/').map((i) => {
+			return parseInt(i);
+		})
+		year = date[0]
+		month = date[1]
+		day = date[2]
+		document.getElementById('year').value = year
+		document.getElementById('month').value = month
+		document.getElementById('day').value = day
+		update_InputDate(get_DateStr());
+		update_nextDate(get_NextDateNative(year, month, day));
+		// reset_CheckList();
+		refresh_CheckList();
+		check(year, month, day);
 	}
 </script>
 
