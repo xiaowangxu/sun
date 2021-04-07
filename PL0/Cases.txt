@@ -31,3 +31,50 @@ if a+b > c then
 else
   write(0)
 end.
+
+var n, i, j, c, sum;
+begin
+  sum := 0;
+  read(n);
+  i := 1;
+  while i <= n do
+    begin
+      j := 1;
+      c := 1;
+      while j <=i do
+        begin
+          c := c*j;
+          j := j+1;
+        end;
+      sum := sum+c;
+      i := i+1;
+    end;
+  write(sum);
+end.
+
+var n, i, j, c, sum;
+
+procedure fact;
+  begin
+    c := 1;
+    j := 1;
+    while j <=i do
+      begin
+        c := c*j;
+        j := j+1;
+      end
+  end
+;
+
+begin
+  sum := 0;
+  read(n);
+  i := 1;
+  while i <= n do
+    begin
+      call fact;
+      sum := sum+c;
+      i := i+1;
+    end;
+  write(sum);
+end.

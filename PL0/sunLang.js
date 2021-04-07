@@ -258,7 +258,7 @@ export class Lexer {
 		}
 
 		if (dot_count === 0)
-			this.tokens.push(new Token('TK_INT', parseInt(number), this.last_pos, position));
+			this.tokens.push(new Token('TK_INT', (number), this.last_pos, position));
 		else
 			this.tokens.push(new Token('TK_FLOAT', parseFloat(number), this.last_pos, position));
 	}
@@ -1298,7 +1298,7 @@ export class JSConverter {
 		if (ast.type === 'value') {
 			switch (ast.datatype) {
 				case 'string': return `"${ast.value}"`;
-				default: return ast.value;
+				default: return `BigInt("${ast.value}")`;
 			}
 		}
 		else if (ast.type === 'funccall') {
@@ -1349,8 +1349,9 @@ export class JSConverter {
 	}
 
 	write(ast) {
-		let arr = ast.expressions.map(s => this.get(s)).join(', ')
-		return `console.log(${arr})`
+		let arr = ast.expressions.map(s => this.get(s))
+		arr = arr.map(a => "${" + a + "}").join(" ")
+		return `$writebuffer += \`${arr}\\n\``
 	}
 
 	value(ast) {
@@ -1361,7 +1362,7 @@ export class JSConverter {
 		let arr = []
 		let identifier = ast.identifiers
 		identifier.forEach((i) => {
-			arr.push(`${i} = parseInt(prompt("请输入：${i}"))`)
+			arr.push(`${i} = BigInt(prompt("请输入：${i}"))`)
 		})
 		return `${arr.join('\n')}`
 	}
@@ -1395,13 +1396,13 @@ export class JSConverter {
 		let arr = []
 		let constdefs = consts.forEach((s) => {
 			s.consts.forEach((c) => {
-				arr.push(`const ${c.identifier} = ${c.value};`)
+				arr.push(`const ${c.identifier} = ${c.value}`)
 			})
 		})
 		let vars = ast.vars;
 		let vardefs = vars.forEach((s) => {
 			s.vars.forEach((c) => {
-				arr.push(`let ${c};`)
+				arr.push(`let ${c}`)
 			})
 		})
 		let procs = ast.procs;
@@ -1421,7 +1422,7 @@ export class JSConverter {
 	}
 
 	convert() {
-		this.target = this[this.ast.type](this.ast);
+		this.target = "let $writebuffer = ''\n" + this[this.ast.type](this.ast) + "\n($writebuffer)";
 		return this.target;
 	}
 }
