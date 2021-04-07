@@ -22,12 +22,12 @@ begin
 read(a, b, c);
 if a+b > c then
   if a+c > b then
-	if c+b > a then
-	  write(True)
-	else
-	  write(False)
+    if c+b > a then
+      write(True)
+    else
+      write(False)
   else
-	write(False)
+    write(False)
 else
   write(False);
 end.
@@ -67,7 +67,7 @@ end.
 
 
 	window.input = function (val) {
-		console.clear()
+		// console.clear()
 		let source = new SUN.SourceScript(val, "terminal");
 
 		let lexer = new SUN.Lexer(source);
@@ -111,7 +111,7 @@ end.
 
 
 		let ast = SUN.SPARK_get("程序").match(lexer.tokens);
-		console.log(ast);
+		// console.log(ast);
 
 		if (ast[2] !== undefined)
 			document.getElementById('ast').innerText = JSON.stringify(ast[2][1], null, 2)
@@ -155,7 +155,9 @@ else
   write(False);
 end.`)
 
-	// SUN.SPARK_print();
+
+
+	SUN.SPARK_print();
 </script>
 
 </html>

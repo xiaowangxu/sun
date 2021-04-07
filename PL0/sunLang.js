@@ -701,7 +701,7 @@ export class More_or_None extends SPARK_Match {
 	}
 
 	toString() {
-		return `[${this.subs.toString()}]`
+		return `{${this.subs.toString()}}`
 	}
 
 	match(tokens, idx = 0) {
@@ -819,7 +819,7 @@ export class MatchTerm extends SPARK_Match {
 	}
 
 	toString() {
-		return "*" + this.term_name + "*";
+		return "<" + this.term_name + ">";
 	}
 
 	match(tokens, idx = 0) {
