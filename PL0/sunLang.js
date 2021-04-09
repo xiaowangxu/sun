@@ -1286,7 +1286,30 @@ export class JSConverter {
 	constructor(ast) {
 		this.ast = ast;
 		this.target = '';
+		this.errors = [];
 		this.uid = BigInt(0);
+		this.scopes = [];
+		this.currentscope = null;
+	}
+
+	registe_Identifier(identifier) {
+		if (this.currentscope[identifier] !== undefined) return false;
+		else {
+			this.currentscope[identifier] = `$var${this.get_uid()}`
+			return this.currentscope[identifier]
+		}
+	}
+
+	new_Scope() {
+		let newscope = {}
+		this.scopes.push(newscope);
+		this.currentscope = newscope;
+	}
+
+	exit_Scope() {
+		if (this.scopes.length > 0) {
+			this.currentscope = this.scopes.pop();
+		}
 	}
 
 	get_uid() {
@@ -1296,9 +1319,12 @@ export class JSConverter {
 	exp(ast, last = null) {
 		// console.log(ast)
 		if (ast.type === 'value') {
-			switch (ast.datatype) {
+			return `BigInt("${ast.value}")`;
+			switch (ast.typedef.value) {
 				case 'string': return `"${ast.value}"`;
-				default: return `BigInt("${ast.value}")`;
+				case 'real': return `${ast.value}`;
+				case 'int': return `BigInt("${ast.value}")`;
+				default: return `${ast.value}`;
 			}
 		}
 		else if (ast.type === 'funccall') {
@@ -1314,7 +1340,7 @@ export class JSConverter {
 			return MAP[func] !== undefined ? MAP[func](args, ast.arguments) : `${func}(${args})`
 		}
 		else if (ast.type === 'identifier') {
-			return ast.value
+			return `$${ast.value}`
 		}
 		else if (ast.type === 'binop') {
 			return `(${this.exp(ast.sub[0], ast.value)}${ast.value}${this.exp(ast.sub[1], ast.value)})`
@@ -1324,45 +1350,59 @@ export class JSConverter {
 			return `${ast.value !== last && last !== null ? '(' : ''}${ast.value}${this.exp(ast.sub[0], ast.value)}${ast.value !== last && last !== null ? ')' : ''}`
 		}
 		else if (ast.type === 'array') {
-			let items = ast.list.map(i => this.exp(i)).join(', ')
+			let items = ast.expressions.map(i => this.exp(i)).join(', ')
 			return `[${items}]`
+		}
+		else if (ast.type === 'indexof') {
+			return `${ast.identifier}[${this.exp(ast.index)}]`
 		}
 	}
 
 	funcdef(ast, func = true) {
 		let identifier = ast.identifier
+		let ans = this.registe_Identifier(identifier)
+		if (!ans) {
+			this.errors.push({ message: `标识符 "${identifier}" 重定义`, start: ast.$start, end: ast.$end })
+		}
 		let body = this.subprogram(ast.block).split('\n').tab()
-		return `function ${identifier}() {\n${body}\n}`
+		return `function $${identifier}() {\n${body}\n}`
 	}
 
 	call(ast) {
 		// console.log(ast)
-		return `${ast.identifier}()`
+		return `$${ast.identifier}();`
 	}
 
 	assign(ast) {
-		return `${ast.identifier} = ${this.exp(ast.expression)}`
+		return `$${ast.identifier} = ${this.exp(ast.expression)};`
 	}
 
 	identifier(ast) {
-		return ast.value
+		return `$${ast.value}`
 	}
 
 	write(ast) {
 		let arr = ast.expressions.map(s => this.get(s))
 		arr = arr.map(a => "${" + a + "}").join(" ")
-		return `$writebuffer += \`${arr}\\n\``
+		return `$writebuffer += \`${arr}\\n\`;`
 	}
 
 	value(ast) {
-		return ast.value
+		switch (ast.datatype) {
+			case 'string': return `"${ast.value}"`;
+			default: return `BigInt("${ast.value}")`;
+		}
+	}
+
+	indexof(ast) {
+		return `${ast.identifier}[${this.exp(ast.index)}]`
 	}
 
 	read(ast) {
 		let arr = []
 		let identifier = ast.identifiers
 		identifier.forEach((i) => {
-			arr.push(`${i} = BigInt(prompt("请输入：${i}"))`)
+			arr.push(`$${i} = BigInt(prompt("请输入：${i}"))`)
 		})
 		return `${arr.join('\n')}`
 	}
@@ -1392,17 +1432,19 @@ export class JSConverter {
 	}
 
 	subprogram(ast) {
+		this.new_Scope();
+		let that = this;
 		let consts = ast.consts;
 		let arr = []
 		let constdefs = consts.forEach((s) => {
 			s.consts.forEach((c) => {
-				arr.push(`const ${c.identifier} = ${c.value}`)
+				arr.push(`const $${c.identifier} = ${c.value};`)
 			})
 		})
 		let vars = ast.vars;
 		let vardefs = vars.forEach((s) => {
 			s.vars.forEach((c) => {
-				arr.push(`let ${c}`)
+				arr.push(`let $${c};`)
 			})
 		})
 		let procs = ast.procs;
@@ -1413,7 +1455,7 @@ export class JSConverter {
 			let subs = ast.subs;
 			arr.push(this.get(subs))
 		}
-
+		this.exit_Scope()
 		return `${arr.join('\n')}`;
 	}
 
@@ -1422,7 +1464,7 @@ export class JSConverter {
 	}
 
 	convert() {
-		this.target = "let $writebuffer = ''\n" + this[this.ast.type](this.ast) + "\n($writebuffer)";
+		this.target = "let $writebuffer = '';\n" + this[this.ast.type](this.ast) + "\n($writebuffer);";
 		return this.target;
 	}
 }

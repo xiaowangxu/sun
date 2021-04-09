@@ -78,3 +78,25 @@ begin
     end;
   write(sum);
 end.
+
+# sPARks PL/0 Hello World !!
+# 在这里键入PL/0 程序
+var n, i, r, sum;
+
+procedure next;
+  r := r * i
+;
+
+begin
+  sum := 0;
+  r := 1;
+  read(n);
+  i := 1;
+  while i <= n do
+  begin
+    call next;
+    sum := sum + r;
+    i := i+1;
+  end;
+  write(sum);
+end.

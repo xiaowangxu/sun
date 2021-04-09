@@ -16,32 +16,24 @@ margin: 0px; padding: 2px 10px 10px 10px;">
 		<textarea style="height: 50%;width: 100%;resize: vertical;  font-family: consolas; " oninput="input(this.value)"
 			id="input" autofocus># sPARks PL/0 Hello World !!
 # 在这里键入PL/0 程序
-var n, i, j, c, sum;
+var n, i, r, sum;
 
-procedure fact;
-  begin
-    c := 1;
-    j := 1;
-    while j <=i do
-      begin
-        c := c*j;
-        j := j+1;
-      end
-  end
+procedure next;
+  r := r * i
 ;
 
 begin
-read(a, b, c);
-if a+b > c then
-  if a+c > b then
-    if c+b > a then
-      write(True)
-    else
-      write(False)
-  else
-    write(False)
-else
-  write(False);
+  sum := 0;
+  r := 1;
+  read(n);
+  i := 1;
+  while i <= n do
+  begin
+    call next;
+    sum := sum + r;
+    i := i+1;
+  end;
+  write(sum);
 end.
 </textarea>
 		<div style="display: flex;flex-direction: row; justify-content: space-between; padding-right: 12px;">
@@ -160,30 +152,23 @@ end.
 
 	window.input(`# sPARks PL/0 Hello World !!
 # 在这里键入PL/0 程序
-var n, i, j, c, sum;
+var n, i, r, sum;
 
-procedure fact;
-  begin
-    c := 1;
-    j := 1;
-    while j <=i do
-      begin
-        c := c*j;
-        j := j+1;
-      end
-  end
+procedure next;
+  r := r * i
 ;
 
 begin
   sum := 0;
+  r := 1;
   read(n);
   i := 1;
   while i <= n do
-    begin
-      call fact;
-      sum := sum+c;
-      i := i+1;
-    end;
+  begin
+    call next;
+    sum := sum + r;
+    i := i+1;
+  end;
   write(sum);
 end.`)
 
