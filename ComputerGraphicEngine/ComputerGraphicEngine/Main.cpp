@@ -305,10 +305,8 @@ private:
 
 int main()
 {
-	Matrix4 mat = Matrix4::ROTATE(0, 45, 45);
-	std::cout << mat;
 	Example demo;
-	if (demo.Construct(1280, 720, 1, 1))
+	if (demo.Construct(480, 320, 1, 1))
 		demo.Start();
 
 	return 0;
